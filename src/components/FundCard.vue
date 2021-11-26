@@ -1,29 +1,33 @@
 <template>
+<a :href="`/Funds?address=${fund.address}`">
   <v-card>
-    <v-container>
-      <v-row align="center">
-        <v-img src="../assets/BYAC_2.png" />
-      </v-row>
+    
+      <v-container>
+        <v-row align="center">
+          <v-img :src="require('../assets/' + getImg)" />
+        </v-row>
 
-      <v-row>
-        <v-card-title>Fund 1</v-card-title>
-      </v-row>
+        <v-row>
+          <v-card-title>{{ fund.name }}</v-card-title>
+        </v-row>
 
-      <v-row>
+        <v-row>
           <v-divider></v-divider>
-      </v-row>
+        </v-row>
 
-      <v-row>
-        <v-col class="left-col"> Returns </v-col>
-        <v-col class="right-col"> Items </v-col>
-      </v-row>
+        <v-row>
+          <v-col class="left-col"> Returns </v-col>
+          <v-col class="right-col"> Items </v-col>
+        </v-row>
 
-      <v-row>
-        <v-col class="left-col"> 30% </v-col>
-        <v-col class="right-col"> 200 </v-col>
-      </v-row>
-    </v-container>
+        <v-row>
+          <v-col class="left-col"> {{ fund.returns }}% </v-col>
+          <v-col class="right-col"> {{ fund.nfts.length }} </v-col>
+        </v-row>
+      </v-container>
+    
   </v-card>
+  </a>
 </template>
 
 <style scoped>
@@ -35,3 +39,14 @@
   text-align: left;
 }
 </style>
+
+<script>
+export default {
+  props: { fund: Object },
+  computed: {
+    getImg() {
+      return this.$props.fund.img;
+    },
+  },
+};
+</script>

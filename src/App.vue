@@ -1,10 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color = "white"
-      dark
-    >
+    <v-app-bar app color="white" dark>
       <div class="d-flex align-center">
         <v-img
           alt="Vuetify Logo"
@@ -15,34 +11,22 @@
           width="150"
           height="148"
         />
-
       </div>
 
       <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text="Whitepaper"
-        color="#6733e2"
-      >
-          Funds
+      <v-btn v-if="$store.state.isCurator" text color="#6733e2" v-on:click="toggleCuratorStatus">
+        Investor
       </v-btn>
+      <v-btn v-else v-on:click="toggleCuratorStatus"> Curator </v-btn>
+      <v-btn href="/#/ExploreFunds" text color="#6733e2"> Funds </v-btn>
+      <v-btn href="/#/CreateFund" text color="#6733e2"> Create </v-btn>
       <v-btn
         href="https://github.com/vuetifyjs/vuetify/releases/latest"
         target="_blank"
-        text="Whitepaper"
+        text
         color="#6733e2"
       >
-          Create
-      </v-btn>
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text="Whitepaper"
-        color="#6733e2"
-      >
-          Whitepaper
+        Whitepaper
       </v-btn>
     </v-app-bar>
 
@@ -53,15 +37,23 @@
 </template>
 
 <script>
-import ExploreFunds from './components/ExploreFunds.vue';
+import ExploreFunds from "./components/ExploreFunds.vue";
 
 export default {
-  name: 'App',
+  name: "App",
 
   components: {
     ExploreFunds,
   },
-
+  methods: {
+    getCuratorStatus() {
+      return this.$store.state.isCurator;
+    },
+    toggleCuratorStatus() {
+      console.log(this.$store.state.isCurator);
+      return this.$store.commit("toggleCuratorStatus");
+    },
+  },
   data: () => ({
     //
   }),
