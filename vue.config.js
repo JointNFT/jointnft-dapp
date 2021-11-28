@@ -1,5 +1,6 @@
 module.exports = {
   transpileDependencies: [
-    'vuetify'
+    'vuetify',
+    'web3modal-vue'
   ]
 }

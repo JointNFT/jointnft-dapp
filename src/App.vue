@@ -14,7 +14,12 @@
       </div>
 
       <v-spacer></v-spacer>
-      <v-btn v-if="$store.state.isCurator" text color="#6733e2" v-on:click="toggleCuratorStatus">
+      <v-btn
+        v-if="$store.state.isCurator"
+        text
+        color="#6733e2"
+        v-on:click="toggleCuratorStatus"
+      >
         Curator
       </v-btn>
       <v-btn v-else v-on:click="toggleCuratorStatus"> Investor </v-btn>
@@ -28,6 +33,21 @@
       >
         Whitepaper
       </v-btn>
+      <!-- <ConnectWallet/> -->
+      <v-btn
+        @click="connect"
+        v-if="!$store.state.account"
+        text
+        if="connect-wallet-btn"
+        color="#6733e2"
+        >Connect wallet</v-btn
+      >
+      <v-btn v-else if="connect-wallet-btn" color="#6733e2">{{
+        $store.state.account.substring(0, 5) + "..."
+      }}</v-btn>
+      <div id="app">
+        <Web3ModalVue ref="web3modal" :theme="theme" cache-provider />
+      </div>
     </v-app-bar>
 
     <v-main>
@@ -36,14 +56,26 @@
   </v-app>
 </template>
 
+<style scoped>
+.connect-wallet-btn {
+  border: 2px solid #6733e2;
+  background-color: white;
+}
+</style>
+
 <script>
 import ExploreFunds from "./components/ExploreFunds.vue";
+import ConnectWallet from "./components/ConnectWallet.vue";
+import Web3ModalVue from "web3modal-vue";
+import { web3Modal } from "./config/mixins";
 
 export default {
   name: "App",
 
   components: {
     ExploreFunds,
+    ConnectWallet,
+    Web3ModalVue,
   },
   methods: {
     getCuratorStatus() {
@@ -53,9 +85,22 @@ export default {
       console.log(this.$store.state.isCurator);
       return this.$store.commit("toggleCuratorStatus");
     },
+    connect() {
+      this.$store.dispatch("connectToWallet");
+    },
   },
   data: () => ({
-    //
+    theme: "light",
+    providerOptions: {},
   }),
+  mounted() {
+    this.$nextTick(async () => {
+      const web3modal = this.$refs.web3modal;
+      this.$store.commit("setWeb3Modal", web3modal);
+      if (web3modal.cachedProvider) {
+        this.connect();
+      }
+    });
+  },
 };
 </script>
