@@ -1,10 +1,10 @@
 <template>
-<a :href="`/Funds?address=${fund.address}`">
+<a :href="`/Funds?contractId=${fund.contractId}`">
   <v-card>
     
       <v-container>
         <v-row align="center">
-          <v-img :src="require('../assets/' + getImg)" />
+          <v-img :src="getImg" />
         </v-row>
 
         <v-row>

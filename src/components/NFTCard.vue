@@ -2,7 +2,7 @@
   <v-container>
     <v-row align="center">
       <v-card width="400">
-        <v-img :src="require('../assets/' + nft.img)" />
+        <v-img :src="nft.img" />
       </v-card>
     </v-row>
     <v-row>

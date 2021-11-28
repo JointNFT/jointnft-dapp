@@ -21,14 +21,15 @@
       <v-divider id="divider"></v-divider>
       <v-row>
         <v-col
-          v-for="(nft, address) in getNFTDetails.nfts"
-          :key="nft.address"
+          v-for="(nft, contractId) in getNFTDetails.nfts"
+          :key="nft.contractId"
           cols="4"
         >
           <NFTCard :nft="nft"/>
         </v-col>
         <v-col
           cols="4"
+          v-if="$store.state.isCurator"
         >
           <AddNFTCard/>
         </v-col>
@@ -61,7 +62,7 @@ export default {
   computed: {
     getNFTDetails() {
       console.log("teste");
-      return this.$store.state.nftFunds[this.$route.query.address];
+      return this.$store.state.nftFunds[this.$route.query.contractId];
     },
   },
 };

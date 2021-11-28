@@ -13,7 +13,12 @@
           <v-container>
             <v-row>
               <v-col>
-                <v-text-field label="Add opensea link" required></v-text-field>
+                <v-text-field
+                  v-model="openseaUrl"
+                  :rules="[isOpenseaURL]"
+                  label="Add opensea link"
+                  required
+                ></v-text-field>
               </v-col>
             </v-row>
           </v-container>
@@ -23,9 +28,7 @@
           <v-btn color="blue darken-1" text @click="dialog = false">
             Close
           </v-btn>
-          <v-btn color="blue darken-1" text @click="dialog = false">
-            Save
-          </v-btn>
+          <v-btn color="blue darken-1" text @click="addNFTToFund"> Save </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -56,6 +59,21 @@
 export default {
   data: () => ({
     dialog: false,
+    openseaUrl: "",
+    openseaStartUrl: "https://opensea.io/assets/",
   }),
+
+  methods: {
+    async addNFTToFund() {
+      console.log('...')
+      console.log(this.$route.query.address)
+      var fundAddress = this.$route.query.address
+      await this.$store.dispatch("addNFTToFund", {openseaUrl: this.openseaUrl, fundAddress: fundAddress});
+      this.dialog = false;
+    },
+    isOpenseaURL() {
+      return this.openseaUrl.startsWith(this.openseaStartUrl);
+    },
+  },
 };
 </script>

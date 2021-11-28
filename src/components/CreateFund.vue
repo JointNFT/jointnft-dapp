@@ -45,24 +45,40 @@
 
 <script>
 export default {
-    methods: {
-       submit(t) {
-          console.log('form submitted')
-          console.log(this.FundName)
-          this.$store.commit('addFund',{
-              name: 'Fund3',
-              img_url: 'BYAC_2.png',
-              address: '4321'
-          })
-          console.log(this.$store.state.nftFunds)
-       }
-   },
-   data: () => ({
-      FundName: '',
-      FundDesc: '',
-      TwitterHandle: '',
-      DepositAmt: '',
-    })
-
+  methods: {
+    submit(t) {
+      console.log("form submitted");
+      console.log(this.FundName);
+      this.$store.commit("addFund", {
+        name: "Fund#1",
+        img: "BYAC_2.png",
+        contractId: String(Date.now()),
+        returns: 20.3,
+        nfts: [
+          {
+            img: "https://lh3.googleusercontent.com/ptC7Bh0BqSapSCDFBqKEuJE6P4d0l8rc-RR39H3gX9qBPh4htvKapZUpcC70WoF7lKKcjCXrwQgZBdMN8gd_qzPnpWNvdR1M2AtUjA=w600",
+            name: "NFT1",
+            days_held: "5",
+            bought_at: 5,
+            address: "123",
+          },
+          {
+            img: "https://lh3.googleusercontent.com/ptC7Bh0BqSapSCDFBqKEuJE6P4d0l8rc-RR39H3gX9qBPh4htvKapZUpcC70WoF7lKKcjCXrwQgZBdMN8gd_qzPnpWNvdR1M2AtUjA=w600",
+            name: "NFT2",
+            days_held: "10",
+            bought_at: 10,
+            address: "1234",
+          },
+        ],
+      });
+      console.log(this.$store.state.nftFunds);
+    },
+  },
+  data: () => ({
+    FundName: "",
+    FundDesc: "",
+    TwitterHandle: "",
+    DepositAmt: "",
+  }),
 };
 </script>

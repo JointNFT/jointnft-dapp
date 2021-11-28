@@ -4,8 +4,8 @@
       <v-container>
         <v-row>
           <v-col
-            v-for="(fund, address) in getFunds"
-            :key="fund.address"
+            v-for="(fund, contractId) in getFunds"
+            :key="fund.contractId"
             cols="3"
           >
             <FundCard :fund="fund" />
