@@ -38,11 +38,11 @@
         @click="connect"
         v-if="!$store.state.account"
         text
-        if="connect-wallet-btn"
+        id="connect-wallet-btn"
         color="#6733e2"
         >Connect wallet</v-btn
       >
-      <v-btn v-else if="connect-wallet-btn" color="#6733e2">{{
+      <v-btn v-else id="connect-wallet-btn" color="#6733e2">{{
         $store.state.account.substring(0, 5) + "..."
       }}</v-btn>
       <div id="app">
