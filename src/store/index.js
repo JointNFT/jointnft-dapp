@@ -2,10 +2,10 @@ import Vue from "vue";
 import Vuex from "vuex";
 import fetch from "cross-fetch";
 import Web3 from 'web3';
-import createPersistedState from "vuex-persistedstate";
 import Web3Modal from "web3modal";
 
-
+const erc20FundABI = require("../contractDetails/erc20fund.json")['abi']
+const fundFactoryABI = require("../contractDetails/FundFactory.json")['abi']
 
 Vue.use(Vuex);
 
@@ -50,20 +50,26 @@ export default new Vuex.Store({
     active: false,
     account: null,
     web3Modal: null,
+    ethBalance: 0,
+    fundFactoryAddress: "0xF637ef095B45b93B1319C9e7c4c945aC8f99B87F",
     nftFunds: {
-      "1234": {
-        name: "Fund#1", img: 'https://lh3.googleusercontent.com/ptC7Bh0BqSapSCDFBqKEuJE6P4d0l8rc-RR39H3gX9qBPh4htvKapZUpcC70WoF7lKKcjCXrwQgZBdMN8gd_qzPnpWNvdR1M2AtUjA=w600', contractId: "1234", returns: 20.3,
+      "0x07c2344503B74b957292a75798C0dE969ab2F1cB": {
+        name: "Fund1", img: 'https://lh3.googleusercontent.com/ptC7Bh0BqSapSCDFBqKEuJE6P4d0l8rc-RR39H3gX9qBPh4htvKapZUpcC70WoF7lKKcjCXrwQgZBdMN8gd_qzPnpWNvdR1M2AtUjA=w600', contractId: "0x07c2344503B74b957292a75798C0dE969ab2F1cB", returns: 20.3,
         nfts: [
           { img: "https://lh3.googleusercontent.com/ptC7Bh0BqSapSCDFBqKEuJE6P4d0l8rc-RR39H3gX9qBPh4htvKapZUpcC70WoF7lKKcjCXrwQgZBdMN8gd_qzPnpWNvdR1M2AtUjA=w600", name: 'NFT1', days_held: '5', bought_at: 5, contractId: '123' },
           { img: "https://lh3.googleusercontent.com/ptC7Bh0BqSapSCDFBqKEuJE6P4d0l8rc-RR39H3gX9qBPh4htvKapZUpcC70WoF7lKKcjCXrwQgZBdMN8gd_qzPnpWNvdR1M2AtUjA=w600", name: 'NFT2', days_held: '10', bought_at: 10, contractId: '1234' }
-        ]
+        ],
+        userTokenBalance: 0,
+        tokenPrice: -1
       },
-      "1243": {
-        name: "Fund#2", img: 'https://lh3.googleusercontent.com/ptC7Bh0BqSapSCDFBqKEuJE6P4d0l8rc-RR39H3gX9qBPh4htvKapZUpcC70WoF7lKKcjCXrwQgZBdMN8gd_qzPnpWNvdR1M2AtUjA=w600', contractId: "1243", returns: 33.3,
+      "0x1ebe416265F2b3f33eA65A825636308b06D0DF12": {
+        name: "Fund2", img: 'https://lh3.googleusercontent.com/ptC7Bh0BqSapSCDFBqKEuJE6P4d0l8rc-RR39H3gX9qBPh4htvKapZUpcC70WoF7lKKcjCXrwQgZBdMN8gd_qzPnpWNvdR1M2AtUjA=w600', contractId: "0x1ebe416265F2b3f33eA65A825636308b06D0DF12", returns: 33.3,
         nfts: [
           { img: "https://lh3.googleusercontent.com/ptC7Bh0BqSapSCDFBqKEuJE6P4d0l8rc-RR39H3gX9qBPh4htvKapZUpcC70WoF7lKKcjCXrwQgZBdMN8gd_qzPnpWNvdR1M2AtUjA=w600", name: 'NFT1', days_held: '5', bought_at: 5, contractId: '123' },
           { img: "https://lh3.googleusercontent.com/ptC7Bh0BqSapSCDFBqKEuJE6P4d0l8rc-RR39H3gX9qBPh4htvKapZUpcC70WoF7lKKcjCXrwQgZBdMN8gd_qzPnpWNvdR1M2AtUjA=w600", name: 'NFT2', days_held: '10', bought_at: 10, contractId: '1234' }
-        ]
+        ],
+        userTokenBalance: 0,
+        tokenPrice: -1
       }
     },
     isCurator: false,
@@ -85,6 +91,7 @@ export default new Vuex.Store({
     },
     setAccount(state, account) {
       state.account = account;
+      state.web3.eth.defaultAccount = account;
     },
     setActive(state, isActive) {
       state.active = isActive;
@@ -111,7 +118,15 @@ export default new Vuex.Store({
     toggleCuratorStatus(state) {
       state.isCurator = !state.isCurator;
     },
-
+    setEthBalance(state, ethBalance) {
+      state.ethBalance = ethBalance;
+    },
+    setFundTokenBalance(state, { fundAddress, fundTokenBalance }) {
+      state.nftFunds[fundAddress].userTokenBalance = fundTokenBalance;
+    },
+    setFundTokenPrice(state, { fundAddress, tokenPrice }) {
+      state.nftFunds[fundAddress].tokenPrice = tokenPrice;
+    }
   },
   actions: {
     async connectToWallet({ commit }) {
@@ -123,11 +138,11 @@ export default new Vuex.Store({
 
       //  Get Accounts
       const accounts = await web3.eth.getAccounts();
-      commit("setAccount", accounts);
+      commit("setAccounts", accounts);
       if (accounts.length > 0) {
         commit('setAccount', accounts[0])
       }
-      
+
       // commit("setChainId", chainId);
       //  Get Network Id
       const networkId = await web3.eth.net.getId();
@@ -140,8 +155,7 @@ export default new Vuex.Store({
         commit('setChainId', chainId)
         console.log("connect", info)
       });
-      console.log('1234')
-      console.log(accounts)
+
       provider.on("accountsChanged", async (accounts) => {
         if (accounts.length > 0) {
           commit('setAccount', accounts[0])
@@ -150,11 +164,59 @@ export default new Vuex.Store({
         }
         console.log("accountsChanged")
       });
+
       provider.on("chainChanged", async (chainId) => {
         chainId = parseInt(chainId)
         commit('setChainId', chainId)
         console.log("chainChanged", chainId)
       });
+
+    },
+    async getFundContract({ commit, state }, fundAddress) {
+      try {
+        var fundChecksumAddress = Web3.utils.toChecksumAddress(fundAddress)
+        var fundContract = new state.web3.eth.Contract(erc20FundABI, fundChecksumAddress);
+        console.log(fundContract)
+        return fundContract;
+      } catch (error) {
+        console.log(error);
+        console.log("connected contract not found");
+        return null;
+      }
+    },
+    async getFundFactoryContract({ commit, state }) {
+      try {
+        var fundFacotryContractABI = state.web3.eth.contract(fundFactoryABI, state.fundFactoryAddress);
+        return fundFactoryContract;
+      } catch (error) {
+        console.log(error);
+        console.log("connected contract not found");
+        return null;
+      }
+    },
+    async buyFundTokens({ commit }, { ethAmount, contractId }) {
+
+      var fundContract = await this.dispatch("getFundContract", contractId);
+      await fundContract.methods.addFunds().send({
+        value: Web3.utils.toWei(ethAmount, 'ether'),
+        from: this.state.account
+      })
+      this.dispatch('refreshBalance', contractId)
+    },
+    async refreshBalance({ }, fundAddress) {
+      await this.dispatch("getEthBalance");
+      await this.dispatch("getFundTokenBalance", fundAddress);
+    },
+    async getEthBalance({ commit, state }) {
+      var ethBalance = await state.web3.eth.getBalance(state.account);
+      commit("setEthBalance", Web3.utils.fromWei(ethBalance, 'ether'));
+    },
+    async getFundTokenBalance({ commit, state }, fundAddress) {
+
+      var fundContract = await this.dispatch("getFundContract", fundAddress);
+      var fundTokenBalance = await fundContract.methods.balanceOf(Web3.utils.toChecksumAddress(state.account)).call();
+      console.log(fundTokenBalance)
+      commit("setFundTokenBalance", { fundAddress, fundTokenBalance })
     },
     async addNFTToFund({ commit }, { openseaUrl, fundAddress }) {
       console.log(openseaUrl)

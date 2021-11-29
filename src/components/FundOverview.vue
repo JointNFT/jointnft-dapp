@@ -25,18 +25,33 @@
           :key="nft.contractId"
           cols="4"
         >
-          <NFTCard :nft="nft"/>
+          <NFTCard :nft="nft" />
         </v-col>
-        <v-col
-          cols="4"
-          v-if="$store.state.isCurator"
-        >
-          <AddNFTCard/>
+        <v-col cols="4" v-if="$store.state.isCurator">
+          <AddNFTCard />
         </v-col>
       </v-row>
     </v-col>
     <v-col cols="6" md="4">
-      <BidNFTs />
+      <v-container>
+        <v-row>
+          <BidNFTs />
+        </v-row>
+        <v-row>
+          Eth: {{ $store.state.ethBalance }} <br />
+          tokenBalance {{ getNFTDetails.userTokenBalance }}
+        </v-row>
+        <v-row>
+          <v-btn v-on:click="refreshBalances"> refresh balance </v-btn>
+        </v-row>
+        <v-row>
+          <v-text-field
+            v-model="ethAmount"
+            :rules="[numberRule]"
+          ></v-text-field>
+          <v-btn v-on:click="buyFundTokens"> Buy Tokens </v-btn>
+        </v-row>
+      </v-container>
     </v-col>
   </v-row>
 </template>
@@ -57,7 +72,7 @@ export default {
   components: {
     BidNFTs,
     NFTCard,
-    AddNFTCard
+    AddNFTCard,
   },
   computed: {
     getNFTDetails() {
@@ -65,5 +80,24 @@ export default {
       return this.$store.state.nftFunds[this.$route.query.contractId];
     },
   },
+  methods: {
+    refreshBalances() {
+      this.$store.dispatch("refreshBalance", this.$route.query.contractId);
+    },
+    buyFundTokens() {
+      this.$store.dispatch("buyFundTokens", {
+        ethAmount: this.ethAmount,
+        contractId: this.$route.query.contractId,
+      });
+    },
+  },
+  data: () => ({
+    numberRule: (v) => {
+      if (!v.trim()) return true;
+      if (!isNaN(parseFloat(v)) && v >= 0 && v <= 999) return true;
+      return "Number has to be between 0 and 999";
+    },
+    ethAmount: 0,
+  }),
 };
 </script>
