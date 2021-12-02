@@ -54,7 +54,7 @@ export default {
         img: "BYAC_2.png",
         contractId: String(Date.now()),
         returns: 20.3,
-        nfts: [
+        nftList: [
           {
             img: "https://lh3.googleusercontent.com/ptC7Bh0BqSapSCDFBqKEuJE6P4d0l8rc-RR39H3gX9qBPh4htvKapZUpcC70WoF7lKKcjCXrwQgZBdMN8gd_qzPnpWNvdR1M2AtUjA=w600",
             name: "NFT1",

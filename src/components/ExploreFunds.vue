@@ -4,7 +4,7 @@
       <v-container>
         <v-row>
           <v-col
-            v-for="(fund, contractId) in getFunds"
+            v-for="(fund, contractId) in nftFunds"
             :key="fund.contractId"
             cols="3"
           >
@@ -18,15 +18,19 @@
 
 <script>
 import FundCard from "./FundCard.vue";
+import { mapState } from "vuex";
 
 export default {
   components: {
     FundCard,
   },
-  computed: {
-    getFunds() {
-      console.log(this.$store.state.nftFunds);
-      return this.$store.state.nftFunds;
+  computed: mapState(["nftFunds"]),
+  watch: {
+    nftFunds: {
+      deep: true,
+      handler() {
+        console.log("nftFunds changed");
+      },
     },
   },
 };

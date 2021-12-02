@@ -51,30 +51,20 @@ export default new Vuex.Store({
     account: null,
     web3Modal: null,
     ethBalance: 0,
-    fundFactoryAddress: "0xF637ef095B45b93B1319C9e7c4c945aC8f99B87F",
-    nftFunds: {
-      "0x07c2344503B74b957292a75798C0dE969ab2F1cB": {
-        name: "Fund1", img: 'https://lh3.googleusercontent.com/ptC7Bh0BqSapSCDFBqKEuJE6P4d0l8rc-RR39H3gX9qBPh4htvKapZUpcC70WoF7lKKcjCXrwQgZBdMN8gd_qzPnpWNvdR1M2AtUjA=w600', contractId: "0x07c2344503B74b957292a75798C0dE969ab2F1cB", returns: 20.3,
-        nfts: [
-          { img: "https://lh3.googleusercontent.com/ptC7Bh0BqSapSCDFBqKEuJE6P4d0l8rc-RR39H3gX9qBPh4htvKapZUpcC70WoF7lKKcjCXrwQgZBdMN8gd_qzPnpWNvdR1M2AtUjA=w600", name: 'NFT1', days_held: '5', bought_at: 5, contractId: '123' },
-          { img: "https://lh3.googleusercontent.com/ptC7Bh0BqSapSCDFBqKEuJE6P4d0l8rc-RR39H3gX9qBPh4htvKapZUpcC70WoF7lKKcjCXrwQgZBdMN8gd_qzPnpWNvdR1M2AtUjA=w600", name: 'NFT2', days_held: '10', bought_at: 10, contractId: '1234' }
-        ],
-        userTokenBalance: 0,
-        tokenPrice: -1
-      },
-      "0x1ebe416265F2b3f33eA65A825636308b06D0DF12": {
-        name: "Fund2", img: 'https://lh3.googleusercontent.com/ptC7Bh0BqSapSCDFBqKEuJE6P4d0l8rc-RR39H3gX9qBPh4htvKapZUpcC70WoF7lKKcjCXrwQgZBdMN8gd_qzPnpWNvdR1M2AtUjA=w600', contractId: "0x1ebe416265F2b3f33eA65A825636308b06D0DF12", returns: 33.3,
-        nfts: [
-          { img: "https://lh3.googleusercontent.com/ptC7Bh0BqSapSCDFBqKEuJE6P4d0l8rc-RR39H3gX9qBPh4htvKapZUpcC70WoF7lKKcjCXrwQgZBdMN8gd_qzPnpWNvdR1M2AtUjA=w600", name: 'NFT1', days_held: '5', bought_at: 5, contractId: '123' },
-          { img: "https://lh3.googleusercontent.com/ptC7Bh0BqSapSCDFBqKEuJE6P4d0l8rc-RR39H3gX9qBPh4htvKapZUpcC70WoF7lKKcjCXrwQgZBdMN8gd_qzPnpWNvdR1M2AtUjA=w600", name: 'NFT2', days_held: '10', bought_at: 10, contractId: '1234' }
-        ],
-        userTokenBalance: 0,
-        tokenPrice: -1
-      }
-    },
+    fundFactoryAddress: "0x7d7D9b335fec284c650D126DcbF5D50218CeD342",
+    fundList: [],
+    nftFunds: {},
     isCurator: false,
   },
   getters: {
+    getFunds(state){
+      console.log('gere')
+      return state.nftFunds;
+    },
+    getNoOfFunds(state){
+      console.log('here')
+      return state.nftFunds.length;
+    }
   },
   mutations: {
     setWeb3(state, web3) {
@@ -112,7 +102,7 @@ export default new Vuex.Store({
     },
     addNFT(state, { fundAddress, jsonDetails }) {
       console.log('123')
-      state.nftFunds[fundAddress].nfts.push(jsonDetails)
+      state.nftFunds[fundAddress].nftList.push(jsonDetails)
       console.log(state.nftFunds)
     },
     toggleCuratorStatus(state) {
@@ -124,8 +114,28 @@ export default new Vuex.Store({
     setFundTokenBalance(state, { fundAddress, fundTokenBalance }) {
       state.nftFunds[fundAddress].userTokenBalance = fundTokenBalance;
     },
-    setFundTokenPrice(state, { fundAddress, tokenPrice }) {
-      state.nftFunds[fundAddress].tokenPrice = tokenPrice;
+    setFundDetails(state, { fundAddress, fundTokenBalance, ownerAddress, weiBalance, tokenStartPrice, tokenPrice, name, symbol, noOfAssets, img, nftList }) {
+      var fund = {
+        contractId: fundAddress,
+        tokenPrice,
+        fundTokenBalance,
+        ownerAddress,
+        weiBalance,
+        tokenStartPrice,
+        name,
+        symbol,
+        noOfAssets,
+        nftList,
+        img,
+        returns: Math.floor(Math.random() * 100)
+      };
+      Vue.set(state.nftFunds, fundAddress, fund)
+    },
+    setFundList(state, fundList) {
+      state.fundList = fundList;
+    },
+    addFundToList(state, fund) {
+      state.fundList.push(fund);
     }
   },
   actions: {
@@ -149,6 +159,7 @@ export default new Vuex.Store({
       commit("setNetworkId", networkId)
 
       commit('setActive', true)
+      await this.dispatch("loadFundData");
 
       provider.on("connect", async (info) => {
         let chainId = parseInt(info.chainId)
@@ -170,8 +181,8 @@ export default new Vuex.Store({
         commit('setChainId', chainId)
         console.log("chainChanged", chainId)
       });
-
     },
+
     async getFundContract({ commit, state }, fundAddress) {
       try {
         var fundChecksumAddress = Web3.utils.toChecksumAddress(fundAddress)
@@ -184,18 +195,31 @@ export default new Vuex.Store({
         return null;
       }
     },
+
     async getFundFactoryContract({ commit, state }) {
       try {
-        var fundFacotryContractABI = state.web3.eth.contract(fundFactoryABI, state.fundFactoryAddress);
-        return fundFactoryContract;
+        var fundFactoryAddressChecksum = Web3.utils.toChecksumAddress(state.fundFactoryAddress);
+        var fundFacotryContract = new state.web3.eth.Contract(fundFactoryABI, fundFactoryAddressChecksum);
+        return fundFacotryContract;
       } catch (error) {
         console.log(error);
         console.log("connected contract not found");
         return null;
       }
     },
-    async buyFundTokens({ commit }, { ethAmount, contractId }) {
 
+    async getFunds({ commit, state }) {
+      var fundFactoryContract = await this.dispatch("getFundFactoryContract")
+      var noOfFunds = await fundFactoryContract.methods.getNoOfFundsCreated().call();
+      var fundList = [];
+      for (var i = 0; i < noOfFunds; i++) {
+        var res = await fundFactoryContract.methods.funds(i).call()
+        fundList.push(res);
+      }
+      return fundList;
+    },
+
+    async buyFundTokens({ commit }, { ethAmount, contractId }) {
       var fundContract = await this.dispatch("getFundContract", contractId);
       await fundContract.methods.addFunds().send({
         value: Web3.utils.toWei(ethAmount, 'ether'),
@@ -203,21 +227,57 @@ export default new Vuex.Store({
       })
       this.dispatch('refreshBalance', contractId)
     },
+
     async refreshBalance({ }, fundAddress) {
       await this.dispatch("getEthBalance");
-      await this.dispatch("getFundTokenBalance", fundAddress);
+      await this.dispatch("getFundDetails", fundAddress);
     },
+
+    async loadFundData({ }) {
+      var fundList = await this.dispatch("getFunds");
+      for (var fundAddress of fundList) {
+        await this.dispatch('getFundDetails', fundAddress);
+      }
+    },
+
     async getEthBalance({ commit, state }) {
       var ethBalance = await state.web3.eth.getBalance(state.account);
       commit("setEthBalance", Web3.utils.fromWei(ethBalance, 'ether'));
     },
-    async getFundTokenBalance({ commit, state }, fundAddress) {
 
+    async getFundDetails({ commit, state }, fundAddress) {
+      console.log('test');
       var fundContract = await this.dispatch("getFundContract", fundAddress);
       var fundTokenBalance = await fundContract.methods.balanceOf(Web3.utils.toChecksumAddress(state.account)).call();
-      console.log(fundTokenBalance)
-      commit("setFundTokenBalance", { fundAddress, fundTokenBalance })
+      var ownerAddress = await fundContract.methods.ownerAddress().call();
+      var weiBalance = await fundContract.methods.weiBalance().call();
+      var tokenStartPrice = await fundContract.methods.tokenStartPrice().call();
+      var tokenPrice = await fundContract.methods.tokenPrice().call();
+      var name = await fundContract.methods.name().call();
+      var symbol = await fundContract.methods.symbol().call();
+      var noOfAssets = await fundContract.methods.noOfAssets().call();
+      var img = await fundContract.methods.fundImgUrl().call();
+
+      var nftList = []
+      for (var i = 1; i <= noOfAssets; i++) {
+        console.log('here!!')
+        var nftDetailsArray = await fundContract.methods.getAsset(i).call();
+        console.log(nftDetailsArray)
+        var nftDetails = {
+          openseaUrl: nftDetailsArray[0],
+          imageUrl: nftDetailsArray[1],
+          nftAddress: nftDetailsArray[3],
+          value: Web3.utils.fromWei(nftDetailsArray[2], 'ether')
+        } 
+        console.log(nftDetailsArray[3])
+        nftList.push(nftDetails);
+      }
+
+      console.log({ fundAddress, fundTokenBalance, ownerAddress, weiBalance, tokenStartPrice, tokenPrice, name, symbol, noOfAssets })
+
+      commit("setFundDetails", { fundAddress, fundTokenBalance, ownerAddress, weiBalance, tokenStartPrice, tokenPrice, name, symbol, noOfAssets, img, nftList })
     },
+
     async addNFTToFund({ commit }, { openseaUrl, fundAddress }) {
       console.log(openseaUrl)
       console.log(fundAddress)

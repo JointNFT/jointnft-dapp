@@ -22,7 +22,7 @@
 
         <v-row>
           <v-col class="left-col"> {{ fund.returns }}% </v-col>
-          <v-col class="right-col"> {{ fund.nfts.length }} </v-col>
+          <v-col class="right-col"> {{ fund.nftList.length }} </v-col>
         </v-row>
       </v-container>
     

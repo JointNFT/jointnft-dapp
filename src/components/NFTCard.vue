@@ -2,7 +2,7 @@
   <v-container>
     <v-row align="center">
       <v-card width="400">
-        <v-img :src="nft.img" />
+        <v-img :src="nft.imageUrl" />
       </v-card>
     </v-row>
     <v-row>
@@ -14,7 +14,7 @@
         <v-divider></v-divider>
         <v-row>
           <v-col class="pa-2 key bottom-row"> Bought At </v-col>
-          <v-col class="pa-2 value bottom-row"> {{nft.bought_at}}ETH </v-col>
+          <v-col class="pa-2 value bottom-row"> {{nft.value}}ETH </v-col>
         </v-row>
       </v-card>
     </v-row>
