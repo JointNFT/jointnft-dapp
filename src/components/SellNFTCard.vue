@@ -90,6 +90,7 @@ export default {
         fundAddress: fundAddress,
       });
       this.dialog = false;
+      this.$vToastify.success("NFT sold for "+this.sellPrice+" !");
     }
   },
 };

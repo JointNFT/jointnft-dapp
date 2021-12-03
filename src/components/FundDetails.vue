@@ -27,7 +27,7 @@
       <v-btn v-on:click="sellFundTokens"> Sell Tokens </v-btn>
     </v-row>
     <v-row v-if="owner==connectedAccount"> 
-      <v-text-field v-model="tokenPrice" :rules="[numberRule]" label="Enter the new tokenPrice(In Wei)"></v-text-field>
+      <v-text-field v-model="tokenPrice" :rules="[numberRule]" label="Enter the new tokenPrice(In Wei) 1 ETH = 10^18 wei"></v-text-field>
       <v-btn v-on:click="modifyTokenPrice"> Modify Token Price </v-btn>
     </v-row>
   </v-container>
@@ -50,18 +50,21 @@ export default {
         ethAmount: this.ethAmount,
         contractId: this.$route.query.contractId,
       });
+      this.$vToastify.success("Tokens bought!");
     },
     sellFundTokens() {
       this.$store.dispatch("sellFundTokens", {
         tokenAmount: this.tokenAmount,
         contractId: this.$route.query.contractId,
       });
+      this.$vToastify.success("Tokens sold!");
     },
     modifyTokenPrice() {
       this.$store.dispatch("modifyTokenPrice", {
         tokenPrice: this.tokenPrice,
         contractId: this.$route.query.contractId
-      })
+      });
+      this.$vToastify.success("Tokens Price modified!");
     }
   },
   data: () => ({

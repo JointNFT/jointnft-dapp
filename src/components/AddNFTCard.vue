@@ -12,6 +12,11 @@
         <v-card-text>
           <v-container>
             <v-row>
+              Currently only the nft's from the following link are supported:  <a href='https://opensea.io/assets?search[chains][0]=ETHEREUM&search[paymentAssets][0]=ETH&search[sortAscending]=false&search[sortBy]=LISTING_DATE&search[toggles][0]=BUY_NOW' target="_blank">link</a>
+              Please open the NFT from the link and copy its link to the below input bar. <br/>
+              Ex: https://opensea.io/assets/0x2f14f1b6c350c41801b2b7ba9445670d7e2ffc70/6256
+            </v-row>
+            <v-row>
               <v-col>
                 <v-text-field
                   v-model="openseaUrl"
@@ -65,12 +70,10 @@ export default {
 
   methods: {
     async addNFTToFund() {
-      console.log('...')
-      console.log(this.$route.query.contractId)
-      console.log(this.openseaUrl)
       var fundAddress = this.$route.query.contractId
       await this.$store.dispatch("addNFTToFund", {openseaUrl: this.openseaUrl, fundAddress: fundAddress});
       this.dialog = false;
+      this.$vToastify.success("NFT bought !");
     },
     isOpenseaURL() {
       return this.openseaUrl.startsWith(this.openseaStartUrl);

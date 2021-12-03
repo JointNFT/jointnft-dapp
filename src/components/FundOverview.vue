@@ -1,8 +1,8 @@
 <template>
   <v-row>
     <v-col cols="12" sm="6" md="8">
-      <v-row no-gutters style="margin-top: 25px;">
-        <h1>Fund #1</h1>
+      <v-row no-gutters style="margin-top: 25px;" align="center" justify="center">
+        <h1>{{ getNFTDetails.name }}</h1>
       </v-row>
       <v-divider id="divider"></v-divider>
       <v-row>
@@ -44,6 +44,7 @@ export default {
   computed: {
     getNFTDetails() {
       console.log(this.$store.state.nftFunds[this.$route.query.contractId]);
+      if (this.$store.state.nftFunds == null) return {name: "", nftList: [], ownerAddress: ""};
       return this.$store.state.nftFunds[this.$route.query.contractId];
     },
     getConnectedAccount(){
