@@ -19,8 +19,12 @@
       <v-btn v-on:click="refreshBalances"> refresh balance </v-btn>
     </v-row>
     <v-row>
-      <v-text-field v-model="ethAmount" :rules="[numberRule]"></v-text-field>
+      <v-text-field v-model="ethAmount" :rules="[numberRule]" label="Enter amount of ETH"></v-text-field>
       <v-btn v-on:click="buyFundTokens"> Buy Tokens </v-btn>
+    </v-row>
+    <v-row>
+      <v-text-field v-model="ethAmount" :rules="[numberRule]" label="Enter amount of Tokens to sell"></v-text-field>
+      <v-btn v-on:click="buyFundTokens"> Sell Tokens </v-btn>
     </v-row>
   </v-container>
 </template>
@@ -35,7 +39,7 @@ export default {
   },
   methods: {
     refreshBalances() {
-      this.$store.dispatch("loadFundData");
+      this.$store.dispatch("refreshBalance", this.$route.query.contractId);
     },
     buyFundTokens() {
       this.$store.dispatch("buyFundTokens", {
@@ -46,14 +50,12 @@ export default {
   },
   data: () => ({
     numberRule: (v) => {
-      if (!v.trim()) return true;
-      if (!isNaN(parseFloat(v)) && v >= 0 && v <= 999) return true;
-      return "Number has to be between 0 and 999";
+      if (v!=null && v!='' && !v.trim()) return true;
+      if (!isNaN(parseFloat(v)) ) return true;
+      return "Enter a number";
     },
     ethAmount: 0,
   }),
-  beforeUpdate: function() {
-    return this.refreshBalances();
-  }
+  
 };
 </script>

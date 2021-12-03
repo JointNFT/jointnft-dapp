@@ -2,36 +2,41 @@
   <v-container width="500">
     <v-form @submit.prevent="submit">
       <v-row> Create Fund </v-row>
-      <v-row align="center">
-        <v-card>
-          <v-img src="../assets/ProfilePic.png"></v-img>
-          <v-card-title>Profile Pic</v-card-title>
-        </v-card>
-      </v-row>
+
       <v-row align="center">
         <v-text-field
-          v-model="FundName"
+          v-model="fundName"
           label="Fund Name"
           required
         ></v-text-field>
       </v-row>
       <v-row align="center">
         <v-text-field
-          v-model="FundDesc"
-          label="Fund Desc"
+          v-model="fundSymbl"
+          label="Token Symbol"
+          :rules="[symbolRule]"
           required
         ></v-text-field>
       </v-row>
       <v-row align="center">
         <v-text-field
-          v-model="TwitterHandle"
-          label="Twitter Handle"
+          v-model="imgUrl"
+          label="Image Url"
           required
         ></v-text-field>
       </v-row>
       <v-row align="center">
         <v-text-field
-          v-model="DepositAmt"
+          v-model="tokenPrice"
+          label="Price of the token"
+          :rules="[numberRule]"
+          required
+        ></v-text-field>
+      </v-row>
+      <v-row align="center">
+        <v-text-field
+          v-model="depositAmt"
+          :rules="[numberRule]"
           label="Deposit Amount (ETH)"
           required
         ></v-text-field>
@@ -46,39 +51,36 @@
 <script>
 export default {
   methods: {
-    submit(t) {
-      console.log("form submitted");
+    submit() {
       console.log(this.FundName);
-      this.$store.commit("addFund", {
-        name: "Fund#1",
-        img: "BYAC_2.png",
-        contractId: String(Date.now()),
-        returns: 20.3,
-        nftList: [
-          {
-            img: "https://lh3.googleusercontent.com/ptC7Bh0BqSapSCDFBqKEuJE6P4d0l8rc-RR39H3gX9qBPh4htvKapZUpcC70WoF7lKKcjCXrwQgZBdMN8gd_qzPnpWNvdR1M2AtUjA=w600",
-            name: "NFT1",
-            days_held: "5",
-            bought_at: 5,
-            address: "123",
-          },
-          {
-            img: "https://lh3.googleusercontent.com/ptC7Bh0BqSapSCDFBqKEuJE6P4d0l8rc-RR39H3gX9qBPh4htvKapZUpcC70WoF7lKKcjCXrwQgZBdMN8gd_qzPnpWNvdR1M2AtUjA=w600",
-            name: "NFT2",
-            days_held: "10",
-            bought_at: 10,
-            address: "1234",
-          },
-        ],
-      });
-      console.log(this.$store.state.nftFunds);
+      this.$store
+        .dispatch("createFund", {
+          fundName: this.fundName,
+          fundSymbl: this.fundSymbl,
+          tokenPrice: this.tokenPrice,
+          depositAmt: this.depositAmt,
+          imgUrl: this.imgUrl,
+        })
+        .then(() => {
+          this.$router.redirect("/");
+        });
     },
   },
   data: () => ({
-    FundName: "",
-    FundDesc: "",
-    TwitterHandle: "",
-    DepositAmt: "",
+    fundName: "",
+    fundSymbl: "",
+    tokenPrice: "",
+    depositAmt: "",
+    imgUrl: "",
+    numberRule: (v) => {
+      if (v != null && v != "" && !v.trim()) return true;
+      if (!isNaN(parseFloat(v))) return true;
+      return "Input has to be a number";
+    },
+    symbolRule: (v) => {
+      if (v != null && v != "" && v.length < 7) return true;
+      return "Token symbol can be at max 6 characters!"
+    }
   }),
 };
 </script>

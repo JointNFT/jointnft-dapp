@@ -14,15 +14,7 @@
       </div>
 
       <v-spacer></v-spacer>
-      <v-btn
-        v-if="$store.state.isCurator"
-        text
-        color="#6733e2"
-        v-on:click="toggleCuratorStatus"
-      >
-        Curator
-      </v-btn>
-      <v-btn v-else v-on:click="toggleCuratorStatus"> Investor </v-btn>
+      
       <v-btn href="/" text color="#6733e2"> Funds </v-btn>
       <v-btn href="/CreateFund" text color="#6733e2"> Create </v-btn>
       <v-btn

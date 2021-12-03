@@ -1,11 +1,11 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import fetch from "cross-fetch";
-import Web3 from 'web3';
+import Web3 from "web3";
 import Web3Modal from "web3modal";
 
-const erc20FundABI = require("../contractDetails/erc20fund.json")['abi']
-const fundFactoryABI = require("../contractDetails/FundFactory.json")['abi']
+const erc20FundABI = require("../contractDetails/erc20fund.json")["abi"];
+const fundFactoryABI = require("../contractDetails/FundFactory.json")["abi"];
 
 Vue.use(Vuex);
 
@@ -16,27 +16,25 @@ const providerOptions = {
 const web3Modal = new Web3Modal({
   network: "mainnet", // optional
   cacheProvider: true, // optional
-  providerOptions // required
+  providerOptions, // required
 });
-
-
-
 
 function roundToTwo(num) {
   return +(Math.round(num + "e+2") + "e-2");
 }
 
 function findLowestSaleAmount(orders) {
-  var lowest_sale_price = 999999
+  var lowest_sale_price = 999999;
   for (var i of orders) {
-    if (i['side'] == 1) {
-      var wei = i['current_price'].split(".")[0]
-      var listing_price = Web3.utils.fromWei(wei, 'ether');
+    if (i["side"] == 1) {
+      var wei = i["current_price"].split(".")[0];
+      var listing_price = Web3.utils.fromWei(wei, "ether");
       if (listing_price < lowest_sale_price) {
-        lowest_sale_price = listing_price
+        lowest_sale_price = listing_price;
       }
     }
   }
+  console.log(lowest_sale_price);
   return roundToTwo(lowest_sale_price);
 }
 
@@ -51,20 +49,20 @@ export default new Vuex.Store({
     account: null,
     web3Modal: null,
     ethBalance: 0,
-    fundFactoryAddress: "0x7d7D9b335fec284c650D126DcbF5D50218CeD342",
+    fundFactoryAddress: "0x1d408575DF365559F7BF51810385F22F5fe348f7",
     fundList: [],
     nftFunds: {},
     isCurator: false,
   },
   getters: {
-    getFunds(state){
-      console.log('gere')
+    getFunds(state) {
+      console.log("gere");
       return state.nftFunds;
     },
-    getNoOfFunds(state){
-      console.log('here')
+    getNoOfFunds(state) {
+      console.log("here");
       return state.nftFunds.length;
-    }
+    },
   },
   mutations: {
     setWeb3(state, web3) {
@@ -101,9 +99,9 @@ export default new Vuex.Store({
       }
     },
     addNFT(state, { fundAddress, jsonDetails }) {
-      console.log('123')
-      state.nftFunds[fundAddress].nftList.push(jsonDetails)
-      console.log(state.nftFunds)
+      console.log("123");
+      state.nftFunds[fundAddress].nftList.push(jsonDetails);
+      console.log(state.nftFunds);
     },
     toggleCuratorStatus(state) {
       state.isCurator = !state.isCurator;
@@ -114,33 +112,34 @@ export default new Vuex.Store({
     setFundTokenBalance(state, { fundAddress, fundTokenBalance }) {
       state.nftFunds[fundAddress].userTokenBalance = fundTokenBalance;
     },
-    setFundDetails(state, { fundAddress, fundTokenBalance, ownerAddress, weiBalance, tokenStartPrice, tokenPrice, name, symbol, noOfAssets, img, nftList }) {
+    setFundDetails(state, payload) {
       var fund = {
-        contractId: fundAddress,
-        tokenPrice,
-        fundTokenBalance,
-        ownerAddress,
-        weiBalance,
-        tokenStartPrice,
-        name,
-        symbol,
-        noOfAssets,
-        nftList,
-        img,
-        returns: Math.floor(Math.random() * 100)
+        contractId: payload.fundAddress,
+        tokenPrice: Web3.utils.fromWei(payload.tokenPrice),
+        fundTokenBalance: payload.fundTokenBalance,
+        ownerAddress: payload.ownerAddress,
+        weiBalance: Web3.utils.fromWei(payload.weiBalance),
+        tokenStartPrice: Web3.utils.fromWei(payload.tokenStartPrice, "ether"),
+        name: payload.name,
+        symbol: payload.symbol,
+        noOfAssets: payload.noOfAssets,
+        nftList: payload.nftList,
+        img: payload.img,
+        returns: Math.floor(Math.random() * 100),
+        userTokenBalance: payload.userTokenBalance,
       };
-      Vue.set(state.nftFunds, fundAddress, fund)
+      Vue.set(state.nftFunds, payload.fundAddress, fund);
     },
     setFundList(state, fundList) {
       state.fundList = fundList;
     },
     addFundToList(state, fund) {
       state.fundList.push(fund);
-    }
+    },
   },
   actions: {
     async connectToWallet({ commit }) {
-      console.log('1234')
+      console.log("1234");
       const provider = await web3Modal.connect();
       const web3 = new Web3(provider);
       commit("setWeb3", web3);
@@ -150,44 +149,47 @@ export default new Vuex.Store({
       const accounts = await web3.eth.getAccounts();
       commit("setAccounts", accounts);
       if (accounts.length > 0) {
-        commit('setAccount', accounts[0])
+        commit("setAccount", accounts[0]);
       }
 
       // commit("setChainId", chainId);
       //  Get Network Id
       const networkId = await web3.eth.net.getId();
-      commit("setNetworkId", networkId)
+      commit("setNetworkId", networkId);
 
-      commit('setActive', true)
+      commit("setActive", true);
       await this.dispatch("loadFundData");
 
       provider.on("connect", async (info) => {
-        let chainId = parseInt(info.chainId)
-        commit('setChainId', chainId)
-        console.log("connect", info)
+        let chainId = parseInt(info.chainId);
+        commit("setChainId", chainId);
+        console.log("connect", info);
       });
 
       provider.on("accountsChanged", async (accounts) => {
         if (accounts.length > 0) {
-          commit('setAccount', accounts[0])
+          commit("setAccount", accounts[0]);
         } else {
-          await dispatch('resetApp')
+          await dispatch("resetApp");
         }
-        console.log("accountsChanged")
+        console.log("accountsChanged");
       });
 
       provider.on("chainChanged", async (chainId) => {
-        chainId = parseInt(chainId)
-        commit('setChainId', chainId)
-        console.log("chainChanged", chainId)
+        chainId = parseInt(chainId);
+        commit("setChainId", chainId);
+        console.log("chainChanged", chainId);
       });
     },
 
     async getFundContract({ commit, state }, fundAddress) {
       try {
-        var fundChecksumAddress = Web3.utils.toChecksumAddress(fundAddress)
-        var fundContract = new state.web3.eth.Contract(erc20FundABI, fundChecksumAddress);
-        console.log(fundContract)
+        var fundChecksumAddress = Web3.utils.toChecksumAddress(fundAddress);
+        var fundContract = new state.web3.eth.Contract(
+          erc20FundABI,
+          fundChecksumAddress
+        );
+        console.log(fundContract);
         return fundContract;
       } catch (error) {
         console.log(error);
@@ -198,8 +200,13 @@ export default new Vuex.Store({
 
     async getFundFactoryContract({ commit, state }) {
       try {
-        var fundFactoryAddressChecksum = Web3.utils.toChecksumAddress(state.fundFactoryAddress);
-        var fundFacotryContract = new state.web3.eth.Contract(fundFactoryABI, fundFactoryAddressChecksum);
+        var fundFactoryAddressChecksum = Web3.utils.toChecksumAddress(
+          state.fundFactoryAddress
+        );
+        var fundFacotryContract = new state.web3.eth.Contract(
+          fundFactoryABI,
+          fundFactoryAddressChecksum
+        );
         return fundFacotryContract;
       } catch (error) {
         console.log(error);
@@ -209,11 +216,13 @@ export default new Vuex.Store({
     },
 
     async getFunds({ commit, state }) {
-      var fundFactoryContract = await this.dispatch("getFundFactoryContract")
-      var noOfFunds = await fundFactoryContract.methods.getNoOfFundsCreated().call();
+      var fundFactoryContract = await this.dispatch("getFundFactoryContract");
+      var noOfFunds = await fundFactoryContract.methods
+        .getNoOfFundsCreated()
+        .call();
       var fundList = [];
       for (var i = 0; i < noOfFunds; i++) {
-        var res = await fundFactoryContract.methods.funds(i).call()
+        var res = await fundFactoryContract.methods.funds(i).call();
         fundList.push(res);
       }
       return fundList;
@@ -222,33 +231,34 @@ export default new Vuex.Store({
     async buyFundTokens({ commit }, { ethAmount, contractId }) {
       var fundContract = await this.dispatch("getFundContract", contractId);
       await fundContract.methods.addFunds().send({
-        value: Web3.utils.toWei(ethAmount, 'ether'),
-        from: this.state.account
-      })
-      this.dispatch('refreshBalance', contractId)
+        value: Web3.utils.toWei(ethAmount, "ether"),
+        from: this.state.account,
+      });
+      this.dispatch("refreshBalance", contractId);
     },
 
-    async refreshBalance({ }, fundAddress) {
+    async refreshBalance({}, fundAddress) {
       await this.dispatch("getEthBalance");
       await this.dispatch("getFundDetails", fundAddress);
     },
 
-    async loadFundData({ }) {
+    async loadFundData({}) {
       var fundList = await this.dispatch("getFunds");
       for (var fundAddress of fundList) {
-        await this.dispatch('getFundDetails', fundAddress);
+        await this.dispatch("getFundDetails", fundAddress);
       }
     },
 
     async getEthBalance({ commit, state }) {
       var ethBalance = await state.web3.eth.getBalance(state.account);
-      commit("setEthBalance", Web3.utils.fromWei(ethBalance, 'ether'));
+      commit("setEthBalance", Web3.utils.fromWei(ethBalance, "ether"));
     },
 
     async getFundDetails({ commit, state }, fundAddress) {
-      console.log('test');
       var fundContract = await this.dispatch("getFundContract", fundAddress);
-      var fundTokenBalance = await fundContract.methods.balanceOf(Web3.utils.toChecksumAddress(state.account)).call();
+      var fundTokenBalance = await fundContract.methods
+        .balanceOf(Web3.utils.toChecksumAddress(state.account))
+        .call();
       var ownerAddress = await fundContract.methods.ownerAddress().call();
       var weiBalance = await fundContract.methods.weiBalance().call();
       var tokenStartPrice = await fundContract.methods.tokenStartPrice().call();
@@ -257,45 +267,97 @@ export default new Vuex.Store({
       var symbol = await fundContract.methods.symbol().call();
       var noOfAssets = await fundContract.methods.noOfAssets().call();
       var img = await fundContract.methods.fundImgUrl().call();
+      var userTokenBalance = await fundContract.methods
+        .balanceOf(state.account)
+        .call();
 
-      var nftList = []
-      for (var i = 1; i <= noOfAssets; i++) {
-        console.log('here!!')
+      var nftList = [];
+      for (var i = 0; i < noOfAssets; i++) {
+        console.log("here!!");
         var nftDetailsArray = await fundContract.methods.getAsset(i).call();
-        console.log(nftDetailsArray)
+        console.log(nftDetailsArray);
         var nftDetails = {
           openseaUrl: nftDetailsArray[0],
           imageUrl: nftDetailsArray[1],
           nftAddress: nftDetailsArray[3],
-          value: Web3.utils.fromWei(nftDetailsArray[2], 'ether')
-        } 
-        console.log(nftDetailsArray[3])
+          value: Web3.utils.fromWei(nftDetailsArray[2], "ether"),
+        };
+        console.log(nftDetailsArray[3]);
         nftList.push(nftDetails);
       }
 
-      console.log({ fundAddress, fundTokenBalance, ownerAddress, weiBalance, tokenStartPrice, tokenPrice, name, symbol, noOfAssets })
-
-      commit("setFundDetails", { fundAddress, fundTokenBalance, ownerAddress, weiBalance, tokenStartPrice, tokenPrice, name, symbol, noOfAssets, img, nftList })
+      commit("setFundDetails", {
+        fundAddress,
+        fundTokenBalance,
+        ownerAddress,
+        weiBalance,
+        tokenStartPrice,
+        tokenPrice,
+        name,
+        symbol,
+        noOfAssets,
+        img,
+        nftList,
+        userTokenBalance,
+      });
     },
 
     async addNFTToFund({ commit }, { openseaUrl, fundAddress }) {
-      console.log(openseaUrl)
-      console.log(fundAddress)
-      var assetUrl = openseaUrl.replace('https://opensea.io/assets/', 'https://api.opensea.io/api/v1/asset/')
+      var assetUrl = openseaUrl.replace(
+        "https://opensea.io/assets/",
+        "https://api.opensea.io/api/v1/asset/"
+      );
       const response = await fetch(assetUrl);
       var jsonRes = await response.json();
-      console.log(jsonRes)
-      var jsonDetails = {
-        tokenId: jsonRes['token_id'],
-        contractId: jsonRes['asset_contract']['address'],
-        img: jsonRes['image_url'],
-        name: jsonRes['name'],
-        days_held: 0,
-        bought_at: findLowestSaleAmount(jsonRes['orders'])
-      }
-      console.log(fundAddress)
-      commit("addNFT", { fundAddress, jsonDetails })
-    }
-  }
 
+      var nftValueInWei = Web3.utils
+        .toWei(findLowestSaleAmount(jsonRes["orders"]).toString(), "ether")
+        .toString();
+
+      var fundContract = await this.dispatch("getFundContract", fundAddress);
+      console.log(
+        jsonRes["asset_contract"]["address"],
+        openseaUrl,
+        jsonRes["image_url"],
+        nftValueInWei
+      );
+      var res = await fundContract.methods
+        .buyNFT(
+          jsonRes["asset_contract"]["address"],
+          openseaUrl,
+          jsonRes["image_url"],
+          nftValueInWei
+        )
+        .send({
+          from: this.state.account,
+        });
+      console.log(res);
+      console.log("above is res");
+      await this.dispatch("getFundDetails", fundAddress);
+    },
+
+    async sellNFTfromFund(
+      { commit, state },
+      { index, sellPrice, fundAddress }
+    ) {
+      var sellPriceInWei = Web3.utils.toWei(sellPrice, "ether").toString();
+      var fundContract = await this.dispatch("getFundContract", fundAddress);
+      var res = await fundContract.methods.sellNFT(index, sellPriceInWei).send({
+        from: this.state.account,
+      });
+      console.log(res);
+      await this.dispatch("getFundDetails", fundAddress);
+    },
+
+    async createFund({commit, state }, {fundName, fundSymbl, tokenPrice, depositAmt, imgUrl }) {
+      var depositAmtInWei = Web3.utils.toWei(depositAmt, "ether").toString();
+      var fundFactoryContract = await this.dispatch("getFundFactoryContract");
+      var res = await fundFactoryContract.methods.createFund(fundName, fundSymbl, tokenPrice, imgUrl).send({
+        from: this.state.account,
+        value: depositAmtInWei
+      })
+      console.log(res);
+      await this.dispatch("loadFundData");
+    }
+  },
 });

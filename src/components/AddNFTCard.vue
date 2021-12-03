@@ -67,6 +67,7 @@ export default {
     async addNFTToFund() {
       console.log('...')
       console.log(this.$route.query.contractId)
+      console.log(this.openseaUrl)
       var fundAddress = this.$route.query.contractId
       await this.$store.dispatch("addNFTToFund", {openseaUrl: this.openseaUrl, fundAddress: fundAddress});
       this.dialog = false;
