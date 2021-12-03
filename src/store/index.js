@@ -49,18 +49,16 @@ export default new Vuex.Store({
     account: null,
     web3Modal: null,
     ethBalance: 0,
-    fundFactoryAddress: "0x1d408575DF365559F7BF51810385F22F5fe348f7",
+    fundFactoryAddress: "0xA9FE35a1b8d443fD374682d5bCA9Ca311B8f4fE9",
     fundList: [],
     nftFunds: {},
     isCurator: false,
   },
   getters: {
     getFunds(state) {
-      console.log("gere");
       return state.nftFunds;
     },
     getNoOfFunds(state) {
-      console.log("here");
       return state.nftFunds.length;
     },
   },
@@ -230,9 +228,7 @@ export default new Vuex.Store({
 
     async buyFundTokens({ commit }, { ethAmount, contractId }) {
       var fundContract = await this.dispatch("getFundContract", contractId);
-      var weiAmount = parseInt(ethAmount) * 10**18;
-      console.log(ethAmount);
-      console.log(weiAmount);
+      var weiAmount = parseFloat(ethAmount) * 10**18;
       await fundContract.methods.addFunds().send({
         value: weiAmount.toString(),
         from: this.state.account,
@@ -242,9 +238,12 @@ export default new Vuex.Store({
 
     async sellFundTokens({ commit }, { tokenAmount, contractId }) {
       var fundContract = await this.dispatch("getFundContract", contractId);
-      await fundContract.methods.addFunds(tokenAmount).send({
+      console.log(tokenAmount)
+      await fundContract.methods.removeFunds(parseInt(tokenAmount)).send({
         from: this.state.account,
       });
+      console.log('...')
+      console.log(contractId)
       this.dispatch("refreshBalance", contractId);
     },
 
@@ -255,6 +254,7 @@ export default new Vuex.Store({
 
     async loadFundData({}) {
       var fundList = await this.dispatch("getFunds");
+      await this.dispatch("getEthBalance");
       for (var fundAddress of fundList) {
         await this.dispatch("getFundDetails", fundAddress);
       }
@@ -284,9 +284,7 @@ export default new Vuex.Store({
 
       var nftList = [];
       for (var i = 0; i < noOfAssets; i++) {
-        console.log("here!!");
         var nftDetailsArray = await fundContract.methods.getAsset(i).call();
-        console.log(nftDetailsArray);
         var nftDetails = {
           openseaUrl: nftDetailsArray[0],
           imageUrl: nftDetailsArray[1],
@@ -343,7 +341,6 @@ export default new Vuex.Store({
           from: this.state.account,
         });
       console.log(res);
-      console.log("above is res");
       await this.dispatch("getFundDetails", fundAddress);
     },
 
@@ -351,7 +348,8 @@ export default new Vuex.Store({
       { commit, state },
       { index, sellPrice, contractId }
     ) {
-      var sellPriceInWei = parseInt(sellPrice) * 10**18;
+      console.log('here!')
+      var sellPriceInWei = parseFloat(sellPrice) * 10**18;
       var fundContract = await this.dispatch("getFundContract", contractId);
       var res = await fundContract.methods.sellNFT(index, sellPriceInWei.toString()).send({
         from: this.state.account,
@@ -370,7 +368,7 @@ export default new Vuex.Store({
     },
 
     async createFund({commit, state }, {fundName, fundSymbl, tokenPrice, depositAmt, imgUrl }) {
-      var depositAmtInWei = parseInt(depositAmt)*10**18;
+      var depositAmtInWei = parseFloat(depositAmt)*10**18;
       var fundFactoryContract = await this.dispatch("getFundFactoryContract");
       var res = await fundFactoryContract.methods.createFund(fundName, fundSymbl, tokenPrice, imgUrl).send({
         from: this.state.account,
@@ -378,6 +376,7 @@ export default new Vuex.Store({
       })
       console.log(res);
       await this.dispatch("loadFundData");
+      
     }
   },
 });

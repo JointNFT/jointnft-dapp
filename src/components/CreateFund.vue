@@ -28,7 +28,7 @@
       <v-row align="center">
         <v-text-field
           v-model="tokenPrice"
-          label="Price of the token"
+          label="Price of the token(In Wei)"
           :rules="[numberRule]"
           required
         ></v-text-field>
@@ -62,7 +62,7 @@ export default {
           imgUrl: this.imgUrl,
         })
         .then(() => {
-          this.$router.redirect("/");
+          window.location.href = "/"
         });
     },
   },

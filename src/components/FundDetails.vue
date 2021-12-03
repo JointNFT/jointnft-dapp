@@ -53,7 +53,7 @@ export default {
     },
     sellFundTokens() {
       this.$store.dispatch("sellFundTokens", {
-        ethAmount: this.tokenAmount,
+        tokenAmount: this.tokenAmount,
         contractId: this.$route.query.contractId,
       });
     },
