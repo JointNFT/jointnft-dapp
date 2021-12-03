@@ -230,8 +230,19 @@ export default new Vuex.Store({
 
     async buyFundTokens({ commit }, { ethAmount, contractId }) {
       var fundContract = await this.dispatch("getFundContract", contractId);
+      var weiAmount = parseInt(ethAmount) * 10**18;
+      console.log(ethAmount);
+      console.log(weiAmount);
       await fundContract.methods.addFunds().send({
-        value: Web3.utils.toWei(ethAmount, "ether"),
+        value: weiAmount.toString(),
+        from: this.state.account,
+      });
+      this.dispatch("refreshBalance", contractId);
+    },
+
+    async sellFundTokens({ commit }, { tokenAmount, contractId }) {
+      var fundContract = await this.dispatch("getFundContract", contractId);
+      await fundContract.methods.addFunds(tokenAmount).send({
         from: this.state.account,
       });
       this.dispatch("refreshBalance", contractId);
@@ -338,19 +349,28 @@ export default new Vuex.Store({
 
     async sellNFTfromFund(
       { commit, state },
-      { index, sellPrice, fundAddress }
+      { index, sellPrice, contractId }
     ) {
-      var sellPriceInWei = Web3.utils.toWei(sellPrice, "ether").toString();
-      var fundContract = await this.dispatch("getFundContract", fundAddress);
-      var res = await fundContract.methods.sellNFT(index, sellPriceInWei).send({
+      var sellPriceInWei = parseInt(sellPrice) * 10**18;
+      var fundContract = await this.dispatch("getFundContract", contractId);
+      var res = await fundContract.methods.sellNFT(index, sellPriceInWei.toString()).send({
         from: this.state.account,
       });
       console.log(res);
-      await this.dispatch("getFundDetails", fundAddress);
+      await this.dispatch("getFundDetails", contractId);
+    },
+
+    async modifyTokenPrice({},{ tokenPrice, contractId}){
+      var fundContract = await this.dispatch("getFundContract", contractId);
+      var res = await fundContract.methods.setTokenPrice(tokenPrice).send({
+        from: this.state.account,
+      });
+      console.log(res);
+      await this.dispatch("refreshBalance", contractId);
     },
 
     async createFund({commit, state }, {fundName, fundSymbl, tokenPrice, depositAmt, imgUrl }) {
-      var depositAmtInWei = Web3.utils.toWei(depositAmt, "ether").toString();
+      var depositAmtInWei = parseInt(depositAmt)*10**18;
       var fundFactoryContract = await this.dispatch("getFundFactoryContract");
       var res = await fundFactoryContract.methods.createFund(fundName, fundSymbl, tokenPrice, imgUrl).send({
         from: this.state.account,

@@ -23,8 +23,12 @@
       <v-btn v-on:click="buyFundTokens"> Buy Tokens </v-btn>
     </v-row>
     <v-row>
-      <v-text-field v-model="ethAmount" :rules="[numberRule]" label="Enter amount of Tokens to sell"></v-text-field>
-      <v-btn v-on:click="buyFundTokens"> Sell Tokens </v-btn>
+      <v-text-field v-model="tokenAmount" :rules="[numberRule]" label="Enter amount of Tokens to sell"></v-text-field>
+      <v-btn v-on:click="sellFundTokens"> Sell Tokens </v-btn>
+    </v-row>
+    <v-row v-if="owner==connectedAccount"> 
+      <v-text-field v-model="tokenPrice" :rules="[numberRule]" label="Enter the new tokenPrice(In Wei)"></v-text-field>
+      <v-btn v-on:click="modifyTokenPrice"> Modify Token Price </v-btn>
     </v-row>
   </v-container>
 </template>
@@ -47,6 +51,18 @@ export default {
         contractId: this.$route.query.contractId,
       });
     },
+    sellFundTokens() {
+      this.$store.dispatch("sellFundTokens", {
+        ethAmount: this.tokenAmount,
+        contractId: this.$route.query.contractId,
+      });
+    },
+    modifyTokenPrice() {
+      this.$store.dispatch("modifyTokenPrice", {
+        tokenPrice: this.tokenPrice,
+        contractId: this.$route.query.contractId
+      })
+    }
   },
   data: () => ({
     numberRule: (v) => {
@@ -55,7 +71,9 @@ export default {
       return "Enter a number";
     },
     ethAmount: 0,
+    tokenAmount: 0,
+    tokenPrice: 0
   }),
-  
+  props: ["owner","connectedAccount"]
 };
 </script>

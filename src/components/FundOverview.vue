@@ -11,15 +11,15 @@
           :key="index"
           cols="4"
         >
-          <NFTCard :nft="getNFTDetails.nftList[index-1]" :index="index-1" :owner="getNFTDetails.ownerAddress"/>
+          <NFTCard :nft="getNFTDetails.nftList[index-1]" :index="index-1" :owner="getNFTDetails.ownerAddress" :connectedAccount="getConnectedAccount"/>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="4" v-if="getConnectedAccount==getNFTDetails.ownerAddress">
           <AddNFTCard />
         </v-col>
       </v-row>
     </v-col>
     <v-col cols="6" md="4">
-      <FundDetails />
+      <FundDetails :owner="getNFTDetails.ownerAddress" :connectedAccount="getConnectedAccount"/>
     </v-col>
   </v-row>
 </template>
@@ -46,6 +46,9 @@ export default {
       console.log(this.$store.state.nftFunds[this.$route.query.contractId]);
       return this.$store.state.nftFunds[this.$route.query.contractId];
     },
+    getConnectedAccount(){
+      return this.$store.state.account;
+    }
   },
 };
 </script>
