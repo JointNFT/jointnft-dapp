@@ -346,16 +346,16 @@ export default new Vuex.Store({
 
     async sellNFTfromFund(
       { commit, state },
-      { index, sellPrice, contractId }
+      { index, sellPrice, fundAddress }
     ) {
       console.log('here!')
       var sellPriceInWei = parseFloat(sellPrice) * 10**18;
-      var fundContract = await this.dispatch("getFundContract", contractId);
+      var fundContract = await this.dispatch("getFundContract", fundAddress);
       var res = await fundContract.methods.sellNFT(index, sellPriceInWei.toString()).send({
         from: this.state.account,
       });
       console.log(res);
-      await this.dispatch("getFundDetails", contractId);
+      await this.dispatch("getFundDetails", fundAddress);
     },
 
     async modifyTokenPrice({},{ tokenPrice, contractId}){

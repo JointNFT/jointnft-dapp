@@ -84,6 +84,7 @@ export default {
   methods: {
     async sellNFT() {
       var fundAddress = this.$route.query.contractId;
+      console.log(fundAddress)
       await this.$store.dispatch("sellNFTfromFund", {
         index: this.index,
         sellPrice: this.sellPrice,
