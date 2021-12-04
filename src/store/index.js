@@ -49,7 +49,7 @@ export default new Vuex.Store({
     account: null,
     web3Modal: null,
     ethBalance: 0,
-    fundFactoryAddress: "0xA9FE35a1b8d443fD374682d5bCA9Ca311B8f4fE9",
+    fundFactoryAddress: "0x1DAE25904fa53995D6E562825Aba17E90Eb4b5D3",
     fundList: [],
     nftFunds: {},
     isCurator: false,

@@ -49,6 +49,12 @@
 </template>
 
 <script>
+
+function checkURL(url) {
+    return(url.match(/\.(jpeg|jpg|gif|png)$/) != null);
+}
+
+
 export default {
   methods: {
     submit() {
@@ -73,6 +79,8 @@ export default {
         );
         return;
       }
+
+      
 
       this.$store
         .dispatch("createFund", {
