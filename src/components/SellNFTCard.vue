@@ -88,9 +88,11 @@ export default {
         index: this.index,
         sellPrice: this.sellPrice,
         fundAddress: fundAddress,
+      }).then(() => {
+        this.dialog = false;
+        this.$vToastify.success("NFT sold for "+this.sellPrice+" !");
       });
-      this.dialog = false;
-      this.$vToastify.success("NFT sold for "+this.sellPrice+" !");
+      
     }
   },
 };

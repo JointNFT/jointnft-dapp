@@ -1,7 +1,12 @@
 <template>
   <v-row>
     <v-col cols="12" sm="6" md="8">
-      <v-row no-gutters style="margin-top: 25px;" align="center" justify="center">
+      <v-row
+        no-gutters
+        style="margin-top: 25px;"
+        align="center"
+        justify="center"
+      >
         <h1>{{ getNFTDetails.name }}</h1>
       </v-row>
       <v-divider id="divider"></v-divider>
@@ -11,15 +16,26 @@
           :key="index"
           cols="4"
         >
-          <NFTCard :nft="getNFTDetails.nftList[index-1]" :index="index-1" :owner="getNFTDetails.ownerAddress" :connectedAccount="getConnectedAccount"/>
+          <NFTCard
+            :nft="getNFTDetails.nftList[index - 1]"
+            :index="index - 1"
+            :owner="getNFTDetails.ownerAddress"
+            :connectedAccount="getConnectedAccount"
+          />
         </v-col>
-        <v-col cols="4" v-if="getConnectedAccount==getNFTDetails.ownerAddress">
+        <v-col
+          cols="4"
+          v-if="getConnectedAccount == getNFTDetails.ownerAddress"
+        >
           <AddNFTCard />
         </v-col>
       </v-row>
     </v-col>
     <v-col cols="6" md="4">
-      <FundDetails :owner="getNFTDetails.ownerAddress" :connectedAccount="getConnectedAccount"/>
+      <FundDetails
+        :owner="getNFTDetails.ownerAddress"
+        :connectedAccount="getConnectedAccount"
+      />
     </v-col>
   </v-row>
 </template>
@@ -44,12 +60,13 @@ export default {
   computed: {
     getNFTDetails() {
       console.log(this.$store.state.nftFunds[this.$route.query.contractId]);
-      if (this.$store.state.nftFunds == null) return {name: "", nftList: [], ownerAddress: ""};
+      if (this.$store.state.nftFunds == null)
+        return { name: "", nftList: [], ownerAddress: "" };
       return this.$store.state.nftFunds[this.$route.query.contractId];
     },
-    getConnectedAccount(){
+    getConnectedAccount() {
       return this.$store.state.account;
-    }
+    },
   },
 };
 </script>

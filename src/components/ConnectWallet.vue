@@ -25,8 +25,7 @@ export default {
     },
     methods: {
         async connectWallet() {
-            await this.$store.dispatch("connectToWallet");
-            this.$vToastify.success("Wallet connected !");
+            await this.$store.dispatch("connectToWallet").then(() => {this.$vToastify.success("Wallet connected !")});
         }
     }
 };
