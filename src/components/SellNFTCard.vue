@@ -19,7 +19,7 @@
       <v-card>
         <v-card-title>
           <span class="text-h5"
-            >At what price(ETH) do you want to sell the NFT ? </span
+            >At what price(MATIC) do you want to sell the NFT ? </span
           >
         </v-card-title>
         <v-card-text>
@@ -29,7 +29,7 @@
                 <v-text-field
                   v-model="sellPrice"
                   :rules="[numberRule]"
-                  label="Add sell price (ETH)"
+                  label="Add sell price (MATIC)"
                   required
                 ></v-text-field>
               </v-col>

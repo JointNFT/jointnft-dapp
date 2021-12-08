@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col> Eth in Wallet: {{ $store.state.ethBalance }} </v-col>
+      <v-col> Matic in Wallet: {{ $store.state.ethBalance }} </v-col>
       <v-col> tokenBalance: {{ getNFTDetails.userTokenBalance }} </v-col>
     </v-row>
     <v-row>
@@ -12,7 +12,7 @@
     </v-row>
     <v-row>
       <v-col>
-        Ether Balance in Fund: {{ getNFTDetails.weiBalance || 0 }}
+        Matic Balance in Fund: {{ getNFTDetails.weiBalance || 0 }}
       </v-col>
       <v-col> owner: {{ getNFTDetails.ownerAddress || 0 }} </v-col>
     </v-row>
@@ -24,9 +24,9 @@
     </v-row>
     <v-row>
       <v-text-field
-        v-model="ethAmount"
+        v-model="maticAmount"
         :rules="[numberRule]"
-        label="Enter amount of ETH"
+        label="Enter amount of Matic"
       ></v-text-field>
       <v-btn v-on:click="buyFundTokens"> Buy Tokens </v-btn>
     </v-row>
@@ -42,7 +42,7 @@
       <v-text-field
         v-model="tokenPrice"
         :rules="[numberRule]"
-        label="Enter the new tokenPrice(In Wei) 1 ETH = 10^18 wei"
+        label="Enter the new tokenPrice(In Wei) 1 MATIC = 10^18 wei"
       ></v-text-field>
       <v-btn v-on:click="modifyTokenPrice"> Modify Token Price </v-btn>
     </v-row>
@@ -64,7 +64,7 @@ export default {
     buyFundTokens() {
       this.$store
         .dispatch("buyFundTokens", {
-          ethAmount: this.ethAmount,
+          maticAmount: this.maticAmount,
           contractId: this.$route.query.contractId,
         })
         .then(() => {
@@ -98,7 +98,7 @@ export default {
       if (!isNaN(parseFloat(v))) return true;
       return "Enter a number";
     },
-    ethAmount: 0,
+    maticAmount: 0,
     tokenAmount: 0,
     tokenPrice: 0,
   }),

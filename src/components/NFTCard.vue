@@ -15,7 +15,7 @@
         <v-divider></v-divider>
         <v-row>
           <v-col class="pa-2 key bottom-row"> Bought At </v-col>
-          <v-col class="pa-2 value bottom-row"> {{ nft.value }}ETH </v-col>
+          <v-col class="pa-2 value bottom-row"> {{ nft.value }}MATIC </v-col>
         </v-row>
       </v-card>
     </v-row>

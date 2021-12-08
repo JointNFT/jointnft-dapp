@@ -3,9 +3,16 @@ import Vuex from "vuex";
 import fetch from "cross-fetch";
 import Web3 from "web3";
 import Web3Modal from "web3modal";
+var Airtable = require("airtable");
 
 const erc20FundABI = require("../contractDetails/erc20fund.json")["abi"];
 const fundFactoryABI = require("../contractDetails/FundFactory.json")["abi"];
+
+Airtable.configure({
+  endpointUrl: "https://api.airtable.com",
+  apiKey: "keyeUSmFf0i7Lw7VK",
+});
+var base = Airtable.base("appC6waZ1hgwGXOnc");
 
 Vue.use(Vuex);
 
@@ -48,11 +55,13 @@ export default new Vuex.Store({
     active: false,
     account: null,
     web3Modal: null,
-    ethBalance: 0,
-    fundFactoryAddress: "0x1DAE25904fa53995D6E562825Aba17E90Eb4b5D3",
+    maticBalance: 0,
+    // fundFactoryAddress: "0x1DAE25904fa53995D6E562825Aba17E90Eb4b5D3", // rinkeby address
+    fundFactoryAddress: "0x1E7E4c6aE711C738EC322606F31D3DD97970a257", 
     fundList: [],
     nftFunds: {},
     isCurator: false,
+    entryList: [],
   },
   getters: {
     getFunds(state) {
@@ -104,8 +113,8 @@ export default new Vuex.Store({
     toggleCuratorStatus(state) {
       state.isCurator = !state.isCurator;
     },
-    setEthBalance(state, ethBalance) {
-      state.ethBalance = ethBalance;
+    setMaticBalance(state, maticBalance) {
+      state.maticBalance = maticBalance;
     },
     setFundTokenBalance(state, { fundAddress, fundTokenBalance }) {
       state.nftFunds[fundAddress].userTokenBalance = fundTokenBalance;
@@ -134,10 +143,12 @@ export default new Vuex.Store({
     addFundToList(state, fund) {
       state.fundList.push(fund);
     },
+    addAirtableRecordToState(state, record) {
+      state.entryList.push(record);
+    },
   },
   actions: {
     async connectToWallet({ commit }) {
-      console.log("1234");
       const provider = await web3Modal.connect();
       const web3 = new Web3(provider);
       commit("setWeb3", web3);
@@ -226,9 +237,9 @@ export default new Vuex.Store({
       return fundList;
     },
 
-    async buyFundTokens({ commit }, { ethAmount, contractId }) {
+    async buyFundTokens({ commit }, { maticAmount, contractId }) {
       var fundContract = await this.dispatch("getFundContract", contractId);
-      var weiAmount = parseFloat(ethAmount) * 10**18;
+      var weiAmount = parseFloat(maticAmount) * 10 ** 18;
       await fundContract.methods.addFunds().send({
         value: weiAmount.toString(),
         from: this.state.account,
@@ -238,31 +249,31 @@ export default new Vuex.Store({
 
     async sellFundTokens({ commit }, { tokenAmount, contractId }) {
       var fundContract = await this.dispatch("getFundContract", contractId);
-      console.log(tokenAmount)
+      console.log(tokenAmount);
       await fundContract.methods.removeFunds(parseInt(tokenAmount)).send({
         from: this.state.account,
       });
-      console.log('...')
-      console.log(contractId)
+      console.log("...");
+      console.log(contractId);
       this.dispatch("refreshBalance", contractId);
     },
 
     async refreshBalance({}, fundAddress) {
-      await this.dispatch("getEthBalance");
+      await this.dispatch("getMaticBalance");
       await this.dispatch("getFundDetails", fundAddress);
     },
 
     async loadFundData({}) {
       var fundList = await this.dispatch("getFunds");
-      await this.dispatch("getEthBalance");
+      await this.dispatch("getMaticBalance");
       for (var fundAddress of fundList) {
         await this.dispatch("getFundDetails", fundAddress);
       }
     },
 
-    async getEthBalance({ commit, state }) {
-      var ethBalance = await state.web3.eth.getBalance(state.account);
-      commit("setEthBalance", Web3.utils.fromWei(ethBalance, "ether"));
+    async getMaticBalance({ commit, state }) {
+      var maticBalance = await state.web3.eth.getBalance(state.account);
+      commit("setMaticBalance", Web3.utils.fromWei(maticBalance, "ether"));
     },
 
     async getFundDetails({ commit, state }, fundAddress) {
@@ -348,17 +359,19 @@ export default new Vuex.Store({
       { commit, state },
       { index, sellPrice, fundAddress }
     ) {
-      console.log('here!')
-      var sellPriceInWei = parseFloat(sellPrice) * 10**18;
+      console.log("here!");
+      var sellPriceInWei = parseFloat(sellPrice) * 10 ** 18;
       var fundContract = await this.dispatch("getFundContract", fundAddress);
-      var res = await fundContract.methods.sellNFT(index, sellPriceInWei.toString()).send({
-        from: this.state.account,
-      });
+      var res = await fundContract.methods
+        .sellNFT(index, sellPriceInWei.toString())
+        .send({
+          from: this.state.account,
+        });
       console.log(res);
       await this.dispatch("getFundDetails", fundAddress);
     },
 
-    async modifyTokenPrice({},{ tokenPrice, contractId}){
+    async modifyTokenPrice({}, { tokenPrice, contractId }) {
       var fundContract = await this.dispatch("getFundContract", contractId);
       var res = await fundContract.methods.setTokenPrice(tokenPrice).send({
         from: this.state.account,
@@ -367,16 +380,54 @@ export default new Vuex.Store({
       await this.dispatch("refreshBalance", contractId);
     },
 
-    async createFund({commit, state }, {fundName, fundSymbl, tokenPrice, depositAmt, imgUrl }) {
-      var depositAmtInWei = parseFloat(depositAmt)*10**18;
+    async createFund(
+      { commit, state },
+      { fundName, fundSymbl, tokenPrice, depositAmt, imgUrl }
+    ) {
+      var depositAmtInWei = parseFloat(depositAmt) * 10 ** 18;
       var fundFactoryContract = await this.dispatch("getFundFactoryContract");
-      var res = await fundFactoryContract.methods.createFund(fundName, fundSymbl, tokenPrice, imgUrl).send({
-        from: this.state.account,
-        value: depositAmtInWei
-      })
+      var res = await fundFactoryContract.methods
+        .createFund(fundName, fundSymbl, tokenPrice, imgUrl)
+        .send({
+          from: this.state.account,
+          value: depositAmtInWei,
+        });
       console.log(res);
       await this.dispatch("loadFundData");
-      
-    }
+    },
+    async fetchAirtableData({ commit, state }) {
+      base("Table 1")
+        .select({
+          // Selecting the first 3 records in Grid view:
+          maxRecords: 3,
+          view: "Grid view",
+        })
+        .eachPage(
+          function page(records, fetchNextPage) {
+            // This function (`page`) will get called for each page of records.
+
+            records.forEach(function(record) {
+              console.log("Retrieved", record.get("twitter_handle"));
+              commit("addAirtableRecordToState", {
+                user: record.get("twitter_handle"),
+                nft_1: record.get("nft_1"),
+                nft_2: record.get("nft_2"),
+                nft_3: record.get("nft_3"),
+              });
+            });
+
+            // To fetch the next page of records, call `fetchNextPage`.
+            // If there are more records, `page` will get called again.
+            // If there are no more records, `done` will get called.
+            fetchNextPage();
+          },
+          function done(err) {
+            if (err) {
+              console.error(err);
+              return;
+            }
+          }
+        );
+    },
   },
 });
