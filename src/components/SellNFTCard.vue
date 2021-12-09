@@ -19,7 +19,7 @@
       <v-card>
         <v-card-title>
           <span class="text-h5"
-            >At what price(MATIC) do you want to sell the NFT ? </span
+            >At what price(ETH) do you want to sell the NFT ? </span
           >
         </v-card-title>
         <v-card-text>
@@ -29,7 +29,7 @@
                 <v-text-field
                   v-model="sellPrice"
                   :rules="[numberRule]"
-                  label="Add sell price (MATIC)"
+                  label="Add sell price (ETH)"
                   required
                 ></v-text-field>
               </v-col>
@@ -91,7 +91,7 @@ export default {
         fundAddress: fundAddress,
       }).then(() => {
         this.dialog = false;
-        this.$vToastify.success("NFT sold for "+this.sellPrice+" !");
+        this.$vToastify.success("NFT sold for "+this.sellPrice+" ETH!");
       });
       
     }

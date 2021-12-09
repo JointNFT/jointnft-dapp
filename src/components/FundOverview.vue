@@ -1,5 +1,7 @@
 <template>
-  <v-row>
+<v-container>
+
+  <v-row v-if="nftFunds != {}">
     <v-col cols="12" sm="6" md="8">
       <v-row
         no-gutters
@@ -29,8 +31,11 @@
         >
           <AddNFTCard />
         </v-col>
+        
       </v-row>
+      
     </v-col>
+    
     <v-col cols="6" md="4">
       <FundDetails
         :owner="getNFTDetails.ownerAddress"
@@ -38,6 +43,10 @@
       />
     </v-col>
   </v-row>
+  <v-row v-else style="text-align:center;">
+  Loading NFT's present in the fund. Please wait! 
+</v-row>
+  </v-container>
 </template>
 
 <style scoped>

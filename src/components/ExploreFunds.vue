@@ -1,7 +1,7 @@
 <template>
   <v-app id="inspire">
     <v-main v-if="account">
-      <v-container>
+      <v-container v-if="nftFunds!={}">
         <v-row>
           <v-col
             v-for="(fund, contractId) in nftFunds"
@@ -11,6 +11,9 @@
             <FundCard :fund="fund" />
           </v-col>
         </v-row>
+      </v-container>
+      <v-container v-else style="text-align:center;">
+        Loading avaible funds.
       </v-container>
     </v-main>
     <v-main v-else style="text-align:center;">

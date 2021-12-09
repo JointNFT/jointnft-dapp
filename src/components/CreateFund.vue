@@ -28,7 +28,7 @@
       <v-row align="center">
         <v-text-field
           v-model="tokenPrice"
-          label="Price of the token(In Wei) 1MATIC = 10^18 wei"
+          label="Price of the token(In Wei) 1ETH = 10^18 wei"
           :rules="[numberRule]"
           required
         ></v-text-field>
@@ -37,7 +37,7 @@
         <v-text-field
           v-model="depositAmt"
           :rules="[numberRule]"
-          label="Deposit Amount (MATIC)"
+          label="Deposit Amount (ETH)"
           required
         ></v-text-field>
       </v-row>

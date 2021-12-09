@@ -57,8 +57,8 @@ export default new Vuex.Store({
     account: null,
     web3Modal: null,
     maticBalance: 0,
-    // fundFactoryAddress: "0x1DAE25904fa53995D6E562825Aba17E90Eb4b5D3", // rinkeby address
-    fundFactoryAddress: "0x1E7E4c6aE711C738EC322606F31D3DD97970a257",
+    fundFactoryAddress: "0x1DAE25904fa53995D6E562825Aba17E90Eb4b5D3", // rinkeby address
+    // fundFactoryAddress: "0x1E7E4c6aE711C738EC322606F31D3DD97970a257",
     fundList: [],
     nftFunds: {},
     isCurator: false,
