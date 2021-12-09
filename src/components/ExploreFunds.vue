@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <v-main>
+    <v-main v-if="account">
       <v-container>
         <v-row>
           <v-col
@@ -13,6 +13,9 @@
         </v-row>
       </v-container>
     </v-main>
+    <v-main v-else style="text-align:center;">
+      Connect to metamask wallet. The button is in the top right of the page !
+    </v-main>
   </v-app>
 </template>
 
@@ -24,7 +27,7 @@ export default {
   components: {
     FundCard,
   },
-  computed: mapState(["nftFunds"]),
+  computed: mapState(["nftFunds","account"]),
   watch: {
     nftFunds: {
       deep: true,

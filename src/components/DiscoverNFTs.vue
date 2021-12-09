@@ -1,41 +1,150 @@
 <template>
-    <v-container>
-        <v-row v-for="entry in getEntryList" :key="entry.twitter_handle">
-            <v-col>
-            {{entry.user}}
-            </v-col>
-            <v-col>
-            {{entry.nft_1}}
-            </v-col>
-            <v-col>
-            {{entry.nft_2}}
-            </v-col>
-            <v-col>
-            {{entry.nft_3}}
-            </v-col>
-        </v-row>
-    </v-container>
+  <v-container>
+    <v-row justify="center">
+      <v-dialog v-model="dialog" persistent max-width="600px">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            color="primary"
+            dark
+            style="margin-top: 50px;"
+            v-bind="attrs"
+            v-on="on"
+          >
+            Add Collections !
+          </v-btn>
+        </template>
+        <v-card>
+          <v-card-title>
+            <span class="text-h5">Submit NFT Collections</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-text-field
+                  v-model="twitterHandle"
+                  label="Enter your twitter handle"
+                  required
+                ></v-text-field>
+              </v-row>
+              <v-row>
+                Enter three NFT upcoming NFT's twitter handle
+              </v-row>
+              <v-row>
+                <v-text-field
+                  v-model="nftCollection1"
+                  label="Collection 1"
+                  required
+                ></v-text-field>
+              </v-row>
+              <v-row>
+                <v-text-field
+                  v-model="nftCollection2"
+                  label="Collection 2"
+                  required
+                ></v-text-field>
+              </v-row>
+              <v-row>
+                <v-text-field
+                  v-model="nftCollection3"
+                  label="Collection 3"
+                  required
+                ></v-text-field>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" text @click="dialog = false">
+              Close
+            </v-btn>
+            <v-btn color="blue darken-1" text @click="submitNFTCollection()">
+              Save
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-data-table
+          :headers="headers"
+          :items="getEntryList"
+          :items-per-page="10"
+          class="elevation-1"
+        >
+          <template #item.handle="{ item }">
+            <a target="_blank" :href="`https://twitter.com/${item.handle}`">
+              {{ item.handle }}
+            </a>
+          </template>
+        </v-data-table>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-
 export default {
-    computed: {
-        getEntryList() {
-            return this.$store.state.entryList;
-        }
+  data: () => ({
+    headers: [
+      {
+        text: "NFT Collection Twitter Handle",
+        align: "start",
+        sortable: false,
+        value: "handle",
+      },
+      { text: "Votes", value: "count", sortable: true  },
+    ],
+    dialog: false,
+    twitterHandle: "",
+    nftCollection1: "",
+    nftCollection2: "",
+    nftCollection3: "",
+  }),
+  computed: {
+    getEntryList() {
+      var nftCollectionList = this.$store.state.nftCollectionList;
+      return nftCollectionList.filter(nftCollection => {
+          return nftCollection.handle != "null";
+      })
     },
-    methods: {
-        fetchAirtableEntries() {
-            this.$store.dispatch("fetchAirtableData");
-        }
+  },
+  methods: {
+    fetchNFTCollectionList() {
+      this.$store.dispatch("fetchNFTCollectionList");
     },
-    mounted() {
+    submitNFTCollection() {
+      if (
+        this.twitterHandle == "" ||
+        (this.nftCollection1 == "" &&
+          this.nftCollection2 == "" &&
+          this.nftCollection3 == "")
+      ) {
+        this.$vToastify.error(
+          "Please enter atleast one collection and your twitter handle !",
+          "Error! "
+        );
+        return;
+      }
+      this.$store
+        .dispatch("postNFTCollections", {
+          twitterHandle: this.twitterHandle,
+          nftCollection1: this.nftCollection1,
+          nftCollection2: this.nftCollection2,
+          nftCollection3: this.nftCollection3,
+        })
+        .then(() => {
+          this.dialog = false;
+          this.$vToastify.success(
+            "Collections submitted, will be updated to the leaderboard !"
+          );
+        });
+    },
+  },
+  mounted() {
     this.$nextTick(async () => {
-      this.fetchAirtableEntries();
+      this.fetchNFTCollectionList();
     });
   },
-}
-    
-
+};
 </script>

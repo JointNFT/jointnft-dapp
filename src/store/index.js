@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import fetch from "cross-fetch";
 import Web3 from "web3";
 import Web3Modal from "web3modal";
+import axios from "axios";
 var Airtable = require("airtable");
 
 const erc20FundABI = require("../contractDetails/erc20fund.json")["abi"];
@@ -57,11 +58,11 @@ export default new Vuex.Store({
     web3Modal: null,
     maticBalance: 0,
     // fundFactoryAddress: "0x1DAE25904fa53995D6E562825Aba17E90Eb4b5D3", // rinkeby address
-    fundFactoryAddress: "0x1E7E4c6aE711C738EC322606F31D3DD97970a257", 
+    fundFactoryAddress: "0x1E7E4c6aE711C738EC322606F31D3DD97970a257",
     fundList: [],
     nftFunds: {},
     isCurator: false,
-    entryList: [],
+    nftCollectionList: [],
   },
   getters: {
     getFunds(state) {
@@ -143,8 +144,8 @@ export default new Vuex.Store({
     addFundToList(state, fund) {
       state.fundList.push(fund);
     },
-    addAirtableRecordToState(state, record) {
-      state.entryList.push(record);
+    commitNFTCollectionListToState(state, nftCollectionList) {
+      state.nftCollectionList = nftCollectionList;
     },
   },
   actions: {
@@ -395,39 +396,27 @@ export default new Vuex.Store({
       console.log(res);
       await this.dispatch("loadFundData");
     },
-    async fetchAirtableData({ commit, state }) {
-      base("Table 1")
-        .select({
-          // Selecting the first 3 records in Grid view:
-          maxRecords: 3,
-          view: "Grid view",
-        })
-        .eachPage(
-          function page(records, fetchNextPage) {
-            // This function (`page`) will get called for each page of records.
-
-            records.forEach(function(record) {
-              console.log("Retrieved", record.get("twitter_handle"));
-              commit("addAirtableRecordToState", {
-                user: record.get("twitter_handle"),
-                nft_1: record.get("nft_1"),
-                nft_2: record.get("nft_2"),
-                nft_3: record.get("nft_3"),
-              });
-            });
-
-            // To fetch the next page of records, call `fetchNextPage`.
-            // If there are more records, `page` will get called again.
-            // If there are no more records, `done` will get called.
-            fetchNextPage();
-          },
-          function done(err) {
-            if (err) {
-              console.error(err);
-              return;
-            }
-          }
-        );
+    async fetchNFTCollectionList({ commit, state }) {
+      var nftCollectionList = (
+        await axios.get(
+          "https://sgki02asij.execute-api.ap-south-1.amazonaws.com/default/getTopNFTCollections"
+        )
+      )["data"];
+      commit("commitNFTCollectionListToState", nftCollectionList);
+    },
+    async postNFTCollections(
+      {},
+      { twitterHandle, nftCollection1, nftCollection2, nftCollection3 }
+    ) {
+      var res = await axios.post(
+        "https://uk7vng5qac.execute-api.ap-south-1.amazonaws.com/default/addNFTSurveyData",
+        {
+          twitterHandle: twitterHandle,
+          nftCollections: [nftCollection1, nftCollection2, nftCollection3],
+        }
+      );
+      console.log(res);
+      this.dispatch("fetchNFTCollectionList");
     },
   },
 });
