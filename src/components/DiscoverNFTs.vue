@@ -10,12 +10,12 @@
             v-bind="attrs"
             v-on="on"
           >
-            Add Collections !
+            Recommend Collections !
           </v-btn>
         </template>
         <v-card>
           <v-card-title>
-            <span class="text-h5">Submit NFT Collections</span>
+            <span class="text-h5">Enter Recommendations</span>
           </v-card-title>
           <v-card-text>
             <v-container>
@@ -27,7 +27,7 @@
                 ></v-text-field>
               </v-row>
               <v-row>
-                Enter three NFT upcoming NFT's twitter handle
+                Please Enter Projects' Twitter Handle (upto 3)
               </v-row>
               <v-row>
                 <v-text-field
@@ -77,6 +77,9 @@
               {{ item.handle }}
             </a>
           </template>
+          <template #item.percentageVotes="{ item }">
+              {{ parseInt(item.percentageVotes*100) }}%
+          </template>
         </v-data-table>
       </v-col>
     </v-row>
@@ -88,12 +91,12 @@ export default {
   data: () => ({
     headers: [
       {
-        text: "NFT Collection Twitter Handle",
+        text: "Twitter handles to NFT collections",
         align: "start",
         sortable: false,
         value: "handle",
       },
-      { text: "Votes", value: "count", sortable: true  },
+      { text: "Votes", value: "percentageVotes", sortable: true  },
     ],
     dialog: false,
     twitterHandle: "",
@@ -105,7 +108,7 @@ export default {
     getEntryList() {
       var nftCollectionList = this.$store.state.nftCollectionList;
       return nftCollectionList.filter(nftCollection => {
-          return nftCollection.handle != "null";
+          return nftCollection.handle != "null" && nftCollection != "";
       })
     },
   },
