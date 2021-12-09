@@ -27,7 +27,7 @@
                 ></v-text-field>
               </v-row>
               <v-row>
-                Please Enter Projects' Twitter Handle (upto 3)
+                Please Enter Project's Twitter Handle (upto 3)
               </v-row>
               <v-row>
                 <v-text-field
