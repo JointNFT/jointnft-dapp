@@ -14,7 +14,7 @@
       </div>
 
       <v-spacer></v-spacer>
-      
+
       <v-btn href="/DiscoverNFTs" color="#6733e2"> Discover !</v-btn>
       <v-btn href="/" text color="#6733e2"> Funds </v-btn>
       <v-btn href="/CreateFund" text color="#6733e2"> Create </v-btn>
@@ -76,9 +76,11 @@ export default {
     },
     toggleCuratorStatus() {
       console.log(this.$store.state.isCurator);
+
       return this.$store.commit("toggleCuratorStatus");
     },
     connect() {
+      console.log(this.$moralis);
       this.$store.dispatch("connectToWallet");
     },
   },

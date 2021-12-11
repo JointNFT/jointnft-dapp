@@ -11,6 +11,7 @@ Vue.config.productionTip = false
 Vue.use(Router);
 Vue.use(VueToastify);
 
+
 const router = new Router({
   mode: 'history',
   routes: Routes

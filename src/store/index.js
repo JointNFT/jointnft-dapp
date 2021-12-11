@@ -4,10 +4,50 @@ import fetch from "cross-fetch";
 import Web3 from "web3";
 import Web3Modal from "web3modal";
 import axios from "axios";
+import Moralis from "../plugins/moralis";
 var Airtable = require("airtable");
 
 const erc20FundABI = require("../contractDetails/erc20fund.json")["abi"];
 const fundFactoryABI = require("../contractDetails/FundFactory.json")["abi"];
+const NFTSurveyInput = Moralis.Object.extend("NFTCollectionSurveyInput");
+
+async function getNFTCollectionRankingFromMoralisQuery(queryResults) {
+  var nftCollectionCount = {};
+  var totalVotes = 0;
+  for (var index = 0; index < queryResults.length; index += 1) {
+    var result = queryResults[index];
+    var nftCollectionsFromResult = result.get("nftCollections");
+    
+    for (var nftColIndex = 0; nftColIndex < nftCollectionsFromResult.length; nftColIndex += 1) {
+      var nftCollection = nftCollectionsFromResult[nftColIndex];
+      if (nftCollection == "null" || nftCollection == "" || nftCollection == null) {
+        continue;
+      }
+      totalVotes += 1;
+
+      if (nftCollection in nftCollectionCount) {
+        nftCollectionCount[nftCollection] += 1;
+      } else {
+        nftCollectionCount[nftCollection] = 1;
+      }
+    }
+  }
+
+  var nftCollectionList = [];
+  for (var nftCollection in nftCollectionCount) {
+    var percentageFloat = nftCollectionCount[nftCollection] / totalVotes;
+    nftCollectionList.push({
+      handle: nftCollection,
+      count: nftCollectionCount[nftCollection],
+      percentageVotes: percentageFloat.toFixed(2),
+    });
+  }
+
+  nftCollectionList.sort((a, b) => (a.count < b.count ? 1 : -1));
+  console.log(totalVotes)
+  console.log(nftCollectionList);
+  return nftCollectionList;
+}
 
 Airtable.configure({
   endpointUrl: "https://api.airtable.com",
@@ -58,7 +98,7 @@ export default new Vuex.Store({
     web3Modal: null,
     maticBalance: 0,
     fundFactoryAddress: "0x1DAE25904fa53995D6E562825Aba17E90Eb4b5D3", // rinkeby address
-    // fundFactoryAddress: "0x1E7E4c6aE711C738EC322606F31D3DD97970a257",
+    // fundFactoryAddress: "0x1E7E4c6aE711C738EC322606F31D3DD97970a257", //mumbai
     fundList: [],
     nftFunds: {},
     isCurator: false,
@@ -195,10 +235,7 @@ export default new Vuex.Store({
     async getFundContract({ commit, state }, fundAddress) {
       try {
         var fundChecksumAddress = Web3.utils.toChecksumAddress(fundAddress);
-        var fundContract = new state.web3.eth.Contract(
-          erc20FundABI,
-          fundChecksumAddress
-        );
+        var fundContract = new state.web3.eth.Contract(erc20FundABI, fundChecksumAddress);
         console.log(fundContract);
         return fundContract;
       } catch (error) {
@@ -210,13 +247,8 @@ export default new Vuex.Store({
 
     async getFundFactoryContract({ commit, state }) {
       try {
-        var fundFactoryAddressChecksum = Web3.utils.toChecksumAddress(
-          state.fundFactoryAddress
-        );
-        var fundFacotryContract = new state.web3.eth.Contract(
-          fundFactoryABI,
-          fundFactoryAddressChecksum
-        );
+        var fundFactoryAddressChecksum = Web3.utils.toChecksumAddress(state.fundFactoryAddress);
+        var fundFacotryContract = new state.web3.eth.Contract(fundFactoryABI, fundFactoryAddressChecksum);
         return fundFacotryContract;
       } catch (error) {
         console.log(error);
@@ -227,9 +259,7 @@ export default new Vuex.Store({
 
     async getFunds({ commit, state }) {
       var fundFactoryContract = await this.dispatch("getFundFactoryContract");
-      var noOfFunds = await fundFactoryContract.methods
-        .getNoOfFundsCreated()
-        .call();
+      var noOfFunds = await fundFactoryContract.methods.getNoOfFundsCreated().call();
       var fundList = [];
       for (var i = 0; i < noOfFunds; i++) {
         var res = await fundFactoryContract.methods.funds(i).call();
@@ -279,9 +309,7 @@ export default new Vuex.Store({
 
     async getFundDetails({ commit, state }, fundAddress) {
       var fundContract = await this.dispatch("getFundContract", fundAddress);
-      var fundTokenBalance = await fundContract.methods
-        .balanceOf(Web3.utils.toChecksumAddress(state.account))
-        .call();
+      var fundTokenBalance = await fundContract.methods.balanceOf(Web3.utils.toChecksumAddress(state.account)).call();
       var ownerAddress = await fundContract.methods.ownerAddress().call();
       var weiBalance = await fundContract.methods.weiBalance().call();
       var tokenStartPrice = await fundContract.methods.tokenStartPrice().call();
@@ -290,9 +318,7 @@ export default new Vuex.Store({
       var symbol = await fundContract.methods.symbol().call();
       var noOfAssets = await fundContract.methods.noOfAssets().call();
       var img = await fundContract.methods.fundImgUrl().call();
-      var userTokenBalance = await fundContract.methods
-        .balanceOf(state.account)
-        .call();
+      var userTokenBalance = await fundContract.methods.balanceOf(state.account).call();
 
       var nftList = [];
       for (var i = 0; i < noOfAssets; i++) {
@@ -324,31 +350,16 @@ export default new Vuex.Store({
     },
 
     async addNFTToFund({ commit }, { openseaUrl, fundAddress }) {
-      var assetUrl = openseaUrl.replace(
-        "https://opensea.io/assets/",
-        "https://api.opensea.io/api/v1/asset/"
-      );
+      var assetUrl = openseaUrl.replace("https://opensea.io/assets/", "https://api.opensea.io/api/v1/asset/");
       const response = await fetch(assetUrl);
       var jsonRes = await response.json();
 
-      var nftValueInWei = Web3.utils
-        .toWei(findLowestSaleAmount(jsonRes["orders"]).toString(), "ether")
-        .toString();
+      var nftValueInWei = Web3.utils.toWei(findLowestSaleAmount(jsonRes["orders"]).toString(), "ether").toString();
 
       var fundContract = await this.dispatch("getFundContract", fundAddress);
-      console.log(
-        jsonRes["asset_contract"]["address"],
-        openseaUrl,
-        jsonRes["image_url"],
-        nftValueInWei
-      );
+      console.log(jsonRes["asset_contract"]["address"], openseaUrl, jsonRes["image_url"], nftValueInWei);
       var res = await fundContract.methods
-        .buyNFT(
-          jsonRes["asset_contract"]["address"],
-          openseaUrl,
-          jsonRes["image_url"],
-          nftValueInWei
-        )
+        .buyNFT(jsonRes["asset_contract"]["address"], openseaUrl, jsonRes["image_url"], nftValueInWei)
         .send({
           from: this.state.account,
         });
@@ -356,18 +367,13 @@ export default new Vuex.Store({
       await this.dispatch("getFundDetails", fundAddress);
     },
 
-    async sellNFTfromFund(
-      { commit, state },
-      { index, sellPrice, fundAddress }
-    ) {
+    async sellNFTfromFund({ commit, state }, { index, sellPrice, fundAddress }) {
       console.log("here!");
       var sellPriceInWei = parseFloat(sellPrice) * 10 ** 18;
       var fundContract = await this.dispatch("getFundContract", fundAddress);
-      var res = await fundContract.methods
-        .sellNFT(index, sellPriceInWei.toString())
-        .send({
-          from: this.state.account,
-        });
+      var res = await fundContract.methods.sellNFT(index, sellPriceInWei.toString()).send({
+        from: this.state.account,
+      });
       console.log(res);
       await this.dispatch("getFundDetails", fundAddress);
     },
@@ -381,42 +387,67 @@ export default new Vuex.Store({
       await this.dispatch("refreshBalance", contractId);
     },
 
-    async createFund(
-      { commit, state },
-      { fundName, fundSymbl, tokenPrice, depositAmt, imgUrl }
-    ) {
+    async createFund({ commit, state }, { fundName, fundSymbl, tokenPrice, depositAmt, imgUrl }) {
       var depositAmtInWei = parseFloat(depositAmt) * 10 ** 18;
       var fundFactoryContract = await this.dispatch("getFundFactoryContract");
-      var res = await fundFactoryContract.methods
-        .createFund(fundName, fundSymbl, tokenPrice, imgUrl)
-        .send({
-          from: this.state.account,
-          value: depositAmtInWei,
-        });
+      var res = await fundFactoryContract.methods.createFund(fundName, fundSymbl, tokenPrice, imgUrl).send({
+        from: this.state.account,
+        value: depositAmtInWei,
+      });
       console.log(res);
       await this.dispatch("loadFundData");
     },
+
     async fetchNFTCollectionList({ commit, state }) {
-      var nftCollectionList = (
-        await axios.get(
-          "https://sgki02asij.execute-api.ap-south-1.amazonaws.com/default/getTopNFTCollections"
-        )
-      )["data"];
+      var NFTSurveyQuery = new Moralis.Query(NFTSurveyInput);
+      var NFTSurveyResults = await NFTSurveyQuery.find();
+      var nftCollectionList = await getNFTCollectionRankingFromMoralisQuery(NFTSurveyResults);
+
       commit("commitNFTCollectionListToState", nftCollectionList);
     },
-    async postNFTCollections(
-      {},
-      { twitterHandle, nftCollection1, nftCollection2, nftCollection3 }
-    ) {
-      var res = await axios.post(
-        "https://uk7vng5qac.execute-api.ap-south-1.amazonaws.com/default/addNFTSurveyData",
-        {
-          twitterHandle: twitterHandle,
-          nftCollections: [nftCollection1, nftCollection2, nftCollection3],
-        }
-      );
-      console.log(res);
+    async postNFTCollections({}, { twitterHandle, nftCollection1, nftCollection2, nftCollection3 }) {
+      var data = {
+        twitterHandle: twitterHandle,
+        nftCollections: [nftCollection1, nftCollection2, nftCollection3],
+      };
+      // var res = await axios.post(
+      //   "https://uk7vng5qac.execute-api.ap-south-1.amazonaws.com/default/addNFTSurveyData",
+      //   data
+      // );
+
+      const input = new NFTSurveyInput();
+      input.set("twitterHandle", twitterHandle);
+      input.set("nftCollections", [nftCollection1, nftCollection2, nftCollection3]);
+      input.save();
+
+      // console.log(res);
       this.dispatch("fetchNFTCollectionList");
+    },
+    async test() {
+      var res = await Moralis.Plugins.opensea.createBuyOrder({
+        network: "testnet",
+        tokenAddress: "0x88b48f654c30e99bc2e4a1559b4dcf1ad93fa656",
+        tokenId: "105551933887525636585985410533690995471852064849806454121074787046087670628353",
+        tokenType: "ERC721",
+        amount: 0.0005,
+        userAddress: "0x3526ccDe13d17a5ddCE0dA48C82b0094716CD358",
+        paymentTokenAddress: "0xc778417e063141139fce010982780140aa0cd5ab",
+      });
+      console.log(res);
+
+      console.log("yuuhuu");
+    },
+    async login() {
+      let user = Moralis.User.current();
+      if (!user) {
+        user = await Moralis.authenticate();
+      }
+      console.log("logged in user:", user);
+    },
+
+    async logOut() {
+      await Moralis.User.logOut();
+      console.log("logged out");
     },
   },
 });
