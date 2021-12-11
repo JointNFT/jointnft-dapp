@@ -3,9 +3,7 @@ import Vuex from "vuex";
 import fetch from "cross-fetch";
 import Web3 from "web3";
 import Web3Modal from "web3modal";
-import axios from "axios";
 import Moralis from "../plugins/moralis";
-var Airtable = require("airtable");
 
 const erc20FundABI = require("../contractDetails/erc20fund.json")["abi"];
 const fundFactoryABI = require("../contractDetails/FundFactory.json")["abi"];
@@ -49,11 +47,6 @@ async function getNFTCollectionRankingFromMoralisQuery(queryResults) {
   return nftCollectionList;
 }
 
-Airtable.configure({
-  endpointUrl: "https://api.airtable.com",
-  apiKey: "keyeUSmFf0i7Lw7VK",
-});
-var base = Airtable.base("appC6waZ1hgwGXOnc");
 
 Vue.use(Vuex);
 
@@ -405,15 +398,12 @@ export default new Vuex.Store({
 
       commit("commitNFTCollectionListToState", nftCollectionList);
     },
+
     async postNFTCollections({}, { twitterHandle, nftCollection1, nftCollection2, nftCollection3 }) {
       var data = {
         twitterHandle: twitterHandle,
         nftCollections: [nftCollection1, nftCollection2, nftCollection3],
       };
-      // var res = await axios.post(
-      //   "https://uk7vng5qac.execute-api.ap-south-1.amazonaws.com/default/addNFTSurveyData",
-      //   data
-      // );
 
       const input = new NFTSurveyInput();
       input.set("twitterHandle", twitterHandle);
@@ -423,20 +413,7 @@ export default new Vuex.Store({
       // console.log(res);
       this.dispatch("fetchNFTCollectionList");
     },
-    async test() {
-      var res = await Moralis.Plugins.opensea.createBuyOrder({
-        network: "testnet",
-        tokenAddress: "0x88b48f654c30e99bc2e4a1559b4dcf1ad93fa656",
-        tokenId: "105551933887525636585985410533690995471852064849806454121074787046087670628353",
-        tokenType: "ERC721",
-        amount: 0.0005,
-        userAddress: "0x3526ccDe13d17a5ddCE0dA48C82b0094716CD358",
-        paymentTokenAddress: "0xc778417e063141139fce010982780140aa0cd5ab",
-      });
-      console.log(res);
-
-      console.log("yuuhuu");
-    },
+    
     async login() {
       let user = Moralis.User.current();
       if (!user) {

@@ -83,10 +83,6 @@
         </v-data-table>
       </v-col>
     </v-row>
-    <v-row>
-      <v-btn @click="login()" id="btn-login">Moralis Login</v-btn>
-      <v-btn @click="logOut ()" id="btn-logout">Logout</v-btn>
-    </v-row>
   </v-container>
 </template>
 
