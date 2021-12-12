@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col> ETH in Wallet: {{ $store.state.ethBalance }} </v-col>
+      <v-col> MATIC in Wallet: {{ $store.state.ethBalance }} </v-col>
       <v-col> tokenBalance: {{ getNFTDetails.userTokenBalance }} </v-col>
     </v-row>
     <v-row>
@@ -12,7 +12,7 @@
     </v-row>
     <v-row>
       <v-col>
-        ETH in Fund: {{ getNFTDetails.weiBalance || 0 }}
+        MATIC in Fund: {{ getNFTDetails.weiBalance || 0 }}
       </v-col>
       <v-col> owner: {{ getNFTDetails.ownerAddress || 0 }} </v-col>
     </v-row>
@@ -21,6 +21,7 @@
     </v-row>
     <v-row>
       <v-btn v-on:click="refreshBalances"> refresh balance </v-btn>
+      <v-btn :href="`/Funds?contractId=${getNFTDetails.ownerAddress}`">DAO</v-btn>
     </v-row>
     <v-row>
       <v-text-field
