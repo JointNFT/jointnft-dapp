@@ -99,7 +99,12 @@ export default {
           nftCollection2: this.nftCollection2,
           nftCollection3: this.nftCollection3,
         })
-        .then(() => {
+        .then((res) => {
+          console.log(res);
+          if (res.error) {
+            this.$vToastify.error(res.message, "Error! ");
+            return;
+          }
           this.dialog = false;
           this.$vToastify.success("Collections submitted, will be updated to the leaderboard !");
         });

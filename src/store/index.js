@@ -4,6 +4,7 @@ import fetch from "cross-fetch";
 import Web3 from "web3";
 import Web3Modal from "web3modal";
 import Moralis from "../plugins/moralis";
+import axios from "axios";
 
 const erc20FundABI = require("../contractDetails/erc20fund.json")["abi"];
 const fundFactoryABI = require("../contractDetails/FundFactory.json")["abi"];
@@ -417,10 +418,34 @@ export default new Vuex.Store({
     },
 
     async postNFTCollections({}, { twitterHandle, nftCollection1, nftCollection2, nftCollection3 }) {
+
+      var res = await axios.post('/api/isTwitterHandler', {handle:twitterHandle});
+      console.log(res.data);
+      if(!res.data.isTwitterHandle) {
+        return {error:true, message:'Users twitter handle is incorrect'};
+      }
+
+      var res = await axios.post('/api/isTwitterHandler', {handle:nftCollection1});
+      if(!res.data.isTwitterHandle && nftCollection2 != '') {
+        return {error:true, message:'Collection 1 is not a twitter handle'};
+      }
+      
+      var res = await axios.post('/api/isTwitterHandler', {handle:nftCollection2});
+      if(!res.data.isTwitterHandle && nftCollection2 != '') {
+        return {error:true, message:'Collection 2 is not a twitter handle'};
+      }
+
+      var res = await axios.post('/api/isTwitterHandler', {handle:nftCollection3});
+      if(!res.data.isTwitterHandle && nftCollection2 != '') {
+        return {error:true, message:'Collection 3 is not a twiiter handle'};
+      }
+
       var data = {
         twitterHandle: twitterHandle,
         nftCollections: [nftCollection1, nftCollection2, nftCollection3],
       };
+
+      
 
       const input = new NFTSurveyInput();
       input.set("twitterHandle", twitterHandle);
@@ -429,6 +454,8 @@ export default new Vuex.Store({
 
       // console.log(res);
       this.dispatch("fetchNFTCollectionList");
+
+      return {error: false};
     },
 
     async login() {
