@@ -419,23 +419,23 @@ export default new Vuex.Store({
 
     async postNFTCollections({}, { twitterHandle, nftCollection1, nftCollection2, nftCollection3 }) {
 
-      var res = await axios.post('/api/isTwitterHandler', {handle:twitterHandle});
+      var res = await axios.get('/api/isTwitterHandler', {params:{handle:twitterHandle}});
       console.log(res.data);
       if(!res.data.isTwitterHandle) {
         return {error:true, message:'Users twitter handle is incorrect'};
       }
 
-      var res = await axios.post('/api/isTwitterHandler', {handle:nftCollection1});
+      var res = await axios.get('/api/isTwitterHandler', {params:{handle:nftCollection1}});
       if(!res.data.isTwitterHandle && nftCollection2 != '') {
         return {error:true, message:'Collection 1 is not a twitter handle'};
       }
       
-      var res = await axios.post('/api/isTwitterHandler', {handle:nftCollection2});
+      var res = await axios.get('/api/isTwitterHandler', {params:{handle:nftCollection2}});
       if(!res.data.isTwitterHandle && nftCollection2 != '') {
         return {error:true, message:'Collection 2 is not a twitter handle'};
       }
 
-      var res = await axios.post('/api/isTwitterHandler', {handle:nftCollection3});
+      var res = await axios.get('/api/isTwitterHandler', {params:{handle:nftCollection3}});
       if(!res.data.isTwitterHandle && nftCollection2 != '') {
         return {error:true, message:'Collection 3 is not a twiiter handle'};
       }

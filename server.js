@@ -25,8 +25,8 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.post("/api/isTwitterHandler", jsonParser, async (req, res) => {
-    var handle = req.body['handle']
+app.get("/api/isTwitterHandler", jsonParser, async (req, res) => {
+    var handle = req.query.handle
     console.log(handle);
     if(handle == ''){
       res.send({error:'empty userId'})
