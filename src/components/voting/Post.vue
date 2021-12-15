@@ -13,16 +13,16 @@
     </template>
     <v-card>
       <v-card-title class="text-h5">
-        Vote for the motion
+        Vote Stats
       </v-card-title>
       <v-card-text>
         <v-container>
           <v-row>
             <v-col>
-              Total Votes casted: 10
+              Total Votes casted: {{(parseInt(getPosts[postIndex].totalYesVotes) + parseInt(getPosts[postIndex].totalNoVotes))}}
             </v-col>
             <v-col>
-              Votes for the motion: 70%
+              Votes for the motion: {{parseInt(getPosts[postIndex].totalYesVotes * 100)/(parseInt(getPosts[postIndex].totalYesVotes) + parseInt(getPosts[postIndex].totalNoVotes))}}%
             </v-col>
           </v-row>
           <v-row>
@@ -34,10 +34,10 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="green darken-1" text @click="dialog = false">
+        <v-btn color="green darken-1" text @click="placeVote(true ,getPosts[postIndex])">
           Vote For
         </v-btn>
-        <v-btn color="green darken-1" text @click="dialog = false">
+        <v-btn color="green darken-1" text @click="placeVote(false ,getPosts[postIndex])">
           Vote Against
         </v-btn>
         <v-btn color="green darken-1" text @click="dialog = false">
@@ -60,11 +60,18 @@ export default {
   computed: {
     getPosts() {
       if (this.$route.query.contractId in this.$store.state.postList) {
-        console.log(this.$store.state.postList[this.$route.query.contractId]);
+        console.log('inside get Posts', this.$store.state.postList[this.$route.query.contractId]);
         return this.$store.state.postList[this.$route.query.contractId];
       }
       return [];
-    },
+    }
   },
+  methods: {
+    placeVote(isVotingFor, voteDetails) {
+      console.log(voteDetails);
+      this.$store.dispatch("placeVote", {isVotingFor, voteAddress: voteDetails.voteAddress, fundAddress: this.$route.query.contractId});
+      this.dialog = false;
+    },
+  }
 };
 </script>

@@ -21,7 +21,8 @@
     </v-row>
     <v-row>
       <v-btn v-on:click="refreshBalances"> refresh balance </v-btn>
-      <v-btn :href="`/Funds?contractId=${getNFTDetails.ownerAddress}`">DAO</v-btn>
+      <v-space></v-space>
+      <v-btn :href="`/Forum?contractId=${this.$route.query.contractId}`">DAO</v-btn>
     </v-row>
     <v-row>
       <v-text-field

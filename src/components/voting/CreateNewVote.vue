@@ -19,10 +19,10 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="fetchPosts">
+          <v-btn color="blue darken-1" text @click="dialog = false">
             Close
           </v-btn>
-          <v-btn color="blue darken-1" text @click="dialog= false">
+          <v-btn color="blue darken-1" text @click="CreatePost">
             Create
           </v-btn>
         </v-card-actions>
@@ -46,14 +46,10 @@ export default {
       console.log(this.$route.query.contractId);
       this.$store.dispatch("createPost", { PostDesc: this.PostDesc, fundAddress: this.$route.query.contractId }).then(() => {
         this.$vToastify.success("Post created, you can go ahead and vote now!");
+        dialog = false;
       });
     },
-    fetchPosts() {
-      this.$store.dispatch("fetchPosts", { fundAddress: this.$route.query.contractId });
-    },
-  },
-  mounted: function() {
-        this.fetchPosts() // Calls the method before page loads
-    },
+    
+  }
 };
 </script>

@@ -79,10 +79,18 @@ export default {
 
       return this.$store.commit("toggleCuratorStatus");
     },
-    connect() {
+    connect(fundAddress) {
       console.log(this.$moralis);
-      this.$store.dispatch("connectToWallet");
-    },
+      console.log('fundAddress', fundAddress);
+      if(fundAddress!= null && fundAddress != '') {
+        this.$store.dispatch("connectToWallet").then(()=> {
+          console.log('fundAddress',fundAddress)
+          this.$store.dispatch("fetchPosts", { fundAddress });
+        });
+      } else {
+        this.$store.dispatch("connectToWallet");
+      }
+    }
   },
   data: () => ({
     theme: "light",
@@ -93,7 +101,7 @@ export default {
       const web3modal = this.$refs.web3modal;
       this.$store.commit("setWeb3Modal", web3modal);
       if (web3modal.cachedProvider) {
-        this.connect();
+        this.connect(this.$route.query.contractId);
       }
     });
   },

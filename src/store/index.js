@@ -183,8 +183,11 @@ export default new Vuex.Store({
     commitNFTCollectionListToState(state, nftCollectionList) {
       state.nftCollectionList = nftCollectionList;
     },
-    setPosts(state, {fundAddress, postList}) {
+    setPosts(state, { fundAddress, postList }) {
       Vue.set(state.postList, fundAddress, postList);
+    },
+    setPost(state, { fundAddress, post, index }) {
+      Vue.set(state.postList[fundAddress], index, post);
     },
   },
   actions: {
@@ -294,7 +297,6 @@ export default new Vuex.Store({
       await fundContract.methods.removeFunds(parseInt(tokenAmount)).send({
         from: this.state.account,
       });
-      console.log("...");
       console.log(contractId);
       this.dispatch("refreshBalance", contractId);
     },
@@ -311,7 +313,6 @@ export default new Vuex.Store({
         await this.dispatch("getFundDetails", fundAddress);
         await this.dispatch("fetchPosts", fundAddress);
       }
-      
     },
 
     async getMaticBalance({ commit, state }) {
@@ -418,34 +419,31 @@ export default new Vuex.Store({
     },
 
     async postNFTCollections({}, { twitterHandle, nftCollection1, nftCollection2, nftCollection3 }) {
-
-      var res = await axios.get('/api/isTwitterHandler', {params:{handle:twitterHandle}});
+      var res = await axios.get("/api/isTwitterHandler", { params: { handle: twitterHandle } });
       console.log(res.data);
-      if(!res.data.isTwitterHandle) {
-        return {error:true, message:'Users twitter handle is incorrect'};
+      if (!res.data.isTwitterHandle) {
+        return { error: true, message: "Users twitter handle is incorrect" };
       }
 
-      var res = await axios.get('/api/isTwitterHandler', {params:{handle:nftCollection1}});
-      if(!res.data.isTwitterHandle && nftCollection2 != '') {
-        return {error:true, message:'Collection 1 is not a twitter handle'};
-      }
-      
-      var res = await axios.get('/api/isTwitterHandler', {params:{handle:nftCollection2}});
-      if(!res.data.isTwitterHandle && nftCollection2 != '') {
-        return {error:true, message:'Collection 2 is not a twitter handle'};
+      var res = await axios.get("/api/isTwitterHandler", { params: { handle: nftCollection1 } });
+      if (!res.data.isTwitterHandle && nftCollection2 != "") {
+        return { error: true, message: "Collection 1 is not a twitter handle" };
       }
 
-      var res = await axios.get('/api/isTwitterHandler', {params:{handle:nftCollection3}});
-      if(!res.data.isTwitterHandle && nftCollection2 != '') {
-        return {error:true, message:'Collection 3 is not a twiiter handle'};
+      var res = await axios.get("/api/isTwitterHandler", { params: { handle: nftCollection2 } });
+      if (!res.data.isTwitterHandle && nftCollection2 != "") {
+        return { error: true, message: "Collection 2 is not a twitter handle" };
+      }
+
+      var res = await axios.get("/api/isTwitterHandler", { params: { handle: nftCollection3 } });
+      if (!res.data.isTwitterHandle && nftCollection2 != "") {
+        return { error: true, message: "Collection 3 is not a twiiter handle" };
       }
 
       var data = {
         twitterHandle: twitterHandle,
         nftCollections: [nftCollection1, nftCollection2, nftCollection3],
       };
-
-      
 
       const input = new NFTSurveyInput();
       input.set("twitterHandle", twitterHandle);
@@ -455,7 +453,7 @@ export default new Vuex.Store({
       // console.log(res);
       this.dispatch("fetchNFTCollectionList");
 
-      return {error: false};
+      return { error: false };
     },
 
     async login() {
@@ -473,7 +471,7 @@ export default new Vuex.Store({
 
     async createPost({ state }, { PostDesc, fundAddress }) {
       const newPost = new Forum();
-
+      console.log("creating post in forum");
       var jointnftvoteContract = new state.web3.eth.Contract(nftFundVotingJson["abi"]);
 
       var jointnftvote = await jointnftvoteContract
@@ -494,13 +492,16 @@ export default new Vuex.Store({
       newPost.set("postDesc", PostDesc);
       newPost.set("fundAddress", fundAddress);
       newPost.set("voteContractAddress", jointnftvote._address);
+      newPost.set("networkId", state.networkId);
       newPost.save();
       this.dispatch("fetchPosts", fundAddress);
     },
 
-    async fetchPosts({ commit, state }, { fundAddress }) {
+    async fetchPosts({ commit, state }, fundAddress ) {
       var postsQuery = new Moralis.Query(Forum);
-      // postsQuery.equalTo("fundAddress", fundAddress);
+      postsQuery.equalTo("fundAddress", fundAddress);
+      console.log(state.networkId);
+      // postsQuery.equalTo("networkId", state.networkId);
       var queryResults = await postsQuery.find();
 
       var postList = [];
@@ -511,26 +512,58 @@ export default new Vuex.Store({
         postList.push({ voteAddress, desc });
       }
 
-      commit("setPosts", {fundAddress, postList});
-      this.dispatch("loadVotingDetails", postList);
+      commit("setPosts", { fundAddress, postList });
+      console.log('{ fundAddress, postList }',{ fundAddress, postList })
+      for (var index = 0; index < postList.length; index += 1) {
+        this.dispatch("loadVoteDetails", { voteAddress: postList[index].voteAddress, fundAddress, index });
+      }
     },
 
-    async loadVotingDetails({ commit, state }, postList) {
-      var postContract;
+    async loadAllVoteDetails({ commit, state }, postList) {
       for (var index = 0; index < postList.length; index += 1) {
         var post = postList[index];
+        console.log(post);
         var postContract = await this.dispatch("getVotingContract", post.voteAddress);
-        post['yesVotesByUser'] = await postContract.methods.getYesVotesByUser().call();
-        post['noVotesByUser'] = await postContract.methods.getNoVotesByUser().call();
-        post['totalVotesPossibleByUser'] = await postContract.methods.totalVotesPossible().call();
-        post['associatedFundAddress'] = await postContract.methods.getAssociatedFund().call();
-        post['totalYesVotes'] = await postContract.methods.getTotalYesVotes().call();
-        post['totalNoVotes'] = await postContract.methods.getTotalNoVotes().call();
-        var fundContract = await this.dispatch("getFundContract", post['associatedFundAddress']);
-        post['totalVotesPossible'] = await fundContract.methods.totalSupply().call();
-        commit("setPosts", {fundAddress:post['associatedFundAddress'], postList});
+        post["yesVotesByUser"] = await postContract.methods.getYesVotesByUser().call();
+        post["noVotesByUser"] = await postContract.methods.getNoVotesByUser().call();
+        post["totalVotesPossibleByUser"] = await postContract.methods.totalVotesPossible().call();
+        post["associatedFundAddress"] = await postContract.methods.getAssociatedFund().call();
+        post["totalYesVotes"] = await postContract.methods.getTotalYesVotes().call();
+        post["totalNoVotes"] = await postContract.methods.getTotalNoVotes().call();
+        var fundContract = await this.dispatch("getFundContract", post["associatedFundAddress"]);
+        post["totalVotesPossible"] = await fundContract.methods.totalSupply().call();
+        console.log('post',post);
+        commit("setPosts", { fundAddress: post["associatedFundAddress"], postList });
       }
+    },
+
+    async loadVoteDetails({ commit, state }, { voteAddress, fundAddress, index }) {
+      var voteContract = await this.dispatch("getVotingContract", voteAddress);
+      console.log(voteContract)
+      var post = this.state.postList[fundAddress][index];
+      post["yesVotesByUser"] = await voteContract.methods.getYesVotesByUser().call();
+      post["noVotesByUser"] = await voteContract.methods.getNoVotesByUser().call();
+      post["totalVotesPossibleByUser"] = await voteContract.methods.totalVotesPossible().call();
+      post["associatedFundAddress"] = await voteContract.methods.getAssociatedFund().call();
+      post["totalYesVotes"] = await voteContract.methods.getTotalYesVotes().call();
+      post["totalNoVotes"] = await voteContract.methods.getTotalNoVotes().call();
       
+      var fundContract = await this.dispatch("getFundContract", post["associatedFundAddress"]);
+      post["totalVotesPossible"] = await fundContract.methods.totalSupply().call();
+      console.log('post',post);
+      commit("setPost", { fundAddress: post["associatedFundAddress"], post, index });
+    },
+
+    async placeVote({ commit, state }, { isVotingFor, voteAddress, fundAddress, index }) {
+      console.log({ isVotingFor, voteAddress, fundAddress });
+      var voteContract = await this.dispatch("getVotingContract", voteAddress);
+      var totalVotesPossibleByUser = await voteContract.methods.totalVotesPossible().call();
+      await voteContract.methods.vote(isVotingFor, totalVotesPossibleByUser).send({
+        from: state.account,
+        gas: "4700000",
+      });
+
+      this.dispatch("loadVoteDetails", { voteAddress, fundAddress, index });
     },
   },
 });
