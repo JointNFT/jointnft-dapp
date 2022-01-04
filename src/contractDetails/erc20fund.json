@@ -145,6 +145,32 @@
 		},
 		{
 			"inputs": [],
+			"name": "_desc",
+			"outputs": [
+				{
+					"internalType": "string",
+					"name": "",
+					"type": "string"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "_twitterHandle",
+			"outputs": [
+				{
+					"internalType": "string",
+					"name": "",
+					"type": "string"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
 			"name": "addFunds",
 			"outputs": [
 				{
@@ -252,6 +278,55 @@
 			"type": "function"
 		},
 		{
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "tokenId",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "tokenContract",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "duration",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "reservePrice",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address payable",
+					"name": "curator",
+					"type": "address"
+				},
+				{
+					"internalType": "uint8",
+					"name": "curatorFeePercentages",
+					"type": "uint8"
+				},
+				{
+					"internalType": "address",
+					"name": "auctionCurrency",
+					"type": "address"
+				}
+			],
+			"name": "createNFTAuctionINZora",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"inputs": [],
 			"name": "decimals",
 			"outputs": [
@@ -289,16 +364,49 @@
 			"type": "function"
 		},
 		{
-			"inputs": [],
-			"name": "desc",
-			"outputs": [
+			"inputs": [
 				{
-					"internalType": "string",
-					"name": "",
-					"type": "string"
+					"internalType": "uint256",
+					"name": "assetNumber",
+					"type": "uint256"
 				}
 			],
-			"stateMutability": "view",
+			"name": "deleteNFTandRearrange",
+			"outputs": [
+				{
+					"components": [
+						{
+							"internalType": "string",
+							"name": "openseaUrl",
+							"type": "string"
+						},
+						{
+							"internalType": "string",
+							"name": "imageUrl",
+							"type": "string"
+						},
+						{
+							"internalType": "uint256",
+							"name": "value",
+							"type": "uint256"
+						},
+						{
+							"internalType": "address",
+							"name": "nftAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "timeBought",
+							"type": "uint256"
+						}
+					],
+					"internalType": "struct erc20Fund.Asset",
+					"name": "",
+					"type": "tuple"
+				}
+			],
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -456,6 +564,24 @@
 			"inputs": [
 				{
 					"internalType": "uint256",
+					"name": "auctionId",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "amount",
+					"type": "uint256"
+				}
+			],
+			"name": "placeZoraAuctionBit",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "uint256",
 					"name": "amount",
 					"type": "uint256"
 				}
@@ -599,19 +725,6 @@
 				}
 			],
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [],
-			"name": "twitterHandle",
-			"outputs": [
-				{
-					"internalType": "string",
-					"name": "",
-					"type": "string"
-				}
-			],
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{

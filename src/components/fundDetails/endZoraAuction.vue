@@ -2,34 +2,19 @@
   <v-row justify="center">
     <v-dialog v-model="dialog" persistent max-width="600">
       <template v-slot:activator="{ on, attrs }">
-        <v-fab-transition>
-          <v-btn
-            v-bind="attrs"
-            v-on="on"
-            color="pink"
-            dark
-            absolute
-            bottom
-            right
-            fab
-            ><v-icon>mdi-minus</v-icon></v-btn
-          >
-        </v-fab-transition>
+        <v-btn v-bind="attrs" v-on="on">End Auction</v-btn>
       </template>
       <v-card>
         <v-card-title>
-          <span class="text-h5"
-            >At what price(MATIC) do you want to sell the NFT ? </span
-          >
+          <span class="text-h5">Which auction would you like to end ? </span>
         </v-card-title>
         <v-card-text>
           <v-container>
             <v-row>
-              <v-col>
-                <v-text-field
-                  v-model="sellPrice"
+              <v-col><v-text-field
+                  v-model="auctionId"
                   :rules="[numberRule]"
-                  label="Add sell price (MATIC)"
+                  label="Enter the auction ID to end"
                   required
                 ></v-text-field>
               </v-col>
@@ -41,7 +26,7 @@
           <v-btn color="blue darken-1" text @click="dialog = false">
             Close
           </v-btn>
-          <v-btn color="blue darken-1" text @click="sellNFT"> Save </v-btn>
+          <v-btn color="blue darken-1" text @click="endAuction()"> End Auction </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -70,31 +55,27 @@
 
 <script>
 export default {
-  props:["index", "owner"],
+  props: ["index", "owner", "token_id", "token_address"],
   data: () => ({
     dialog: false,
-    sellPrice: "",
+    auctionId: "",
     numberRule: (v) => {
       if (v != null && v != "" && !v.trim()) return true;
-      if (!isNaN(parseFloat(v)) && v >= 0 && v <= 999) return true;
-      return "Number has to be between 0 and 999";
+      if (!isNaN(parseFloat(v)) && v >= 0 ) return true;
+      return "Number has to be between 0 and infinity";
     },
   }),
 
   methods: {
-    async sellNFT() {
-      var fundAddress = this.$route.query.contractId;
-      console.log(fundAddress)
-      await this.$store.dispatch("sellNFTfromFund", {
-        index: this.index,
-        sellPrice: this.sellPrice,
-        fundAddress: fundAddress,
+    async endAuction() {
+      const fundAddress = this.$route.query.contractId;
+      this.$store.dispatch("endZoraAuction", {
+        auctionId: this.auctionId
       }).then(() => {
-        this.dialog = false;
-        this.$vToastify.success("NFT sold for "+this.sellPrice+" MATIC!");
+          this.dialog = false;
+          this.$vToastify.success("Successfully ended the auction !");
       });
-      
-    }
+    },
   },
 };
 </script>

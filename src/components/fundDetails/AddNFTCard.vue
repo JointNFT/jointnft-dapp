@@ -2,7 +2,7 @@
   <v-row justify="center">
     <v-dialog v-model="dialog" persistent max-width="600">
       <template v-slot:activator="{ on, attrs }">
-        <v-img v-bind="attrs" v-on="on" src="../assets/add-photo-icon-29.png" />
+        <v-img v-bind="attrs" v-on="on" src="../../assets/add-photo-icon-29.png" />
       </template>
       <v-card>
         <v-card-title>

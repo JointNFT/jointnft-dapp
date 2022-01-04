@@ -7,16 +7,16 @@
         </v-row>
         <v-divider id="divider"></v-divider>
         <v-row>
-          <v-col v-for="index in getNFTDetails.nftList.length" :key="index" cols="4">
+          <v-col v-for="index in getNFTListInFund.length" :key="index" cols="4">
             <NFTCard
-              :nft="getNFTDetails.nftList[index - 1]"
+              :nft="getNFTListInFund[index - 1]"
               :index="index - 1"
               :owner="getNFTDetails.ownerAddress"
               :connectedAccount="getConnectedAccount"
             />
           </v-col>
           <v-col cols="4" v-if="getConnectedAccount == getNFTDetails.ownerAddress">
-            <AddNFTCard />
+            <BidOnAuction />
           </v-col>
         </v-row>
       </v-col>
@@ -41,12 +41,15 @@
 import NFTCard from "./NFTCard.vue";
 import AddNFTCard from "./AddNFTCard.vue";
 import FundDetails from "./FundDetails.vue";
+import BidOnAuction from "./BidOnAuction.vue";
+
 
 export default {
   components: {
     FundDetails,
     NFTCard,
     AddNFTCard,
+    BidOnAuction
   },
   computed: {
     getNFTDetails() {
@@ -54,9 +57,17 @@ export default {
       if (this.$store.state.nftFunds == null) return { name: "", nftList: [], ownerAddress: "" };
       return this.$store.state.nftFunds[this.$route.query.contractId];
     },
+    getNFTListInFund() {
+      if (this.$store.state.nftListInFund == null || this.$store.state.nftListInFund == {}) return [];
+      return this.$store.state.nftListInFund[this.$route.query.contractId];
+    },
     getConnectedAccount() {
       return this.$store.state.account;
     },
+    
+  },
+  mounted() {
+    this.$store.dispatch("getNFTsInAddress", { address: this.$route.query.contractId });
   },
 };
 </script>

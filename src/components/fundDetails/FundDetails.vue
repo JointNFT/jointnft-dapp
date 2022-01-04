@@ -48,12 +48,19 @@
       ></v-text-field>
       <v-btn v-on:click="modifyTokenPrice"> Modify Token Price </v-btn>
     </v-row>
+    <v-row v-if="owner == connectedAccount">
+      <EndZoraAuction/>
+    </v-row>
   </v-container>
 </template>
 
 <script>
+import EndZoraAuction from "./endZoraAuction.vue";
+
 export default {
-  components: {},
+  components: {
+    EndZoraAuction
+  },
   computed: {
     getNFTDetails() {
       return this.$store.state.nftFunds[this.$route.query.contractId];
@@ -62,6 +69,7 @@ export default {
   methods: {
     refreshBalances() {
       this.$store.dispatch("refreshBalance", this.$route.query.contractId);
+      
     },
     buyFundTokens() {
       this.$store
@@ -93,6 +101,10 @@ export default {
           this.$vToastify.success("Tokens Price modified!");
         });
     },
+
+    getNFTsInContract() {
+      this.$store.dispatch("getNFTsInContract", {address: this.$route.query.contractId});
+    }
   },
   data: () => ({
     numberRule: (v) => {

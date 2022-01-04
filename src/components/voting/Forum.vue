@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import CreateNewVote from "./voting/CreateNewVote.vue";
-import Post from "./voting/Post.vue";
+import CreateNewVote from "./CreateNewVote.vue";
+import Post from "./Post.vue";
 
 export default {
   data: () => ({

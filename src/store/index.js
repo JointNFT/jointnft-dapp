@@ -9,8 +9,10 @@ import axios from "axios";
 const erc20FundABI = require("../contractDetails/erc20fund.json")["abi"];
 const fundFactoryABI = require("../contractDetails/FundFactory.json")["abi"];
 const nftFundVotingJson = require("../contractDetails/nftFundVoting.json");
+const iAuctionHouseAbi = require("../contractDetails/IAuctionHouse.json")["abi"];
 const NFTSurveyInput = Moralis.Object.extend("NFTCollectionSurveyInput");
 const Forum = Moralis.Object.extend("Forum");
+const ethAddress = "0x0000000000000000000000000000000000000000";
 
 async function getNFTCollectionRankingFromMoralisQuery(queryResults) {
   var nftCollectionCount = {};
@@ -93,9 +95,11 @@ export default new Vuex.Store({
     web3Modal: null,
     maticBalance: 0,
     // fundFactoryAddress: "0x1DAE25904fa53995D6E562825Aba17E90Eb4b5D3", // rinkeby address
-    fundFactoryAddress: "0x1E7E4c6aE711C738EC322606F31D3DD97970a257", //mumbai
+    fundFactoryAddress: "0x872deA69f8b69BE22B1148B3AB1B8d957A3EF27b",
+    // fundFactoryAddress: "0x1E7E4c6aE711C738EC322606F31D3DD97970a257", //mumbai
     fundList: [],
     nftFunds: {},
+    nftListInFund: {},
     isCurator: false,
     nftCollectionList: [],
     postList: {},
@@ -188,6 +192,9 @@ export default new Vuex.Store({
     },
     setPost(state, { fundAddress, post, index }) {
       Vue.set(state.postList[fundAddress], index, post);
+    },
+    setNftListInAddress(state, { nftList, fundAddress }) {
+      Vue.set(state.nftListInFund, fundAddress, nftList);
     },
   },
   actions: {
@@ -390,6 +397,57 @@ export default new Vuex.Store({
       await this.dispatch("getFundDetails", fundAddress);
     },
 
+    async putNFTFromFundToAuction(
+      { commit, state },
+      { tokenId, tokenContract, duration, reservePrice, curator, curatorFeePercentages, fundAddress }
+    ) {
+      var fundContract = await this.dispatch("getFundContract", fundAddress);
+      var res = await fundContract.methods.createNFTAuctionINZora(
+        tokenId,
+        tokenContract,
+        duration,
+        reservePrice,
+        curator,
+        curatorFeePercentages,
+        ethAddress
+      ).send({
+        from: this.state.account
+      });
+      console.log(res);
+    },
+
+    async bidOnNFT({}, {auctionId, amount, fundAddress}) {
+      var fundContract = await this.dispatch("getFundContract", fundAddress);
+      console.log(amount, auctionId, fundAddress)
+      var res = await fundContract.methods.placeZoraAuctionBit(
+        auctionId, amount
+      ).send({
+        from: this.state.account
+      });
+      console.log(res);
+    },
+
+    async getZoraAuctionHouseContract({state}) {
+      try {
+        var zoraAuctionHouseChecksumAddress = "0xE7dd1252f50B3d845590Da0c5eADd985049a03ce"
+        var zoraAuctionHouse = new state.web3.eth.Contract(iAuctionHouseAbi, zoraAuctionHouseChecksumAddress);
+        console.log('here')
+        return zoraAuctionHouse;
+      } catch (error) {
+        console.log(error);
+        console.log("connected contract not found");
+        return null;
+      }
+    }, 
+
+    async endZoraAuction({}, {auctionId}) {
+      var zoraAuctionContract = await this.dispatch("getZoraAuctionHouseContract");
+      var res = await zoraAuctionContract.methods.endAuction(auctionId).send({
+        from: this.state.account
+      })
+      console.log(res)
+    },
+
     async modifyTokenPrice({}, { tokenPrice, contractId }) {
       var fundContract = await this.dispatch("getFundContract", contractId);
       var res = await fundContract.methods.setTokenPrice(tokenPrice).send({
@@ -408,6 +466,15 @@ export default new Vuex.Store({
       });
       console.log(res);
       await this.dispatch("loadFundData");
+    },
+
+    async getNFTsInAddress({ commit, state }, { address }) {
+      console.log(address);
+      const options = { chain: "rinkeby", address: address };
+      const nftsInAddress = await Moralis.Web3API.account.getNFTs(options);
+      console.log(nftsInAddress);
+      commit("setNftListInAddress", { nftList: nftsInAddress["result"], fundAddress: address });
+      return nftsInAddress;
     },
 
     async fetchNFTCollectionList({ commit, state }) {
@@ -497,7 +564,7 @@ export default new Vuex.Store({
       this.dispatch("fetchPosts", fundAddress);
     },
 
-    async fetchPosts({ commit, state }, fundAddress ) {
+    async fetchPosts({ commit, state }, fundAddress) {
       var postsQuery = new Moralis.Query(Forum);
       postsQuery.equalTo("fundAddress", fundAddress);
       console.log(state.networkId);
@@ -513,7 +580,7 @@ export default new Vuex.Store({
       }
 
       commit("setPosts", { fundAddress, postList });
-      console.log('{ fundAddress, postList }',{ fundAddress, postList })
+      console.log("{ fundAddress, postList }", { fundAddress, postList });
       for (var index = 0; index < postList.length; index += 1) {
         this.dispatch("loadVoteDetails", { voteAddress: postList[index].voteAddress, fundAddress, index });
       }
@@ -532,14 +599,14 @@ export default new Vuex.Store({
         post["totalNoVotes"] = await postContract.methods.getTotalNoVotes().call();
         var fundContract = await this.dispatch("getFundContract", post["associatedFundAddress"]);
         post["totalVotesPossible"] = await fundContract.methods.totalSupply().call();
-        console.log('post',post);
+        console.log("post", post);
         commit("setPosts", { fundAddress: post["associatedFundAddress"], postList });
       }
     },
 
     async loadVoteDetails({ commit, state }, { voteAddress, fundAddress, index }) {
       var voteContract = await this.dispatch("getVotingContract", voteAddress);
-      console.log(voteContract)
+      console.log(voteContract);
       var post = this.state.postList[fundAddress][index];
       post["yesVotesByUser"] = await voteContract.methods.getYesVotesByUser().call();
       post["noVotesByUser"] = await voteContract.methods.getNoVotesByUser().call();
@@ -547,10 +614,10 @@ export default new Vuex.Store({
       post["associatedFundAddress"] = await voteContract.methods.getAssociatedFund().call();
       post["totalYesVotes"] = await voteContract.methods.getTotalYesVotes().call();
       post["totalNoVotes"] = await voteContract.methods.getTotalNoVotes().call();
-      
+
       var fundContract = await this.dispatch("getFundContract", post["associatedFundAddress"]);
       post["totalVotesPossible"] = await fundContract.methods.totalSupply().call();
-      console.log('post',post);
+      console.log("post", post);
       commit("setPost", { fundAddress: post["associatedFundAddress"], post, index });
     },
 
