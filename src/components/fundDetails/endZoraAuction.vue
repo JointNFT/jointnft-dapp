@@ -2,7 +2,7 @@
   <v-row justify="center">
     <v-dialog v-model="dialog" persistent max-width="600">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn v-bind="attrs" v-on="on">End Auction</v-btn>
+        <v-btn v-bind="attrs" v-on="on">Auction Options</v-btn>
       </template>
       <v-card>
         <v-card-title>
@@ -26,6 +26,7 @@
           <v-btn color="blue darken-1" text @click="dialog = false">
             Close
           </v-btn>
+          <v-btn color="blue darken-1" text @click="enableAuction()"> Enable Auction </v-btn>
           <v-btn color="blue darken-1" text @click="endAuction()"> End Auction </v-btn>
         </v-card-actions>
       </v-card>
@@ -76,6 +77,9 @@ export default {
           this.$vToastify.success("Successfully ended the auction !");
       });
     },
+    async enableAuction() {
+      this.$store.dispatch("enableAuction", {auctionId: this.auctionId})
+    }
   },
 };
 </script>

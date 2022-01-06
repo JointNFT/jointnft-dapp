@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col> MATIC in Wallet: {{ $store.state.ethBalance }} </v-col>
+      <v-col> ETH in Wallet: {{ $store.state.ethBalance }} </v-col>
       <v-col> tokenBalance: {{ getNFTDetails.userTokenBalance }} </v-col>
     </v-row>
     <v-row>
@@ -12,7 +12,7 @@
     </v-row>
     <v-row>
       <v-col>
-        MATIC in Fund: {{ getNFTDetails.weiBalance || 0 }}
+        ETH in Fund: {{ getNFTDetails.weiBalance || 0 }}
       </v-col>
       <v-col> owner: {{ getNFTDetails.ownerAddress || 0 }} </v-col>
     </v-row>
@@ -20,15 +20,16 @@
       ><v-col> <v-divider /></v-col>
     </v-row>
     <v-row>
-      <v-btn v-on:click="refreshBalances"> refresh balance </v-btn>
-      <v-space></v-space>
-      <v-btn :href="`/Forum?contractId=${this.$route.query.contractId}`">DAO</v-btn>
+      <v-col>
+      <v-btn v-on:click="refreshBalances"> refresh balance </v-btn></v-col><v-col>
+      
+      <v-btn :href="`/Forum?contractId=${this.$route.query.contractId}`">DAO</v-btn></v-col>
     </v-row>
     <v-row>
       <v-text-field
         v-model="maticAmount"
         :rules="[numberRule]"
-        label="Enter amount of Matic"
+        label="Enter amount of eth"
       ></v-text-field>
       <v-btn v-on:click="buyFundTokens"> Buy Tokens </v-btn>
     </v-row>
@@ -44,12 +45,13 @@
       <v-text-field
         v-model="tokenPrice"
         :rules="[numberRule]"
-        label="Enter the new tokenPrice(In Wei) 1 MATIC = 10^18 wei"
+        label="Enter the new tokenPrice(In Wei) 1 ETH = 10^18 wei"
       ></v-text-field>
       <v-btn v-on:click="modifyTokenPrice"> Modify Token Price </v-btn>
     </v-row>
-    <v-row v-if="owner == connectedAccount">
-      <EndZoraAuction/>
+    <v-row>
+      <v-col>
+      <EndZoraAuction/></v-col>
     </v-row>
   </v-container>
 </template>

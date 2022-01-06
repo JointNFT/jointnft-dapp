@@ -95,7 +95,7 @@ export default new Vuex.Store({
     web3Modal: null,
     maticBalance: 0,
     // fundFactoryAddress: "0x1DAE25904fa53995D6E562825Aba17E90Eb4b5D3", // rinkeby address
-    fundFactoryAddress: "0x872deA69f8b69BE22B1148B3AB1B8d957A3EF27b",
+    fundFactoryAddress: "0xc9797Fa0Fe604c7Cc92A3852872227dE14C936b6",
     // fundFactoryAddress: "0x1E7E4c6aE711C738EC322606F31D3DD97970a257", //mumbai
     fundList: [],
     nftFunds: {},
@@ -402,16 +402,17 @@ export default new Vuex.Store({
       { tokenId, tokenContract, duration, reservePrice, curator, curatorFeePercentages, fundAddress }
     ) {
       var fundContract = await this.dispatch("getFundContract", fundAddress);
+      console.log(state.account);
       var res = await fundContract.methods.createNFTAuctionINZora(
         tokenId,
         tokenContract,
         duration,
         reservePrice,
-        curator,
+        state.account,
         curatorFeePercentages,
         ethAddress
       ).send({
-        from: this.state.account
+        from: state.account
       });
       console.log(res);
     },
@@ -443,6 +444,14 @@ export default new Vuex.Store({
     async endZoraAuction({}, {auctionId}) {
       var zoraAuctionContract = await this.dispatch("getZoraAuctionHouseContract");
       var res = await zoraAuctionContract.methods.endAuction(auctionId).send({
+        from: this.state.account
+      })
+      console.log(res)
+    },
+
+    async enableAuction({ state }, {auctionId}) {
+      var zoraAuctionContract = await this.dispatch("getZoraAuctionHouseContract");
+      var res = await zoraAuctionContract.methods.setAuctionApproval(auctionId, true).send({
         from: this.state.account
       })
       console.log(res)
@@ -632,5 +641,7 @@ export default new Vuex.Store({
 
       this.dispatch("loadVoteDetails", { voteAddress, fundAddress, index });
     },
+
+    
   },
 });
