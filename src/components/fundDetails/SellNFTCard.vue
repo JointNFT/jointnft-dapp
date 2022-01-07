@@ -74,8 +74,8 @@ export default {
     reservePrice: 0,
     numberRule: (v) => {
       if (v != null && v != "" && !v.trim()) return true;
-      if (!isNaN(parseFloat(v)) && v >= 0 && v <= 999) return true;
-      return "Number has to be between 0 and 999";
+      if (!isNaN(parseFloat(v)) && v >= 0 ) return true;
+      return "Number has to be more than 0";
     },
   }),
 

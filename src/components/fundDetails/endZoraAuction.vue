@@ -63,7 +63,7 @@ export default {
     numberRule: (v) => {
       if (v != null && v != "" && !v.trim()) return true;
       if (!isNaN(parseFloat(v)) && v >= 0 ) return true;
-      return "Number has to be between 0 and infinity";
+      return "Number has to be more than 0";
     },
   }),
 

@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col> ETH in Wallet: {{ $store.state.ethBalance }} </v-col>
+      <v-col> ETH in Wallet: {{ $store.state.maticBalance }} </v-col>
       <v-col> tokenBalance: {{ getNFTDetails.userTokenBalance }} </v-col>
     </v-row>
     <v-row>
