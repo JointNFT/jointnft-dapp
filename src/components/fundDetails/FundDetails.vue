@@ -2,19 +2,19 @@
   <v-container>
     <v-row>
       <v-col> ETH in Wallet: {{ $store.state.maticBalance }} </v-col>
-      <v-col> tokenBalance: {{ getNFTDetails.userTokenBalance }} </v-col>
+      <v-col> tokenBalance: {{ getCollectionDetails.userTokenBalance }} </v-col>
     </v-row>
     <v-row>
-      <v-col> TokenPrice: {{ getNFTDetails.tokenPrice || 0 }} </v-col>
+      <v-col> TokenPrice: {{ getCollectionDetails.tokenPrice || 0 }} </v-col>
       <v-col>
-        Token Starting Price: {{ getNFTDetails.tokenStartPrice || 0 }}
+        Token Starting Price: {{ getCollectionDetails.tokenStartPrice || 0 }}
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        ETH in Fund: {{ getNFTDetails.weiBalance || 0 }}
+        ETH in Fund: {{ getCollectionDetails.contractBalance || 0 }}
       </v-col>
-      <v-col> owner: {{ getNFTDetails.ownerAddress || 0 }} </v-col>
+      <v-col> owner: {{ getCollectionDetails.ownerAddress || 0 }} </v-col>
     </v-row>
     <v-row
       ><v-col> <v-divider /></v-col>
@@ -49,10 +49,10 @@
       ></v-text-field>
       <v-btn v-on:click="modifyTokenPrice"> Modify Token Price </v-btn>
     </v-row>
-    <v-row>
-      <v-col>
-      <EndZoraAuction/></v-col>
-    </v-row>
+    <!-- <v-row> -->
+      <!-- <v-col> -->
+      <!-- <EndZoraAuction/></v-col> -->
+    <!-- </v-row> -->
   </v-container>
 </template>
 
@@ -64,8 +64,12 @@ export default {
     EndZoraAuction
   },
   computed: {
-    getNFTDetails() {
-      return this.$store.state.nftFunds[this.$route.query.contractId];
+    getCollectionDetails() {
+      var details = this.$store.state.collectionDetails;
+      if(details == null || details == {}) {
+        return {};
+      }
+      return details;
     },
   },
   methods: {

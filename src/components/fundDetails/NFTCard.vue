@@ -3,7 +3,7 @@
     <v-row align="center">
       <v-card width="400">
         <v-img :src="nft.token_uri" />
-        <SellNFTCard :token_id="nft.token_id" :token_address="nft.token_address" :owner="owner" :index="index" v-if="owner==connectedAccount"/>
+        <!-- <SellNFTCard :token_id="nft.token_id" :token_address="nft.token_address" :owner="owner" :index="index" v-if="owner==connectedAccount"/> -->
       </v-card>
     </v-row>
     <v-row>

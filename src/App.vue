@@ -14,8 +14,6 @@
       </div>
 
       <v-spacer></v-spacer>
-
-      <v-btn href="/DiscoverNFTs" color="#6733e2"> Discover !</v-btn>
       <v-btn href="/" text color="#6733e2"> Funds </v-btn>
       <v-btn href="/CreateFund" text color="#6733e2"> Create </v-btn>
       <v-btn
@@ -44,7 +42,9 @@
     </v-app-bar>
 
     <v-main>
+      <div v-if="mounted">
       <router-view></router-view>
+      </div>
     </v-main>
   </v-app>
 </template>
@@ -79,29 +79,25 @@ export default {
 
       return this.$store.commit("toggleCuratorStatus");
     },
-    connect(fundAddress) {
-      console.log(this.$moralis);
-      console.log('fundAddress', fundAddress);
-      if(fundAddress!= null && fundAddress != '') {
-        this.$store.dispatch("connectToWallet").then(()=> {
-          console.log('fundAddress',fundAddress)
-          this.$store.dispatch("fetchPosts", { fundAddress });
-        });
-      } else {
-        this.$store.dispatch("connectToWallet");
-      }
+    connect() {
+        this.$store.dispatch("connectToWallet").then(() => {
+          this.mounted = true;
+          console.log("done")
+        }
+        );
     }
   },
   data: () => ({
     theme: "light",
     providerOptions: {},
+    mounted: false
   }),
   mounted() {
     this.$nextTick(async () => {
       const web3modal = this.$refs.web3modal;
       this.$store.commit("setWeb3Modal", web3modal);
       if (web3modal.cachedProvider) {
-        this.connect(this.$route.query.contractId);
+        this.connect();
       }
     });
   },
