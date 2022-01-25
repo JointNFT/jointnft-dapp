@@ -26,8 +26,16 @@
           <v-btn color="blue darken-1" text @click="dialog = false">
             Close
           </v-btn>
-          <v-btn color="blue darken-1" text @click="enableAuction()"> Enable Auction </v-btn>
-          <v-btn color="blue darken-1" text @click="endAuction()"> End Auction </v-btn>
+          <v-btn color="blue darken-1" text @click="enableAuction()"> Enable Auction 
+            <div v-if="loading_enable" v-cloak>
+              <v-icon class="fa fa-spinner fa-spin"></v-icon>
+            </div>
+          </v-btn>
+          <v-btn color="blue darken-1" text @click="endAuction()"> End Auction 
+            <div v-if="loading_end" v-cloak>
+              <v-icon class="fa fa-spinner fa-spin"></v-icon>
+            </div>
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -60,6 +68,8 @@ export default {
   data: () => ({
     dialog: false,
     auctionId: "",
+    loading_enable:false,
+    loading_end:false,
     numberRule: (v) => {
       if (v != null && v != "" && !v.trim()) return true;
       if (!isNaN(parseFloat(v)) && v >= 0 ) return true;
@@ -69,16 +79,21 @@ export default {
 
   methods: {
     async endAuction() {
+      this.loading_end=true;
       const fundAddress = this.$route.query.contractId;
       this.$store.dispatch("endZoraAuction", {
         auctionId: this.auctionId
       }).then(() => {
+          this.loading_end=false;
           this.dialog = false;
           this.$vToastify.success("Successfully ended the auction !");
       });
     },
     async enableAuction() {
-      this.$store.dispatch("enableAuction", {auctionId: this.auctionId})
+      this.loading_enable=true;
+      this.$store.dispatch("enableAuction", {auctionId: this.auctionId}).then(()=>{
+        this.loading_enable=false;
+      })
     }
   },
 };
