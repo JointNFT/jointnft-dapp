@@ -59,40 +59,7 @@ export default new Vuex.Store({
     fundFactoryAddress: "0xc9797Fa0Fe604c7Cc92A3852872227dE14C936b6",
     // fundFactoryAddress: "0x1E7E4c6aE711C738EC322606F31D3DD97970a257", //mumbai
     nftListInFund: {},
-    collectionList: [
-      {
-        imageUrl:
-          "https://lh3.googleusercontent.com/OqiOy-QRhwqXeKyj6cYpuvSx9YT3zBiDiLPJxdoAlS4sYXriWgCtxGOeovQ2syR6tgE0-pf5VUJxxJ1NhVL8iqshj2X3MsRXoltq0Vg=w335",
-        name: "GENESIS_FUND",
-        returns: 15,
-        items: "2",
-        contractId: "0x818dD650959D5cA4d913C371Bad55AF83a1fbC9F",
-      },
-      {
-        imageUrl:
-          "https://lh3.googleusercontent.com/qWv2wdlKQbUycrLjTbWSrhPVJ9l2fnbhJt--FTBpIbMgu9hToGcXO07dhawjhG5_dffWQv9Ve0Soxpxp8rB2bNr_7rc3IYNRSKuoLA=w335",
-        name: "FUND2",
-        returns: 15,
-        items: "2",
-        contractId: "0xc4fB8Ada53C21b789BE46d4f1CC08bCd57E3759c",
-      },
-      {
-        imageUrl:
-          "https://lh3.googleusercontent.com/ATf2ilspCu_YDHjazW-dcQYsueMzvKHdYfe_kIF0vpBc_6lL33-coQUutyDmN_B-mo5EPL7T90kSL5vxmp1VLsSs6qDXH79buF4oFA=w600",
-        name: "FUND2",
-        returns: 15,
-        items: "2",
-        contractId: "0xc32d34833b2e932FfAE8828de2a213B599c331eD",
-      },
-      {
-        imageUrl:
-          "https://lh3.googleusercontent.com/bItzS6f9RMjP50SsMaIfVSLzD1YgHCUQUMlv6r2BTdy7BUFTZgdS8A9P7lwMPa33PzcfOuSscHJlFrhyAnTwLezwUS46kePJlk0hCA=w335",
-        name: "FUND2",
-        returns: 15,
-        items: "2",
-        contractId: "0x7Cf21A7084ED1d675956D8E11b7848bFEf2Ff65E",
-      },
-    ],
+    collectionList: [],
     collectionDetails: {ownerAddress:"",contractBalance:0,tokenStartPrice:0,tokenPrice:0,userTokenBalance:0},
   },
   getters: {
@@ -134,6 +101,9 @@ export default new Vuex.Store({
     },
     setNftListInAddress(state, { nftList, fundAddress }) {
       Vue.set(state.nftListInFund, fundAddress, nftList);
+    },
+    setCollectionList(state,collectionList){
+      state.collectionList=collectionList;
     },
     setCollectionDetails(state, collectionDetails) {
       state.collectionDetails = collectionDetails;
@@ -186,6 +156,61 @@ export default new Vuex.Store({
         console.log("chainChanged", chainId);
       });
     },
+    async loadCollections({commit,state}){
+      /*const collectList=[
+        {
+          imageUrl:
+            "https://lh3.googleusercontent.com/OqiOy-QRhwqXeKyj6cYpuvSx9YT3zBiDiLPJxdoAlS4sYXriWgCtxGOeovQ2syR6tgE0-pf5VUJxxJ1NhVL8iqshj2X3MsRXoltq0Vg=w335",
+          name: "GENESIS_FUND",
+          returns: 15,
+          items: "2",
+          contractId: "0x818dD650959D5cA4d913C371Bad55AF83a1fbC9F",
+        },
+        {
+          imageUrl:
+            "https://lh3.googleusercontent.com/qWv2wdlKQbUycrLjTbWSrhPVJ9l2fnbhJt--FTBpIbMgu9hToGcXO07dhawjhG5_dffWQv9Ve0Soxpxp8rB2bNr_7rc3IYNRSKuoLA=w335",
+          name: "FUND2",
+          returns: 15,
+          items: "2",
+          contractId: "0xc4fB8Ada53C21b789BE46d4f1CC08bCd57E3759c",
+        },
+        {
+          imageUrl:
+            "https://lh3.googleusercontent.com/ATf2ilspCu_YDHjazW-dcQYsueMzvKHdYfe_kIF0vpBc_6lL33-coQUutyDmN_B-mo5EPL7T90kSL5vxmp1VLsSs6qDXH79buF4oFA=w600",
+          name: "FUND3",
+          returns: 15,
+          items: "2",
+          contractId: "0xc32d34833b2e932FfAE8828de2a213B599c331eD",
+        },
+        {
+          imageUrl:
+            "https://lh3.googleusercontent.com/bItzS6f9RMjP50SsMaIfVSLzD1YgHCUQUMlv6r2BTdy7BUFTZgdS8A9P7lwMPa33PzcfOuSscHJlFrhyAnTwLezwUS46kePJlk0hCA=w335",
+          name: "FUND4",
+          returns: 15,
+          items: "2",
+          contractId: "0x7Cf21A7084ED1d675956D8E11b7848bFEf2Ff65E",
+        },        
+      ];*/
+      const collectList=[
+        {
+          imageUrl:
+            "https://lh3.googleusercontent.com/F40quZ70BK_sefr3Np4seV9k-83tE5KpZ1gs-RxuQzWNYUDMPe-DOnLRdg3cZ_BxbJxa-mPBrq2FvC2YaxsCnlEhBGSZsScSdz1k=w286",
+          name: "GENESIS_FUND",
+          returns: 15,
+          items: "2",
+          contractId: "0xaDCa7feFA9b5e33B20094250D2D60e53eD909656",
+        },
+        {
+          imageUrl:
+            "https://lh3.googleusercontent.com/cqPy7mep0-LuTeiRBrrhYpZhNy60b8tiWnyzjx0aQ5kbAdrWYLpoieWzdcvSm8oNMV6c15gVMRQdDkJeDccHPQQP76rosXgOgDZJfM8=w286",
+          name: "FUND2",
+          returns: 15,
+          items: "2",
+          contractId: "0x36A88cCB5AC5d833f208530959BE826F2bEc4Ccc",
+        },
+      ];
+      commit("setCollectionList",collectList);
+    },
 
     async getFundContract({ commit, state }, fundAddress) {
       try {
@@ -227,7 +252,8 @@ export default new Vuex.Store({
 
     async getMaticBalance({ commit, state }) {
       var maticBalance = await state.web3.eth.getBalance(state.account);
-      commit("setMaticBalance", Web3.utils.fromWei(maticBalance, "ether"));
+      commit("setMaticBalance",Number( Web3.utils.fromWei(maticBalance, "ether")).toFixed(3));
+     
     },
 
     async getCollectionDetails({ commit, state }, { collectionContractId }) {
@@ -235,13 +261,16 @@ export default new Vuex.Store({
       console.log("test", collectionContractId);
       var fundContract = await this.dispatch("getFundContract", collectionContractId);
       collectionDetails.ownerAddress = await fundContract.methods.ownerAddress().call();
-      collectionDetails.tokenStartPrice = await fundContract.methods.tokenStartPrice().call();
-      collectionDetails.tokenPrice = await fundContract.methods.tokenPrice().call();
+      var tokenStartPrice = await fundContract.methods.tokenStartPrice().call();
+      collectionDetails.tokenStartPrice=Number( Web3.utils.fromWei(tokenStartPrice,"ether")).toFixed(3);
+      var tokenPrice = await fundContract.methods.tokenPrice().call();
+      collectionDetails.tokenPrice =Number( Web3.utils.fromWei(tokenPrice,"ether")).toFixed(3);
       collectionDetails.name = await fundContract.methods.name().call();
       collectionDetails.symbol = await fundContract.methods.symbol().call();
-      collectionDetails.userTokenBalance = await fundContract.methods.balanceOf(state.account).call();
-      collectionDetails.contractBalance = await state.web3.eth.getBalance(collectionContractId);
-
+      var userTokenBalance = await fundContract.methods.balanceOf(state.account).call();
+      collectionDetails.userTokenBalance =Number( Web3.utils.fromWei(userTokenBalance,"ether")).toFixed(3);
+      var contractBalance = await state.web3.eth.getBalance(collectionContractId);
+      collectionDetails.contractBalance =Number( Web3.utils.fromWei(contractBalance,"ether")).toFixed(3);
       commit("setCollectionDetails", collectionDetails);
     },
 

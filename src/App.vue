@@ -15,15 +15,6 @@
 
       <v-spacer></v-spacer>
       <v-btn href="/" text color="#6733e2"> Funds </v-btn>
-      <v-btn href="/CreateFund" text color="#6733e2"> Create </v-btn>
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-        color="#6733e2"
-      >
-        Whitepaper
-      </v-btn>
       <!-- <ConnectWallet/> -->
       <v-btn
         @click="connect"
