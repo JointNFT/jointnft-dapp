@@ -106,6 +106,10 @@ contract erc20Fund is Context, IERC20, IERC20Metadata, IERC721Receiver {
         return _name;
     }
 
+    function test() external returns (string memory) {
+        return "testing upgradability";
+    }
+
     function tokenPrice() public view virtual returns (uint) {
         return _tokenPrice;
     }
