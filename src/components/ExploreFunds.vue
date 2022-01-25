@@ -1,14 +1,10 @@
 <template>
   <v-app id="inspire">
     <v-main v-if="account">
-      <v-container v-if="nftFunds!={}">
+      <v-container v-if="nftFunds != {}">
         <v-row>
-          <v-col
-            v-for="(fund, contractId) in nftFunds"
-            :key="fund.contractId"
-            cols="3"
-          >
-            <FundCard :fund="fund" />
+          <v-col v-for="(collection, contractId) in collectionList" :key="collection.contractId" cols="3">
+            <FundCard :collection="collection" />
           </v-col>
         </v-row>
       </v-container>
@@ -30,7 +26,7 @@ export default {
   components: {
     FundCard,
   },
-  computed: mapState(["nftFunds","account"]),
+  computed: mapState(["nftFunds", "account","collectionList"]),
   watch: {
     nftFunds: {
       deep: true,
@@ -38,6 +34,9 @@ export default {
         console.log("nftFunds changed");
       },
     },
+  },
+  mounted(){
+    this.$store.dispatch("loadCollections");
   },
 };
 </script>
