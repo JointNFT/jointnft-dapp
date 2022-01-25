@@ -156,41 +156,9 @@ export default new Vuex.Store({
         console.log("chainChanged", chainId);
       });
     },
+    
     async loadCollections({commit,state}){
-      /*const collectList=[
-        {
-          imageUrl:
-            "https://lh3.googleusercontent.com/OqiOy-QRhwqXeKyj6cYpuvSx9YT3zBiDiLPJxdoAlS4sYXriWgCtxGOeovQ2syR6tgE0-pf5VUJxxJ1NhVL8iqshj2X3MsRXoltq0Vg=w335",
-          name: "GENESIS_FUND",
-          returns: 15,
-          items: "2",
-          contractId: "0x818dD650959D5cA4d913C371Bad55AF83a1fbC9F",
-        },
-        {
-          imageUrl:
-            "https://lh3.googleusercontent.com/qWv2wdlKQbUycrLjTbWSrhPVJ9l2fnbhJt--FTBpIbMgu9hToGcXO07dhawjhG5_dffWQv9Ve0Soxpxp8rB2bNr_7rc3IYNRSKuoLA=w335",
-          name: "FUND2",
-          returns: 15,
-          items: "2",
-          contractId: "0xc4fB8Ada53C21b789BE46d4f1CC08bCd57E3759c",
-        },
-        {
-          imageUrl:
-            "https://lh3.googleusercontent.com/ATf2ilspCu_YDHjazW-dcQYsueMzvKHdYfe_kIF0vpBc_6lL33-coQUutyDmN_B-mo5EPL7T90kSL5vxmp1VLsSs6qDXH79buF4oFA=w600",
-          name: "FUND3",
-          returns: 15,
-          items: "2",
-          contractId: "0xc32d34833b2e932FfAE8828de2a213B599c331eD",
-        },
-        {
-          imageUrl:
-            "https://lh3.googleusercontent.com/bItzS6f9RMjP50SsMaIfVSLzD1YgHCUQUMlv6r2BTdy7BUFTZgdS8A9P7lwMPa33PzcfOuSscHJlFrhyAnTwLezwUS46kePJlk0hCA=w335",
-          name: "FUND4",
-          returns: 15,
-          items: "2",
-          contractId: "0x7Cf21A7084ED1d675956D8E11b7848bFEf2Ff65E",
-        },        
-      ];*/
+      
       const collectList=[
         {
           imageUrl:
@@ -271,6 +239,7 @@ export default new Vuex.Store({
       collectionDetails.userTokenBalance =Number( Web3.utils.fromWei(userTokenBalance,"ether")).toFixed(3);
       var contractBalance = await state.web3.eth.getBalance(collectionContractId);
       collectionDetails.contractBalance =Number( Web3.utils.fromWei(contractBalance,"ether")).toFixed(3);
+
       commit("setCollectionDetails", collectionDetails);
     },
 
