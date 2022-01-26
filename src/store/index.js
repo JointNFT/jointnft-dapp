@@ -156,6 +156,7 @@ export default new Vuex.Store({
         console.log("chainChanged", chainId);
       });
     },
+    
     async loadCollections({commit,state}){
       
       const collectList=[
@@ -232,7 +233,7 @@ export default new Vuex.Store({
 
     async refreshBalance({}, fundAddress) {
       await this.dispatch("getMaticBalance");
-      await this.dispatch("getFundDetails", fundAddress);
+      await this.dispatch("getCollectionDetails", fundAddress);
     },
 
 
