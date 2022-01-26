@@ -211,6 +211,25 @@ export default new Vuex.Store({
       console.log(contractId);
       this.dispatch("refreshBalance", contractId);
     },
+    
+    async pauseBuyAndSell({ commit }, { contractId }) {
+      var fundContract = await this.dispatch("getFundContract", contractId);
+      
+      await fundContract.methods.toggleTokenConversion().send({
+        from: this.state.account,
+      });
+      this.dispatch("refreshBalance", contractId);
+    },
+
+    async transferFunds({ commit }, { contractId, toAddress, value}) {
+      var fundContract = await this.dispatch("getFundContract", contractId);
+      var to = Web3.utils.toChecksumAddress(toAddress);
+      var ethAmount = parseFloat(value) * (10 ** 18);
+      await fundContract.methods.transferFunds(to, parseInt(ethAmount)).send({
+        from: this.state.account
+      });
+    },
+
 
     async refreshBalance({}, fundAddress) {
       await this.dispatch("getMaticBalance");
@@ -239,7 +258,6 @@ export default new Vuex.Store({
       collectionDetails.userTokenBalance =Number( Web3.utils.fromWei(userTokenBalance,"ether")).toFixed(3);
       var contractBalance = await state.web3.eth.getBalance(collectionContractId);
       collectionDetails.contractBalance =Number( Web3.utils.fromWei(contractBalance,"ether")).toFixed(3);
-
       commit("setCollectionDetails", collectionDetails);
     },
 
