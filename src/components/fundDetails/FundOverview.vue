@@ -1,9 +1,9 @@
 <template>
   <v-container>
-    <v-row v-if="nftFunds != {}">
+    <v-row v-if="getCollectionDetails != {}">
       <v-col cols="12" sm="6" md="8">
         <v-row no-gutters style="margin-top: 25px;" align="center" justify="center">
-          <h1>{{ getNFTDetails.name }}</h1>
+          <h1>{{ getCollectionDetails.name }}</h1>
         </v-row>
         <v-divider id="divider"></v-divider>
         <v-row>
@@ -11,18 +11,18 @@
             <NFTCard
               :nft="getNFTListInFund[index - 1]"
               :index="index - 1"
-              :owner="getNFTDetails.ownerAddress"
+              :owner="getCollectionDetails.ownerAddress"
               :connectedAccount="getConnectedAccount"
             />
           </v-col>
-          <v-col cols="4" v-if="getConnectedAccount == getNFTDetails.ownerAddress">
+          <!-- <v-col cols="4" v-if="getConnectedAccount == getCollectionDetails.ownerAddress">
             <BidOnAuction />
-          </v-col>
+          </v-col> -->
         </v-row>
       </v-col>
 
       <v-col cols="6" md="4">
-        <FundDetails :owner="getNFTDetails.ownerAddress" :connectedAccount="getConnectedAccount" />
+        <FundDetails :owner="getCollectionDetails.ownerAddress" :connectedAccount="getConnectedAccount"/>
       </v-col>
     </v-row>
     <v-row v-else style="text-align:center;">
@@ -52,10 +52,12 @@ export default {
     BidOnAuction
   },
   computed: {
-    getNFTDetails() {
-      console.log(this.$store.state.nftFunds[this.$route.query.contractId]);
-      if (this.$store.state.nftFunds == null) return { name: "", nftList: [], ownerAddress: "" };
-      return this.$store.state.nftFunds[this.$route.query.contractId];
+    getCollectionDetails() {
+      var details = this.$store.state.collectionDetails;
+      if (details == null || details == {}) {
+        return {};
+      } 
+      return details;
     },
     getNFTListInFund() {
       if (this.$store.state.nftListInFund == null || this.$store.state.nftListInFund == {}) return [];
@@ -64,9 +66,14 @@ export default {
     getConnectedAccount() {
       return this.$store.state.account;
     },
+    getCollectionDetais() {
+      return this.$store.state.collectionDetails;
+    }
     
   },
   mounted() {
+    this.$store.dispatch("getMaticBalance");
+    this.$store.dispatch("getCollectionDetails", { collectionContractId: this.$route.query.contractId } );
     this.$store.dispatch("getNFTsInAddress", { address: this.$route.query.contractId });
   },
 };

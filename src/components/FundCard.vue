@@ -1,5 +1,5 @@
 <template>
-<a :href="`/Funds?contractId=${fund.contractId}`">
+<a :href="`/Funds?contractId=${collection.contractId}`">
   <v-card>
     
       <v-container>
@@ -8,7 +8,7 @@
         </v-row>
 
         <v-row>
-          <v-card-title>{{ fund.name }}</v-card-title>
+          <v-card-title>{{ collection.name }}</v-card-title>
         </v-row>
 
         <v-row>
@@ -21,8 +21,8 @@
         </v-row>
 
         <v-row>
-          <v-col class="left-col"> {{ fund.returns }}% </v-col>
-          <v-col class="right-col"> {{ fund.noOfAssets }} </v-col>
+          <v-col class="left-col"> {{ collection.returns }}% </v-col>
+          <v-col class="right-col"> {{ collection.items }} </v-col>
         </v-row>
       </v-container>
     
@@ -42,10 +42,10 @@
 
 <script>
 export default {
-  props: { fund: Object },
+  props: { collection: Object },
   computed: {
     getImg() {
-      return this.$props.fund.img;
+      return this.$props.collection.imageUrl;
     },
   },
 };
