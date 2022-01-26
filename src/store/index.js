@@ -156,6 +156,7 @@ export default new Vuex.Store({
         console.log("chainChanged", chainId);
       });
     },
+    
     async loadCollections({commit,state}){
       
       const collectList=[

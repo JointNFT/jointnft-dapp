@@ -38,6 +38,6 @@ export default {
   mounted(){
     this.$store.dispatch("loadCollections");
   },
-
+ 
 };
 </script>
