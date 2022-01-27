@@ -693,28 +693,14 @@
 		},
 		{
 			"inputs": [],
-			"name": "symbol",
+			"name": "toggleTokenConversion",
 			"outputs": [
 				{
-					"internalType": "string",
+					"internalType": "bool",
 					"name": "",
-					"type": "string"
+					"type": "bool"
 				}
 			],
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"inputs": [],
-			"name": "toggleBuying",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [],
-			"name": "toggleSelling",
-			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"
 		},
