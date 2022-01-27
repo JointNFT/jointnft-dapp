@@ -166,7 +166,7 @@ export default new Vuex.Store({
           name: "GENESIS_FUND",
           returns: 15,
           items: "2",
-          contractId: "0x86040024A3809E426547158466D34CD18dc970C3",
+          contractId: "0xf6099498b378A2C8a02AE1c12eDb93D7e5792a2D",
         },
         {
           imageUrl:
