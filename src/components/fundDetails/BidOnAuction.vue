@@ -12,8 +12,8 @@
           <v-container>
             <v-row>
               <v-col>
-                <v-text-field v-model="auctionId" :rules="[numberRule]" label="Enter the auctionId" required></v-text-field
-                ><v-text-field v-model="amount" :rules="[numberRule]" label="Enter bid amount ( In Wei ) " required></v-text-field>
+                <v-text-field v-model="auctionId" :rules="[numberRule]" label="Enter the auctionId" required></v-text-field>
+                <v-text-field v-model="amount" :rules="[numberRule]" label="Enter bid amount ( In Wei ) " required></v-text-field>
               </v-col>
             </v-row>
           </v-container>
