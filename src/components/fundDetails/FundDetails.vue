@@ -78,7 +78,7 @@
               <v-spacer></v-spacer>
                 <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
                 <v-btn color="blue darken-1" text @click="transferFunds()"> Continue 
-                  <div v-if="loadTranferFund" v-cloak>
+                  <div v-if="loadTransferFund" v-cloak>
                     <v-icon class="fa fa-spinner fa-spin"></v-icon>
                   </div>
                 </v-btn>
@@ -125,6 +125,7 @@ export default {
         .then(() => {
           this.loading_buy=false;
           this.$vToastify.success("Tokens bought!");
+          this.refreshBalances();
         });
     },
     sellFundTokens() {
@@ -135,8 +136,9 @@ export default {
           contractId: this.$route.query.contractId,
         })
         .then(() => {
+          this.refreshBalances();
           this.loading_sell=false;
-          this.$vToastify.success("Tokens sold!");
+          this.$vToastify.success("Tokens sold!");         
         });
     },
     modifyTokenPrice() {
@@ -163,6 +165,7 @@ export default {
         toAddress: this.toAddress,
         value: this.value
       }).then(()=>{
+        this.refreshBalances();
         this.loadTransferFund=false;
         this.dialog=false;
         this.$vToastify.success("Funds successfully transferred");
