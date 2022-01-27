@@ -166,7 +166,7 @@ export default new Vuex.Store({
           name: "GENESIS_FUND",
           returns: 15,
           items: "2",
-          contractId: "0xf6099498b378A2C8a02AE1c12eDb93D7e5792a2D",
+          contractId: "0xcB8D80AfDd6da10f77Fa7C1546250fe5e95279b5",
         },
         {
           imageUrl:
@@ -174,7 +174,7 @@ export default new Vuex.Store({
           name: "FUND2",
           returns: 15,
           items: "2",
-          contractId: "0xa462709d58919b64A8E074E038c56091C4F54baF",
+          contractId: "0x99609Da05611A544DC918B0cC9e89b31D1e55BF1",
         },
       ];
       commit("setCollectionList",collectList);
@@ -253,10 +253,19 @@ export default new Vuex.Store({
 
 
 
-    async pauseBuyAndSell({ commit }, { contractId }) {
+    async toggleBuy({ commit }, { contractId }) {
       var fundContract = await this.dispatch("getFundContract", contractId);
       
-      await fundContract.methods.toggleTokenConversion().send({
+      await fundContract.methods.toggleBuying().send({
+        from: this.state.account,
+      });
+      this.dispatch("refreshBalance", contractId);
+    },
+
+    async toggleSell({ commit }, { contractId }) {
+      var fundContract = await this.dispatch("getFundContract", contractId);
+      
+      await fundContract.methods.toggleSelling().send({
         from: this.state.account,
       });
       this.dispatch("refreshBalance", contractId);
@@ -300,7 +309,9 @@ export default new Vuex.Store({
       collectionDetails.userTokenBalance =Number( Web3.utils.fromWei(userTokenBalance,"ether")).toFixed(3);
       var contractBalance = await state.web3.eth.getBalance(collectionContractId);
       collectionDetails.contractBalance =Number( Web3.utils.fromWei(contractBalance,"ether")).toFixed(3);
-      collectionDetails.conversionStatus = await fundContract.methods._isTokenConversionEnabled().call();
+      // collectionDetails.conversionStatus = await fundContract.methods._isTokenConversionEnabled().call();
+      collectionDetails.buyingEnabled = await fundContract.methods.buyingEnabled().call();
+      collectionDetails.sellingEnabled = await fundContract.methods.sellingEnabled().call();
 
       commit("setCollectionDetails", collectionDetails);
     },
