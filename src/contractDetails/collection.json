@@ -67,6 +67,19 @@
 				{
 					"indexed": false,
 					"internalType": "bool",
+					"name": "value",
+					"type": "bool"
+				}
+			],
+			"name": "BuyingToggled",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "bool",
 					"name": "initialised",
 					"type": "bool"
 				}
@@ -105,11 +118,11 @@
 				{
 					"indexed": false,
 					"internalType": "bool",
-					"name": "_isTokenConversion",
+					"name": "value",
 					"type": "bool"
 				}
 			],
-			"name": "TokenConversionToggled",
+			"name": "SellingToggled",
 			"type": "event"
 		},
 		{
@@ -232,19 +245,6 @@
 			"type": "function"
 		},
 		{
-			"inputs": [],
-			"name": "_isTokenConversionEnabled",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"inputs": [
 				{
 					"internalType": "address",
@@ -329,6 +329,19 @@
 			"name": "buyTokens",
 			"outputs": [],
 			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "buyingEnabled",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -473,6 +486,84 @@
 			"inputs": [
 				{
 					"internalType": "address",
+					"name": "",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "",
+					"type": "uint256[]"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "",
+					"type": "uint256[]"
+				},
+				{
+					"internalType": "bytes",
+					"name": "",
+					"type": "bytes"
+				}
+			],
+			"name": "onERC1155BatchReceived",
+			"outputs": [
+				{
+					"internalType": "bytes4",
+					"name": "",
+					"type": "bytes4"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bytes",
+					"name": "",
+					"type": "bytes"
+				}
+			],
+			"name": "onERC1155Received",
+			"outputs": [
+				{
+					"internalType": "bytes4",
+					"name": "",
+					"type": "bytes4"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
 					"name": "operator",
 					"type": "address"
 				},
@@ -530,6 +621,19 @@
 			"type": "function"
 		},
 		{
+			"inputs": [],
+			"name": "sellingEnabled",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"inputs": [
 				{
 					"internalType": "address",
@@ -569,6 +673,25 @@
 			"type": "function"
 		},
 		{
+			"inputs": [
+				{
+					"internalType": "bytes4",
+					"name": "interfaceId",
+					"type": "bytes4"
+				}
+			],
+			"name": "supportsInterface",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"inputs": [],
 			"name": "symbol",
 			"outputs": [
@@ -583,14 +706,15 @@
 		},
 		{
 			"inputs": [],
-			"name": "toggleTokenConversion",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
+			"name": "toggleBuying",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "toggleSelling",
+			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"
 		},
