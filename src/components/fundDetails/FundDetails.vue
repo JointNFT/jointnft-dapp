@@ -25,11 +25,20 @@
         :rules="[numberRule]"
         label="Enter amount of eth"
       ></v-text-field>
-      <v-btn v-on:click="buyFundTokens"> Buy Tokens 
+      <div v-if="getCollectionDetails.buyingEnabled==true">
+       <v-btn v-on:click="buyFundTokens"> Buy Tokens 
          <div v-if="loading_buy" v-cloak>
             <v-icon class="fa fa-spinner fa-spin"></v-icon>
          </div>
-      </v-btn>
+       </v-btn>
+      </div>
+      <div v-else> 
+         <v-btn disabled  v-on:click="buyFundTokens"> Buy Tokens 
+          <div v-if="loading_buy" v-cloak>
+            <v-icon class="fa fa-spinner fa-spin"></v-icon>
+          </div>
+       </v-btn>   
+      </div>
     </v-row>
     <v-row>
       <v-text-field
@@ -37,11 +46,20 @@
         :rules="[numberRule]"
         label="Enter amount of Tokens to sell"
       ></v-text-field>
-      <v-btn v-on:click="sellFundTokens"> Sell Tokens 
-       <div v-if="loading_sell" v-cloak>
-         <v-icon class="fa fa-spinner fa-spin"></v-icon>
-       </div>  
-      </v-btn>
+      <div v-if="getCollectionDetails.sellingEnabled==true">
+        <v-btn v-on:click="sellFundTokens"> Sell Tokens 
+          <div v-if="loading_sell" v-cloak>
+            <v-icon class="fa fa-spinner fa-spin"></v-icon>
+          </div>  
+        </v-btn>
+      </div>
+      <div v-else> 
+         <v-btn disabled  v-on:click="sellFundTokens"> Sell Tokens 
+          <div v-if="loading_buy" v-cloak>
+            <v-icon class="fa fa-spinner fa-spin"></v-icon>
+          </div>
+         </v-btn>   
+      </div>
     </v-row>
     <v-row v-if="owner == connectedAccount">
       <v-text-field
@@ -53,7 +71,10 @@
     </v-row>
     <v-row v-if="owner == connectedAccount">
       <v-col>
-        <v-btn v-on:click="pauseBuySell"> Pause Buy/Sell </v-btn>
+        <v-btn v-on:click="toggleBuyButton"> Toggle Buy </v-btn>
+      </v-col>
+      <v-col>
+        <v-btn v-on:click="toggleSellButton"> Toggle Sell </v-btn>
       </v-col>
       <v-col>
         <v-dialog v-model="dialog" persistent width="500">
@@ -151,9 +172,18 @@ export default {
           this.$vToastify.success("Tokens Price modified!");
         });
     },
+    /*
     pauseBuySell(){
       this.$store.dispatch("pauseBuyAndSell",{contractId: this.$route.query.contractId})
     },
+    */
+   toggleBuyButton(){
+     this.$store.dispatch("toggleBuy",{contractId: this.$route.query.contractId});
+   },
+
+   toggleSellButton(){
+     this.$store.dispatch("toggleSell",{contractId: this.$route.query.contractId});
+   },
 
     getNFTsInContract() {
       this.$store.dispatch("getNFTsInContract", {address: this.$route.query.contractId});
