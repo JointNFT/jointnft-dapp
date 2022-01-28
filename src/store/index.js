@@ -60,7 +60,7 @@ export default new Vuex.Store({
     // fundFactoryAddress: "0x1E7E4c6aE711C738EC322606F31D3DD97970a257", //mumbai
     nftListInFund: {},
     collectionList: [],
-    collectionDetails: {ownerAddress:"",contractBalance:0,tokenStartPrice:0,tokenPrice:0,userTokenBalance:0},
+    collectionDetails: {ownerAddress:"",contractBalance:0,tokenStartPrice:0,tokenPrice:0,userTokenBalance:0, buyingEnabled:true, sellingEnabled:true},
   },
   getters: {
     getFunds(state) {
@@ -221,6 +221,24 @@ export default new Vuex.Store({
       this.dispatch("refreshBalance", contractId);
     },
 
+    async toggleBuy({ commit }, { contractId }) {
+      var fundContract = await this.dispatch("getFundContract", contractId);
+      
+      await fundContract.methods.toggleBuying().send({
+        from: this.state.account,
+      });
+      this.dispatch("refreshBalance", contractId);
+    },
+
+    async toggleSell({ commit }, { contractId }) {
+      var fundContract = await this.dispatch("getFundContract", contractId);
+      
+      await fundContract.methods.toggleSelling().send({
+        from: this.state.account,
+      });
+      this.dispatch("refreshBalance", contractId);
+    },
+
     async transferFunds({ commit }, { contractId, toAddress, value}) {
       var fundContract = await this.dispatch("getFundContract", contractId);
       var to = Web3.utils.toChecksumAddress(toAddress);
@@ -258,6 +276,11 @@ export default new Vuex.Store({
       collectionDetails.userTokenBalance =Number( Web3.utils.fromWei(userTokenBalance,"ether")).toFixed(3);
       var contractBalance = await state.web3.eth.getBalance(collectionContractId);
       collectionDetails.contractBalance =Number( Web3.utils.fromWei(contractBalance,"ether")).toFixed(3);
+      collectionDetails.buyingEnabled=true;
+      collectionDetails.sellingEnabled=true;
+    //  collectionDetails.buyingEnabled = await fundContract.methods.buyingEnabled().call();
+     // collectionDetails.sellingEnabled = await fundContract.methods.sellingEnabled().call();
+
       commit("setCollectionDetails", collectionDetails);
     },
 
