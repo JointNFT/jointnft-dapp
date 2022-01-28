@@ -76,7 +76,8 @@ export default {
           console.log("done")
         }
         );
-    }
+    },
+
   },
   data: () => ({
     theme: "light",
