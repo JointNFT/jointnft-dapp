@@ -299,7 +299,7 @@ export default new Vuex.Store({
 
     async refreshBalance({}, fundAddress) {
       await this.dispatch("getMaticBalance");
-      await this.dispatch("getCollectionDetails", fundAddress);
+      await this.dispatch("getCollectionDetails", { collectionContractId: fundAddress });
     },
 
 
@@ -311,7 +311,7 @@ export default new Vuex.Store({
 
     async getCollectionDetails({ commit, state }, { collectionContractId }) {
       var collectionDetails = {};
-      console.log("test", collectionContractId);
+
       var fundContract = await this.dispatch("getFundContract", collectionContractId);
       collectionDetails.ownerAddress = await fundContract.methods.ownerAddress().call();
       var tokenStartPrice = await fundContract.methods.tokenStartPrice().call();
@@ -324,10 +324,10 @@ export default new Vuex.Store({
       collectionDetails.userTokenBalance =Number( Web3.utils.fromWei(userTokenBalance,"ether")).toFixed(3);
       var contractBalance = await state.web3.eth.getBalance(collectionContractId);
       collectionDetails.contractBalance =Number( Web3.utils.fromWei(contractBalance,"ether")).toFixed(3);
-      collectionDetails.buyingEnabled=true;
-      collectionDetails.sellingEnabled=true;
-    //  collectionDetails.buyingEnabled = await fundContract.methods.buyingEnabled().call();
-     // collectionDetails.sellingEnabled = await fundContract.methods.sellingEnabled().call();
+      // collectionDetails.buyingEnabled=true;
+      // collectionDetails.sellingEnabled=true;
+     collectionDetails.buyingEnabled = await fundContract.methods.buyingEnabled().call();
+     collectionDetails.sellingEnabled = await fundContract.methods.sellingEnabled().call();
 
       commit("setCollectionDetails", collectionDetails);
     },
@@ -337,7 +337,7 @@ export default new Vuex.Store({
       var res = await fundContract.methods.setTokenPrice(tokenPrice).send({
         from: this.state.account,
       });
-      console.log(res);
+      
       await this.dispatch("refreshBalance", contractId);
     },
 
@@ -348,7 +348,7 @@ export default new Vuex.Store({
         from: this.state.account,
         value: depositAmtInWei,
       });
-      console.log(res);
+      
       await this.dispatch("loadFundData");
     },
 
