@@ -6,7 +6,7 @@ import Web3Modal from "web3modal";
 import Moralis from "../plugins/moralis";
 import axios from "axios";
 
-const erc20FundABI = require("../contractDetails/erc20fund.json")["abi"];
+const collectionABI = require("../contractDetails/collection.json")["abi"];
 const fundFactoryABI = require("../contractDetails/FundFactory.json")["abi"];
 const nftFundVotingJson = require("../contractDetails/nftFundVoting.json");
 const iAuctionHouseAbi = require("../contractDetails/IAuctionHouse.json")["abi"];
@@ -55,9 +55,6 @@ export default new Vuex.Store({
     account: null,
     web3Modal: null,
     maticBalance: 0,
-    // fundFactoryAddress: "0x1DAE25904fa53995D6E562825Aba17E90Eb4b5D3", // rinkeby address
-    fundFactoryAddress: "0xc9797Fa0Fe604c7Cc92A3852872227dE14C936b6",
-    // fundFactoryAddress: "0x1E7E4c6aE711C738EC322606F31D3DD97970a257", //mumbai
     nftListInFund: {},
     collectionList: [],
     collectionDetails: {ownerAddress:"",contractBalance:0,tokenStartPrice:0,tokenPrice:0,userTokenBalance:0, buyingEnabled:true, sellingEnabled:true},
@@ -166,7 +163,7 @@ export default new Vuex.Store({
           name: "GENESIS_FUND",
           returns: 15,
           items: "2",
-          contractId: "0xaDCa7feFA9b5e33B20094250D2D60e53eD909656",
+          contractId: "0xcB8D80AfDd6da10f77Fa7C1546250fe5e95279b5",
         },
         {
           imageUrl:
@@ -174,7 +171,7 @@ export default new Vuex.Store({
           name: "FUND2",
           returns: 15,
           items: "2",
-          contractId: "0x36A88cCB5AC5d833f208530959BE826F2bEc4Ccc",
+          contractId: "0x99609Da05611A544DC918B0cC9e89b31D1e55BF1",
         },
       ];
       commit("setCollectionList",collectList);
@@ -183,7 +180,7 @@ export default new Vuex.Store({
     async getFundContract({ commit, state }, fundAddress) {
       try {
         var fundChecksumAddress = Web3.utils.toChecksumAddress(fundAddress);
-        var fundContract = new state.web3.eth.Contract(erc20FundABI, fundChecksumAddress);
+        var fundContract = new state.web3.eth.Contract(collectionABI, fundChecksumAddress);
         return fundContract;
       } catch (error) {
         console.log(error);
@@ -195,7 +192,7 @@ export default new Vuex.Store({
     async buyFundTokens({ commit }, { maticAmount, contractId }) {
       var fundContract = await this.dispatch("getFundContract", contractId);
       var weiAmount = parseFloat(maticAmount) * 10 ** 18;
-      await fundContract.methods.addFunds().send({
+      await fundContract.methods.buyTokens().send({
         value: weiAmount.toString(),
         from: this.state.account,
       });
@@ -205,7 +202,9 @@ export default new Vuex.Store({
     async sellFundTokens({ commit }, { tokenAmount, contractId }) {
       var fundContract = await this.dispatch("getFundContract", contractId);
       console.log(tokenAmount);
-      await fundContract.methods.removeFunds(parseInt(tokenAmount)).send({
+      tokenAmount = parseFloat(tokenAmount) * (10 ** 18);
+      // todo: multiple tokenAmount by 10^18 before sending
+      await fundContract.methods.sellTokens(parseInt(tokenAmount)).send({
         from: this.state.account,
       });
       console.log(contractId);
@@ -249,6 +248,55 @@ export default new Vuex.Store({
     },
 
 
+    async pauseBuyAndSell({ commit }, { contractId }) {
+      var fundContract = await this.dispatch("getFundContract", contractId);
+      
+      await fundContract.methods.toggleTokenConversion().send({
+        from: this.state.account,
+      });
+      this.dispatch("refreshBalance", contractId);
+    },
+
+    async transferFunds({ commit }, { contractId, toAddress, value}) {
+      var fundContract = await this.dispatch("getFundContract", contractId);
+      var to = Web3.utils.toChecksumAddress(toAddress);
+      var ethAmount = parseFloat(value) * (10 ** 18);
+      await fundContract.methods.transferFunds(to, parseInt(ethAmount)).send({
+        from: this.state.account
+      });
+    },
+
+
+
+    async toggleBuy({ commit }, { contractId }) {
+      var fundContract = await this.dispatch("getFundContract", contractId);
+      
+      await fundContract.methods.toggleBuying().send({
+        from: this.state.account,
+      });
+      this.dispatch("refreshBalance", contractId);
+    },
+
+    async toggleSell({ commit }, { contractId }) {
+      var fundContract = await this.dispatch("getFundContract", contractId);
+      
+      await fundContract.methods.toggleSelling().send({
+        from: this.state.account,
+      });
+      this.dispatch("refreshBalance", contractId);
+    },
+
+    async transferFunds({ commit }, { contractId, toAddress, value}) {
+      var fundContract = await this.dispatch("getFundContract", contractId);
+      var to = Web3.utils.toChecksumAddress(toAddress);
+      var ethAmount = parseFloat(value) * (10 ** 18);
+      await fundContract.methods.transferFunds(to, parseInt(ethAmount)).send({
+        from: this.state.account
+      });
+    },
+
+
+
     async refreshBalance({}, fundAddress) {
       await this.dispatch("getMaticBalance");
       await this.dispatch("getCollectionDetails", fundAddress);
@@ -276,10 +324,9 @@ export default new Vuex.Store({
       collectionDetails.userTokenBalance =Number( Web3.utils.fromWei(userTokenBalance,"ether")).toFixed(3);
       var contractBalance = await state.web3.eth.getBalance(collectionContractId);
       collectionDetails.contractBalance =Number( Web3.utils.fromWei(contractBalance,"ether")).toFixed(3);
-      collectionDetails.buyingEnabled=true;
-      collectionDetails.sellingEnabled=true;
-    //  collectionDetails.buyingEnabled = await fundContract.methods.buyingEnabled().call();
-     // collectionDetails.sellingEnabled = await fundContract.methods.sellingEnabled().call();
+      // collectionDetails.conversionStatus = await fundContract.methods._isTokenConversionEnabled().call();
+      collectionDetails.buyingEnabled = await fundContract.methods.buyingEnabled().call();
+      collectionDetails.sellingEnabled = await fundContract.methods.sellingEnabled().call();
 
       commit("setCollectionDetails", collectionDetails);
     },
