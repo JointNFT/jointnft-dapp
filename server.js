@@ -76,6 +76,10 @@ async function getTwitterResponseForUserCheck(userId) {
   return response;
 }
 
+app.get("/HealthCheck", (req,res) => {
+  res.send("Server is working!");
+})
+
 app.get('/*', (req,res) => {
   res.sendFile(path.join(__dirname, '/dist/index.html'));
 });
