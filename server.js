@@ -8,7 +8,7 @@ const bodyParser = require("body-parser");
 var jsonParser = bodyParser.json();
 
 // optional: allow environment to specify port
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 var bearerToken = "AAAAAAAAAAAAAAAAAAAAAATcWwEAAAAA9tgsDCzhJRO%2Bi8dpvqy8SJRX1tc%3D94RiMCLHGtujKzjQJpzGOGfoDwWEss39mSvtBZcCAZm4g5mcfo";
 
 // create server instance
