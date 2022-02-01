@@ -5,6 +5,7 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const { Client } = require("pg");
 const dotenv = require("dotenv");
+const Web3 = require("web3");
 dotenv.config();
 
 console.log(process.env.PGPORT);
@@ -56,7 +57,7 @@ app.get("/getCollections", async (req, res) => {
       image_url:
         row['image_url'],
       name: row['collection_name'],
-      price: row['token_buy_price'],
+      price: Web3.utils.fromWei(row['token_buy_price']),
       members: row['members'],
       verified: true,
       est_value: {

@@ -36,7 +36,7 @@
         </v-row>
 
         <v-row>
-          <v-col class="next-r"> {{ collection.price }} </v-col>
+          <v-col class="next-r"> {{ collection.price }} ETH </v-col>
           <v-col class="next-r"> {{ collection.members }} </v-col>
           <v-col class="next-r"> {{ collection.items }} </v-col>
           <v-col class="next-r"> {{ collection.est_value.currency + collection.est_value.amount }} </v-col>
