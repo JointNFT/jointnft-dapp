@@ -1,5 +1,5 @@
 {
-    "abi": [
+	"abi": [
 		{
 			"inputs": [
 				{
@@ -14,7 +14,12 @@
 				},
 				{
 					"internalType": "uint256",
-					"name": "tokenPrice_",
+					"name": "tokenBuyPrice_",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "tokenSellPrice_",
 					"type": "uint256"
 				},
 				{
@@ -123,6 +128,25 @@
 				}
 			],
 			"name": "SellingToggled",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "bool",
+					"name": "isBuyBeingModified",
+					"type": "bool"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "value",
+					"type": "uint256"
+				}
+			],
+			"name": "TokenPriceChanged",
 			"type": "event"
 		},
 		{
@@ -239,6 +263,32 @@
 					"internalType": "address",
 					"name": "",
 					"type": "address"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "_tokenBuyPrice",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "_tokenSellPrice",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
 				}
 			],
 			"stateMutability": "view",
@@ -407,35 +457,6 @@
 			"name": "execute",
 			"outputs": [],
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "numerator",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "denominator",
-					"type": "uint256"
-				}
-			],
-			"name": "getDivided",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "quotient",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "remainder",
-					"type": "uint256"
-				}
-			],
-			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -665,6 +686,11 @@
 					"internalType": "uint256",
 					"name": "tokenPrice_",
 					"type": "uint256"
+				},
+				{
+					"internalType": "bool",
+					"name": "isBuyBeingModified",
+					"type": "bool"
 				}
 			],
 			"name": "setTokenPrice",
@@ -716,32 +742,6 @@
 			"name": "toggleSelling",
 			"outputs": [],
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [],
-			"name": "tokenPrice",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"inputs": [],
-			"name": "tokenStartPrice",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{

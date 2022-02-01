@@ -2,13 +2,16 @@
   <v-container>
     <v-row>
       <v-col> ETH in Wallet: {{ $store.state.maticBalance }} </v-col>
-      <v-col> tokenBalance: {{ getCollectionDetails.userTokenBalance }} </v-col>
+      <v-col> token Balance: {{ getCollectionDetails.userTokenBalance }} </v-col>
     </v-row>
     <v-row>
-      <v-col> TokenPrice: {{ getCollectionDetails.tokenPrice || 0 }} </v-col>
-      <v-col>
-        Token Starting Price: {{ getCollectionDetails.tokenStartPrice || 0 }}
-      </v-col>
+      <v-col>Total supply: {{ getCollectionDetails.totalSupply || 0 }} </v-col>
+    </v-row>
+    <v-row>
+      <v-col> Token Buy Price: {{ getCollectionDetails.tokenBuyPrice || 0 }} </v-col>
+    </v-row>
+    <v-row>
+      <v-col>Token Sell Price: {{ getCollectionDetails.tokenSellPrice || 0 }} </v-col>
     </v-row>
     <v-row>
       <v-col>
@@ -44,11 +47,23 @@
     </v-row>
     <v-row v-if="owner == connectedAccount">
       <v-text-field
-        v-model="tokenPrice"
+        v-model="tokenBuyPrice"
         :rules="[numberRule]"
         label="Enter the new tokenPrice(In Wei) 1 ETH = 10^18 wei"
       ></v-text-field>
-      <v-btn :disabled="isSendingModify" v-on:click="modifyTokenPrice"> Modify Token Price 
+      <v-btn :disabled="isSendingModify" v-on:click="setTokenPrice(true)"> setTokenBuyPrice 
+        <div v-if="loading_modify" v-cloak>
+            <v-icon class="fa fa-spinner fa-spin"></v-icon>
+        </div>
+      </v-btn>
+    </v-row>
+    <v-row v-if="owner == connectedAccount">
+      <v-text-field
+        v-model="tokenSellPrice"
+        :rules="[numberRule]"
+        label="Enter the new tokenPrice(In Wei) 1 ETH = 10^18 wei"
+      ></v-text-field>
+      <v-btn :disabled="isSendingModify" v-on:click="setTokenPrice(false)"> setTokenSellPrice 
         <div v-if="loading_modify" v-cloak>
             <v-icon class="fa fa-spinner fa-spin"></v-icon>
         </div>
@@ -165,13 +180,16 @@ export default {
           }     
         });
     },
-    modifyTokenPrice() {
+    setTokenPrice(isBuyBeingModified) {
+      var tokenPrice = isBuyBeingModified ? this.tokenBuyPrice : this.tokenSellPrice;
       this.loading_modify=true;
       this.isSendingModify=true;
       this.$store
-        .dispatch("modifyTokenPrice", {
-          tokenPrice: this.tokenPrice,
+        .dispatch("setTokenPrice", {
+          tokenPrice: tokenPrice,
+          isBuyBeingModified: isBuyBeingModified,
           contractId: this.$route.query.contractId,
+
         })
         .then(() => {
           this.loading_modify=false;
@@ -265,7 +283,8 @@ export default {
     dialog: false,
     maticAmount: 0,
     tokenAmount: 0,
-    tokenPrice: 0,
+    tokenBuyPrice: 0,
+    tokenSellPrice: 0,
     value: 0,
     toAddress:"",
     loading_buy:false,
