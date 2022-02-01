@@ -1,11 +1,14 @@
 <template>
   <v-container>
-    <v-row v-if="getCollectionDetails != {}">
+     <v-row v-if="getCollectionDetails != {}">
       <v-col cols="12" sm="6" md="8">
         <v-row no-gutters style="margin-top: 25px;" align="center" justify="center">
           <h1>{{ getCollectionDetails.name }}</h1>
         </v-row>
         <v-divider id="divider"></v-divider>
+           <v-row v-if="getNFTListInFund = []" style="text-align:center;" align="center" justify="center">
+             No NFTs present in the collection
+           </v-row>
         <v-row>
           <v-col v-for="index in getNFTListInFund.length" :key="index" cols="4">
             <NFTCard
@@ -24,10 +27,11 @@
       <v-col cols="6" md="4">
         <FundDetails :owner="getCollectionDetails.ownerAddress" :connectedAccount="getConnectedAccount"/>
       </v-col>
-    </v-row>
-    <v-row v-else style="text-align:center;">
+     </v-row>
+     <v-row v-else style="text-align:center;">
       Loading NFT's present in the fund. Please wait!
-    </v-row>
+     </v-row>
+ 
   </v-container>
 </template>
 
