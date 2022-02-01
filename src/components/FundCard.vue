@@ -16,7 +16,7 @@
 
         <v-row elevation="5">
           <v-card-title>{{ collection.name }}</v-card-title>
-          <v-btn x-small elevation="2" fab class="logo">
+          <v-btn v-if="collection.verified" v-show = "true" x-small elevation="2" fab class="logo">
               <img width = "24" style="border-radius: 25;" src="./assets/verified.png"/> 
           </v-btn>
           
