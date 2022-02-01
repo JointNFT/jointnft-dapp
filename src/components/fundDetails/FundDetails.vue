@@ -25,41 +25,22 @@
         :rules="[numberRule]"
         label="Enter amount of eth"
       ></v-text-field>
-      <div v-if="getCollectionDetails.buyingEnabled==true">
-       <v-btn v-on:click="buyFundTokens"> Buy Tokens 
-         <div v-if="loading_buy" v-cloak>
+      <v-btn :disabled="isSendingBuyTokens" v-on:click="buyFundTokens"> Buy Tokens
+        <div v-if="loading_buy" v-cloak>
             <v-icon class="fa fa-spinner fa-spin"></v-icon>
-         </div>
-       </v-btn>
-      </div>
-      <div v-else> 
-         <v-btn disabled  v-on:click="buyFundTokens"> Buy Tokens 
-          <div v-if="loading_buy" v-cloak>
-            <v-icon class="fa fa-spinner fa-spin"></v-icon>
-          </div>
-       </v-btn>   
-      </div>
-    </v-row>
-    <v-row>
+        </div>
+      </v-btn>
       <v-text-field
         v-model="tokenAmount"
         :rules="[numberRule]"
         label="Enter amount of Tokens to sell"
       ></v-text-field>
-      <div v-if="getCollectionDetails.sellingEnabled==true">
-        <v-btn v-on:click="sellFundTokens"> Sell Tokens 
-          <div v-if="loading_sell" v-cloak>
+      <v-btn :disabled="isSendingSellTokens" v-on:click="sellFundTokens"> Sell Tokens
+        <div v-if="loading_sell" v-cloak>
             <v-icon class="fa fa-spinner fa-spin"></v-icon>
-          </div>  
-        </v-btn>
-      </div>
-      <div v-else> 
-         <v-btn disabled  v-on:click="sellFundTokens"> Sell Tokens 
-          <div v-if="loading_buy" v-cloak>
-            <v-icon class="fa fa-spinner fa-spin"></v-icon>
-          </div>
-         </v-btn>   
-      </div>
+        </div>
+      </v-btn>
+      
     </v-row>
     <v-row v-if="owner == connectedAccount">
       <v-text-field
@@ -67,14 +48,26 @@
         :rules="[numberRule]"
         label="Enter the new tokenPrice(In Wei) 1 ETH = 10^18 wei"
       ></v-text-field>
-      <v-btn v-on:click="modifyTokenPrice"> Modify Token Price </v-btn>
+      <v-btn :disabled="isSendingModify" v-on:click="modifyTokenPrice"> Modify Token Price 
+        <div v-if="loading_modify" v-cloak>
+            <v-icon class="fa fa-spinner fa-spin"></v-icon>
+        </div>
+      </v-btn>
     </v-row>
     <v-row v-if="owner == connectedAccount">
       <v-col>
-        <v-btn v-on:click="toggleBuyButton"> Toggle Buy </v-btn>
+        <v-btn :disabled="isSending_Buy" v-on:click="toggleBuyButton"> Toggle Buy 
+           <div v-if="loadingToggleBuy" v-cloak>
+            <v-icon class="fa fa-spinner fa-spin"></v-icon>
+           </div>
+        </v-btn>
       </v-col>
       <v-col>
-        <v-btn v-on:click="toggleSellButton"> Toggle Sell </v-btn>
+        <v-btn :disabled="isSending_Sell" v-on:click="toggleSellButton"> Toggle Sell 
+           <div v-if="loadingToggleSell" v-cloak>
+             <v-icon class="fa fa-spinner fa-spin"></v-icon>
+           </div>
+        </v-btn>
       </v-col>
       <v-col>
         <v-dialog v-model="dialog" persistent width="500">
@@ -137,7 +130,9 @@ export default {
       
     },
     buyFundTokens() {
+
       this.loading_buy=true;
+      this.isSendingBuyTokens=true;
       this.$store
         .dispatch("buyFundTokens", {
           maticAmount: this.maticAmount,
@@ -145,46 +140,101 @@ export default {
         })
         .then(() => {
           this.loading_buy=false;
-          this.$vToastify.success("Tokens bought!");
-          this.refreshBalances();
+         // console.log(this.$store.state.isError);
+          this.isSendingBuyTokens=false;
+          if(this.$store.state.isError==0){
+            this.$vToastify.success("Tokens bought!");
+            this.dispatch("refreshBalances");
+          }
         });
     },
     sellFundTokens() {
       this.loading_sell=true;
-      this.$store
+      this.isSendingSellTokens=true;
+       this.$store
         .dispatch("sellFundTokens", {
           tokenAmount: this.tokenAmount,
           contractId: this.$route.query.contractId,
         })
         .then(() => {
-          this.refreshBalances();
           this.loading_sell=false;
-          this.$vToastify.success("Tokens sold!");         
+          this.isSendingSellTokens=false;
+          if(this.$store.state.isError==0){
+            this.$vToastify.success("Tokens sold!"); 
+            this.dispatch("refreshBalances");   
+          }     
         });
     },
     modifyTokenPrice() {
+      this.loading_modify=true;
+      this.isSendingModify=true;
       this.$store
         .dispatch("modifyTokenPrice", {
           tokenPrice: this.tokenPrice,
           contractId: this.$route.query.contractId,
         })
         .then(() => {
+          this.loading_modify=false;
+          this.isSendingModify=false;
+          if(this.$store.state.isError==0){
           this.$vToastify.success("Tokens Price modified!");
+          }
         });
     },
-    /*
-    pauseBuySell(){
-      this.$store.dispatch("pauseBuyAndSell",{contractId: this.$route.query.contractId})
-    },
-    */
+
    toggleBuyButton(){
-     this.$store.dispatch("toggleBuy",{contractId: this.$route.query.contractId});
-   },
 
+     this.loadingToggleBuy=true;
+     this.isSending_Buy=true;
+     this.$store.dispatch("toggleBuy",{
+       contractId: this.$route.query.contractId,
+       }).then(()=>{
+         if(this.getCollectionDetails.buyingEnabled){
+            
+            if(this.$store.state.isError==0){
+              this.isSendingBuyTokens=true;
+              this.$vToastify.success("Disabled Buy");
+            }
+         }
+         else{
+            
+            if(this.$store.state.isError==0){
+              this.isSendingBuyTokens=false;
+              this.$vToastify.success("Enabled Buy");
+            }
+           }
+          this.isSending_Buy=false;
+          this.loadingToggleBuy=false;
+       });
+
+   },
    toggleSellButton(){
-     this.$store.dispatch("toggleSell",{contractId: this.$route.query.contractId});
-   },
 
+     this.loadingToggleSell=true;
+     this.isSending_Sell=true;
+     this.$store.dispatch("toggleSell",{
+       contractId: this.$route.query.contractId,
+       }).then(()=>{
+         if(this.getCollectionDetails.sellingEnabled){
+            
+            if(this.$store.state.isError==0){
+              this.isSendingSellTokens=true;
+              this.$vToastify.success("Disabled Sell");
+            }
+         }
+         else{
+            
+            if(this.$store.state.isError==0){
+              this.isSendingSellTokens=false;
+              this.$vToastify.success("Enabled Sell");
+            }
+           }
+          this.isSending_Sell=false;
+          this.loadingToggleSell=false;
+       });
+
+   },
+  
     getNFTsInContract() {
       this.$store.dispatch("getNFTsInContract", {address: this.$route.query.contractId});
     },
@@ -195,10 +245,14 @@ export default {
         toAddress: this.toAddress,
         value: this.value
       }).then(()=>{
-        this.refreshBalances();
+        //this.dispatch("refreshBalances");
         this.loadTransferFund=false;
         this.dialog=false;
+        if(this.$store.state.isError==0){
         this.$vToastify.success("Funds successfully transferred");
+        }
+        else 
+          this.$vToastify.error("Some error occured");
       });
     },
   },
@@ -216,7 +270,16 @@ export default {
     toAddress:"",
     loading_buy:false,
     loading_sell:false,
+    loading_modify:false,
     loadTransferFund:false,
+    isSending_Buy:false,
+    isSending_Sell:false,
+    isSendingBuyTokens:false,
+    isSendingSellTokens:false,
+    isSending_ModifyPrice:false,
+    isSendingModify:false,
+    loadingToggleBuy:false,
+    loadingToggleSell:false,
   }),
   props: ["owner", "connectedAccount"],
 };

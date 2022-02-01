@@ -58,6 +58,8 @@ export default new Vuex.Store({
     nftListInFund: {},
     collectionList: [],
     collectionDetails: {ownerAddress:"",contractBalance:0,tokenStartPrice:0,tokenPrice:0,userTokenBalance:0, buyingEnabled:true, sellingEnabled:true},
+    nftDetails:{},
+    isError:0,
   },
   getters: {
     getFunds(state) {
@@ -112,6 +114,12 @@ export default new Vuex.Store({
       // Vue.set(state.collectionDetails, userTokenBalance, collectionDetails.userTokenBalance);
       // Vue.set(state.collectionDetails, contractBalance, collectionDetails.contractBalance);
     },
+    setNFTList(state,nftList){
+      state.nftDetails = nftList;
+    },
+    setIsError(state,err){
+      state.isError=err;
+    },
   },
   actions: {
     async connectToWallet({ commit }) {
@@ -128,6 +136,11 @@ export default new Vuex.Store({
       }
 
       const networkId = await web3.eth.net.getId();
+      console.log(networkId);
+      if(networkId!=4){
+         alert("Switch to Rinkeby network");
+         console.log("not connected to Rinkeby Network");
+      }
       commit("setNetworkId", networkId);
 
       commit("setActive", true);
@@ -163,6 +176,31 @@ export default new Vuex.Store({
       
     },
 
+    async loadNFTs({commit,state}){
+      var nftList = [{
+        imageUrl: "https://tse2.mm.bing.net/th?id=OIP.NCZfJiBm-rrK8OcT1ooCwwHaHa&pid=Api&P=0&w=172&h=172",
+        collection: "Bored Ape Yatch Club",
+        name: "BlueFur, Tweed Suit, Zombie Eye",
+        in_collection: "84",
+        purchase_price: { amount: 6.4, currency: "Eth" },
+        purchase_price_dollars: { amount: 24320 },
+        floor_price: { amount: 130, currency: "Eth" },
+        floor_price_dollars: { amount: 340000 } ,
+     },
+     {  
+        imageUrl:"https://vignette.wikia.nocookie.net/lookout/images/a/af/UltimateGreatApe.png/revision/latest?cb=20130602180602",
+        collection: "Bored Ape Yatch Club",
+        name: "BlueFur, Tweed Suit, Zombie Eye",
+        in_collection: "84",
+        purchase_price: { amount: 6.4, currency: "Eth" },
+        purchase_price_dollars: { amount: 24320 },
+        floor_price: { amount: 130, currency: "Eth" },
+        floor_price_dollars: { amount: 340000 } ,
+     },
+    ];
+    commit("setNFTList",nftList); 
+    },
+
     async getFundContract({ commit, state }, fundAddress) {
       try {
         var fundChecksumAddress = Web3.utils.toChecksumAddress(fundAddress);
@@ -176,6 +214,7 @@ export default new Vuex.Store({
     },
 
     async buyFundTokens({ commit }, { maticAmount, contractId }) {
+      try{
       var fundContract = await this.dispatch("getFundContract", contractId);
       var weiAmount = parseFloat(maticAmount) * 10 ** 18;
       await fundContract.methods.buyTokens().send({
@@ -183,9 +222,16 @@ export default new Vuex.Store({
         from: this.state.account,
       });
       this.dispatch("refreshBalance", contractId);
+      commit("setIsError",0);
+      //return false;
+    }catch(error){
+      console.log(error);
+      commit("setIsError",1);
+    }
     },
 
     async sellFundTokens({ commit }, { tokenAmount, contractId }) {
+      try{
       var fundContract = await this.dispatch("getFundContract", contractId);
       console.log(tokenAmount);
       tokenAmount = parseFloat(tokenAmount) * (10 ** 18);
@@ -195,6 +241,11 @@ export default new Vuex.Store({
       });
       console.log(contractId);
       this.dispatch("refreshBalance", contractId);
+      commit("setIsError",0);
+    }catch(error){
+      console.log(error);
+      commit("setIsError",1);
+    }
     },
     
     async pauseBuyAndSell({ commit }, { contractId }) {
@@ -207,81 +258,49 @@ export default new Vuex.Store({
     },
 
     async toggleBuy({ commit }, { contractId }) {
+      try{
       var fundContract = await this.dispatch("getFundContract", contractId);
       
       await fundContract.methods.toggleBuying().send({
         from: this.state.account,
       });
       this.dispatch("refreshBalance", contractId);
+      commit("setIsError",0);
+    }catch(error){
+      console.log(error);
+      commit("setIsError",1);
+    }
     },
 
     async toggleSell({ commit }, { contractId }) {
+      try{
       var fundContract = await this.dispatch("getFundContract", contractId);
       
       await fundContract.methods.toggleSelling().send({
         from: this.state.account,
       });
       this.dispatch("refreshBalance", contractId);
+      commit("setIsError",0);
+    }catch(error){
+      console.log(error);
+      commit("setIsError",1);
+    }
     },
 
     async transferFunds({ commit }, { contractId, toAddress, value}) {
+      try{
       var fundContract = await this.dispatch("getFundContract", contractId);
       var to = Web3.utils.toChecksumAddress(toAddress);
       var ethAmount = parseFloat(value) * (10 ** 18);
       await fundContract.methods.transferFunds(to, parseInt(ethAmount)).send({
         from: this.state.account
       });
+      commit("setIsError",0);
+    }catch(error){
+      console.log(error);
+      commit("setIsError",1);
+    }
     },
-
-
-    async pauseBuyAndSell({ commit }, { contractId }) {
-      var fundContract = await this.dispatch("getFundContract", contractId);
-      
-      await fundContract.methods.toggleTokenConversion().send({
-        from: this.state.account,
-      });
-      this.dispatch("refreshBalance", contractId);
-    },
-
-    async transferFunds({ commit }, { contractId, toAddress, value}) {
-      var fundContract = await this.dispatch("getFundContract", contractId);
-      var to = Web3.utils.toChecksumAddress(toAddress);
-      var ethAmount = parseFloat(value) * (10 ** 18);
-      await fundContract.methods.transferFunds(to, parseInt(ethAmount)).send({
-        from: this.state.account
-      });
-    },
-
-
-
-    async toggleBuy({ commit }, { contractId }) {
-      var fundContract = await this.dispatch("getFundContract", contractId);
-      
-      await fundContract.methods.toggleBuying().send({
-        from: this.state.account,
-      });
-      this.dispatch("refreshBalance", contractId);
-    },
-
-    async toggleSell({ commit }, { contractId }) {
-      var fundContract = await this.dispatch("getFundContract", contractId);
-      
-      await fundContract.methods.toggleSelling().send({
-        from: this.state.account,
-      });
-      this.dispatch("refreshBalance", contractId);
-    },
-
-    async transferFunds({ commit }, { contractId, toAddress, value}) {
-      var fundContract = await this.dispatch("getFundContract", contractId);
-      var to = Web3.utils.toChecksumAddress(toAddress);
-      var ethAmount = parseFloat(value) * (10 ** 18);
-      await fundContract.methods.transferFunds(to, parseInt(ethAmount)).send({
-        from: this.state.account
-      });
-    },
-
-
 
     async refreshBalance({}, fundAddress) {
       await this.dispatch("getMaticBalance");
@@ -318,13 +337,19 @@ export default new Vuex.Store({
       commit("setCollectionDetails", collectionDetails);
     },
 
-    async modifyTokenPrice({}, { tokenPrice, contractId }) {
+    async modifyTokenPrice({commit}, { tokenPrice, contractId }) {
+      try{
       var fundContract = await this.dispatch("getFundContract", contractId);
       var res = await fundContract.methods.setTokenPrice(tokenPrice).send({
         from: this.state.account,
       });
       
       await this.dispatch("refreshBalance", contractId);
+      commit("setIsError",0);
+    }catch(error){
+      console.log(error);
+      commit("setIsError",1);
+    }
     },
 
     async createFund({ commit, state }, { fundName, fundSymbl, tokenPrice, depositAmt, imgUrl }) {
