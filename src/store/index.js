@@ -156,7 +156,7 @@ export default new Vuex.Store({
     
     async loadCollections({commit,state}){
       
-      axios.get('/getCollections').then(function (response) {
+      axios.get('http://localhost:3000/getCollections').then(function (response) {
         console.log(response.data);
         commit("setCollectionList",response.data);
       })
