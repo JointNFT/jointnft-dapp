@@ -185,6 +185,49 @@ export default new Vuex.Store({
           items: "2",
           contractId: "0x99609Da05611A544DC918B0cC9e89b31D1e55BF1",
         },
+        {
+          image_url:
+            "https://lh3.googleusercontent.com/F40quZ70BK_sefr3Np4seV9k-83tE5KpZ1gs-RxuQzWNYUDMPe-DOnLRdg3cZ_BxbJxa-mPBrq2FvC2YaxsCnlEhBGSZsScSdz1k=w286",
+          name: "GENESIS_FUND FUND FUND FUND FUND FUND FUND",
+          price: 50,
+          members: 50,
+          verified: true,
+          est_value: {
+            amount:50, currency:'$'},
+          symbol: 'GFUND',
+          chain: 'POLYGON',
+          items: "2",
+          contractId: "0xcB8D80AfDd6da10f77Fa7C1546250fe5e95279b5",
+        },
+        {
+          image_url:
+            "https://lh3.googleusercontent.com/F40quZ70BK_sefr3Np4seV9k-83tE5KpZ1gs-RxuQzWNYUDMPe-DOnLRdg3cZ_BxbJxa-mPBrq2FvC2YaxsCnlEhBGSZsScSdz1k=w286",
+          name: "GENESIS_FUND",
+          price: 50,
+          members: 50,
+          verified: true,
+          est_value: {
+            amount:50, currency:'$'},
+          symbol: 'GFUND',
+          chain: 'POLYGON',
+          items: "2",
+          contractId: "0xcB8D80AfDd6da10f77Fa7C1546250fe5e95279b5",
+        },
+        {
+          image_url:
+            "https://lh3.googleusercontent.com/F40quZ70BK_sefr3Np4seV9k-83tE5KpZ1gs-RxuQzWNYUDMPe-DOnLRdg3cZ_BxbJxa-mPBrq2FvC2YaxsCnlEhBGSZsScSdz1k=w286",
+          name: "GENESIS_FUND",
+          price: 50,
+          members: 50,
+          verified: true,
+          est_value: {
+            amount:50, currency:'$'},
+          symbol: 'GFUND',
+          chain: 'POLYGON',
+          items: "2",
+          contractId: "0xcB8D80AfDd6da10f77Fa7C1546250fe5e95279b5",
+        },
+        
       ];
       commit("setCollectionList",collectList);
     },

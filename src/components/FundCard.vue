@@ -1,27 +1,30 @@
 <template>
 <a :href="`/Funds?contractId=${collection.contractId}`">
-  <v-card>
+  <v-card width = "500">
     
       <v-container>
         <v-row align="center">
-          <v-img :src="getImg" height="80%">
+          <v-img :src="getImg" height="300" width="auto">
             <span class="sym">${{ collection.symbol }}</span>
-            <v-btn small class= "chain" elevation="2" fab>
-              <v-img width = "20" style="border-radius=20px;" src="./assets/ethereum.png"/> 
+            <v-btn small class= "chain"  elevation="2" fab>
+              <img width = "28" style="border-radius: 29;" src="./assets/ethereum.png"/> 
             </v-btn>
           </v-img>
 
         </v-row>
 
-        <v-row class="justify-center">
+        <v-row elevation="5">
           <v-card-title>{{ collection.name }}</v-card-title>
-          <v-btn x-small elevation="2" fab>
-              <!-- <v-img src="./assets/ethereum.png"/>  -->
-            </v-btn>
+          <v-btn x-small elevation="2" fab class="logo">
+              <img width = "24" style="border-radius: 25;" src="./assets/verified.png"/> 
+          </v-btn>
+          
+          
         </v-row>
 
         <v-row>
           <v-divider></v-divider>
+          
         </v-row>
 
         <v-row>
@@ -45,11 +48,20 @@
 
 <style scoped>
 .next-r  { left: 0%; position: relative; text-align: center;}
+.next-l  { right: 0%; position: relative; text-align: center;}
 
-.logo {
-
+.npdg {
+    position: relative;
+    top: -37px;
 }
+.logo {
+  position: absolute;
+   top: 68%;
+   right: 8%;
+}
+
 .sym {
+   font-weight: bold;
    position: absolute;
    top: 8%;
    right: 4%;

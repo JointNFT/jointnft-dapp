@@ -3,7 +3,7 @@
     <v-main v-if="account">
       <v-container v-if="nftFunds != {}">
         <v-row>
-          <v-col v-for="(collection, contractId) in collectionList" :key="collection.contractId" cols="3">
+          <v-col v-for="(collection, contractId) in collectionList" :key="collection.contractId" cols="4">
             <FundCard :collection="collection" />
           </v-col>
         </v-row>
@@ -17,6 +17,11 @@
     </v-main>
   </v-app>
 </template>
+
+
+<style scoped>
+
+</style>
 
 <script>
 import FundCard from "./FundCard.vue";
