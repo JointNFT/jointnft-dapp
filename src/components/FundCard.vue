@@ -7,6 +7,7 @@
           <v-img :src="getImg" height="300" width="auto">
             <span class="sym">${{ collection.symbol }}</span>
             <v-btn small class= "chain"  elevation="2" fab>
+              <!-- hardcoded for now, need to check blockchain before chosing image, switch case?-->
               <img width = "28" style="border-radius: 29;" src="./assets/ethereum.png"/> 
             </v-btn>
           </v-img>
