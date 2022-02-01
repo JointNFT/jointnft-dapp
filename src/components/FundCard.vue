@@ -45,7 +45,7 @@ export default {
   props: { collection: Object },
   computed: {
     getImg() {
-      return this.$props.collection.imageUrl;
+      return this.$props.collection.image_url;
     },
   },
 };
