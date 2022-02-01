@@ -6,14 +6,9 @@
         <v-row align="center">
           <v-img :src="getImg" height="300" width="auto">
             <span class="sym">${{ collection.symbol }}</span>
-<<<<<<< HEAD
             <v-btn small class= "chain"  elevation="2" fab>
               <!-- hardcoded for now, need to check blockchain before chosing image, switch case?-->
               <img width = "28" style="border-radius: 29;" src="./assets/ethereum.png"/> 
-=======
-            <v-btn small class= "chain" elevation="2" fab>
-              <v-img width = "20" style="border-radius: 29px;" src="./assets/ethereum.png"/> 
->>>>>>> 5e4e27f (Changes to fetch data from db)
             </v-btn>
           </v-img>
 
