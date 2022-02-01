@@ -15,6 +15,17 @@
 
       <v-spacer></v-spacer>
       <v-btn href="/" text color="#6733e2"> Funds </v-btn>
+      <!--EthBalance-->
+      <v-btn
+        v-if="!$store.state.account"
+        v-show = "false"
+        id="eth-balance-btn"
+        ></v-btn
+      >
+      <v-btn v-else id="eth-balance-btn" color="#6733e2">{{
+        $store.state.maticBalance + " ETH"
+      }}</v-btn>
+
       <!-- <ConnectWallet/> -->
       <v-btn
         @click="connect"
@@ -74,6 +85,7 @@ export default {
         this.$store.dispatch("connectToWallet").then(() => {
           this.mounted = true;
           console.log("done")
+          // here if connect
         }
         );
     }
