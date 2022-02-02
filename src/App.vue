@@ -16,56 +16,33 @@
       <v-spacer></v-spacer>
       <v-btn href="/" text color="#6733e2"> Funds </v-btn>
       <!-- <ConnectWallet/> -->
-      <v-btn
-        @click="connect"
-        v-if="!$store.state.account"
-        text
-        id="connect-wallet-btn"
-        color="#6733e2"
-        >Connect wallet</v-btn
-      >
-      <v-btn v-else id="connect-wallet-btn" color="#6733e2">{{
-        $store.state.account.substring(0, 5) + "..."
-      }}</v-btn>
+      <v-btn @click="connect" v-if="!$store.state.account" text id="connect-wallet-btn" color="#6733e2">Connect wallet</v-btn>
+      <v-btn v-else id="connect-wallet-btn" color="#6733e2">{{ $store.state.account.substring(0, 5) + "..." }}</v-btn>
       <div id="app">
         <Web3ModalVue ref="web3modal" :theme="theme" cache-provider />
       </div>
     </v-app-bar>
-     
+
     <v-main>
       <div v-if="mounted">
-      <router-view></router-view>
+        <router-view></router-view>
       </div>
     </v-main>
 
-    <v-footer
-      color="#6733e2"
-      padless
-    >
-      <v-card
-        flat
-        tile
-        color="#6733e2"
-        class="lighten-1 white--text text-center"
-      >
-        <v-card-title class="teal">
-        <strong class="subheading">Get connected with us on social networks!</strong>
+    <v-footer color="#6733e2" padless>
+      <v-card flat tile color="#6733e2" class="lighten-1 white--text flex">
+        <v-card-title style="display: contents;">
+          <strong class="subheading">Get connected with us on social networks!</strong>
 
-        <v-spacer></v-spacer>
+          <v-spacer></v-spacer>
+          <v-btn  v-for="icon in icons" :key="icon" class="mx-4" dark icon style="float:right;">
+            <v-icon size="24px">
+              {{ icon }}
+            </v-icon>
+          </v-btn>
 
-        <v-btn
-          v-for="icon in icons"
-          :key="icon"
-          class="mx-4"
-          dark
-          icon
-        >
-          <v-icon size="24px">
-            {{ icon }}
-          </v-icon>
-        </v-btn>
-      </v-card-title>
-      </v-card> 
+        </v-card-title>
+      </v-card>
     </v-footer>
   </v-app>
 </template>
@@ -101,24 +78,17 @@ export default {
       return this.$store.commit("toggleCuratorStatus");
     },
     connect() {
-        this.$store.dispatch("connectToWallet").then(() => {
-          this.mounted = true;
-          console.log("done")
-        }
-        );
+      this.$store.dispatch("connectToWallet").then(() => {
+        this.mounted = true;
+        console.log("done");
+      });
     },
-
   },
   data: () => ({
-    icons: [
-      'mdi-facebook',
-      'mdi-twitter',
-      'mdi-linkedin',
-      'mdi-instagram',
-    ],
+    icons: ["mdi-facebook", "mdi-twitter", "mdi-linkedin", "mdi-instagram"],
     theme: "light",
     providerOptions: {},
-    mounted: false
+    mounted: false,
   }),
   mounted() {
     this.$nextTick(async () => {
