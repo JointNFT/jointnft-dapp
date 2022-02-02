@@ -1,5 +1,5 @@
 <template>
-<a :href="`/Funds?contractId=${collection.contract_id}`">
+<a :href="`/Funds?contractId=${collection.contract_id}&collectionId=${collection.collection_id}`">
   <v-card width = "500">
     
       <v-container>

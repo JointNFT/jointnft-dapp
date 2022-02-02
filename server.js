@@ -54,6 +54,7 @@ app.get("/getCollections", async (req, res) => {
   for (var i = 0; i < pg_res.rows.length; i += 1) {
     var row = pg_res.rows[i];
     var collectionDetails = {
+      collection_id: row['collection_id'],
       image_url:
         row['image_url'],
       name: row['collection_name'],
@@ -76,7 +77,12 @@ app.get("/getCollections", async (req, res) => {
 
 app.get("/getNFTs", async (req, res) => {
   
-  const pg_res = await client.query("select * from collections.nfts n;");
+  var collection_id = req.query.collection_id;
+  if (collection_id == null || collection_id == '') {
+    collection_id = 0;
+  }
+  
+  const pg_res = await client.query("select * from collections.nfts n where n.collection_id = "+collection_id+";");
   const nftList = [];
   for (var i = 0; i < pg_res.rows.length; i += 1) {
     var row = pg_res.rows[i];

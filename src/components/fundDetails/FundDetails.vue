@@ -255,8 +255,9 @@ export default {
    },
   
     getNFTsInContract() {
-      this.$store.dispatch("getNFTsInContract", {address: this.$route.query.contractId});
+      this.$store.dispatch("getNFTsInContract", {address: this.$route.query.contractId, collection_id: this.$route.query.collectionId});
     },
+    
     transferFunds(){
       this.loadTransferFund=true;
       this.$store.dispatch("transferFunds",{
