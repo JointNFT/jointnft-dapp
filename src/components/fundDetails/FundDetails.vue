@@ -33,6 +33,7 @@
             <v-icon class="fa fa-spinner fa-spin"></v-icon>
         </div>
       </v-btn>
+      </v-row><v-row>
       <v-text-field
         v-model="tokenAmount"
         :rules="[numberRule]"
