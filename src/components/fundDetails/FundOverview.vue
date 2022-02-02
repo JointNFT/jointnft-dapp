@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <v-main v-if="getConnectedAccount">
      <v-row v-if="getCollectionDetails != {}">
       <v-col cols="12" sm="6" md="8">
         <v-row no-gutters style="margin-top: 25px;" align="center" justify="center">
@@ -32,6 +33,10 @@
      <v-row v-else style="text-align:center;">
       Loading NFT's present in the fund. Please wait!
      </v-row>
+    </v-main>
+    <v-main v-else style="text-align:center;">
+      Connect to metamask wallet to see NFTs. The button is in the top right of the page !
+    </v-main>
  
   </v-container>
 </template>
@@ -57,6 +62,7 @@ export default {
     BidOnAuction
   },
   computed: {
+
     getCollectionDetails() {
       var details = this.$store.state.collectionDetails;
       if (details == null || details == {}) {

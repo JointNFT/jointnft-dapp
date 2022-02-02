@@ -31,12 +31,48 @@
         <Web3ModalVue ref="web3modal" :theme="theme" cache-provider />
       </div>
     </v-app-bar>
-
+    <!--
     <v-main>
       <div v-if="mounted">
       <router-view></router-view>
       </div>
+    </v-main>-->
+
+    <v-main>
+      <div>
+      <router-view></router-view>
+      </div>
     </v-main>
+
+    <v-footer
+      color="#6733e2"
+      padless
+    >
+      <v-card
+        flat
+        tile
+        color="#6733e2"
+        class="lighten-1 white--text text-center"
+      >
+        <v-card-title class="teal">
+        <strong class="subheading">Get connected with us on social networks!</strong>
+
+        <v-spacer></v-spacer>
+
+        <v-btn
+          v-for="icon in icons"
+          :key="icon"
+          class="mx-4"
+          dark
+          icon
+        >
+          <v-icon size="24px">
+            {{ icon }}
+          </v-icon>
+        </v-btn>
+      </v-card-title>
+      </v-card> 
+    </v-footer>
   </v-app>
 </template>
 
@@ -80,6 +116,12 @@ export default {
 
   },
   data: () => ({
+    icons: [
+      'mdi-facebook',
+      'mdi-twitter',
+      'mdi-linkedin',
+      'mdi-instagram',
+    ],
     theme: "light",
     providerOptions: {},
     mounted: false

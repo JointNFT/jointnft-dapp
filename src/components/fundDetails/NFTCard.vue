@@ -6,7 +6,11 @@
         <!-- <SellNFTCard :token_id="nft.token_id" :token_address="nft.token_address" :owner="owner" :index="index" v-if="owner==connectedAccount"/> -->
         <v-container>
           <v-row align="center">
-            <v-img :src="getImg" />
+            <v-img :src="getImg" >
+              <v-btn small class= "chain"  elevation="2" fab>
+                <img width = "28" style="border-radius: 29;" src="../../assets/Logomark-Blue.svg"/>
+              </v-btn>
+            </v-img>
           </v-row>
 
           <v-row class="justify-center">
