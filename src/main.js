@@ -6,6 +6,7 @@ import vuetify from './plugins/vuetify'
 import Router from 'vue-router'
 import Routes from './routes'
 import VueToastify from "vue-toastify";
+import '@fortawesome/fontawesome-free/css/all.css'
 // import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 Vue.config.productionTip = false
@@ -22,5 +23,8 @@ new Vue({
   store,
   vuetify,
   router,
+  icons: {
+    iconfont: 'fa',
+  },
   render: h => h(App)
 }).$mount('#app')

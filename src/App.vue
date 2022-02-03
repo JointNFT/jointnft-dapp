@@ -31,7 +31,7 @@
 
     <v-main>
       <div>
-      <router-view></router-view>
+        <router-view></router-view>
       </div>
     </v-main>
 
@@ -41,12 +41,11 @@
           <strong class="subheading">Get connected with us on social networks!</strong>
 
           <v-spacer></v-spacer>
-          <v-btn  v-for="icon in icons" :key="icon" class="mx-4" dark icon style="float:right;">
+          <v-btn v-for="icon in icons" :key="icon" class="mx-4" dark  icon :href="icon.target" target="_blank" style="float:right;">
             <v-icon size="24px">
-              {{ icon }}
+              {{ icon.icon }}
             </v-icon>
           </v-btn>
-
         </v-card-title>
       </v-card>
     </v-footer>
@@ -91,7 +90,12 @@ export default {
     },
   },
   data: () => ({
-    icons: ["mdi-facebook", "mdi-twitter", "mdi-linkedin", "mdi-instagram"],
+    icons: [
+      { icon: "fab fa-discord", target: "https://discord.gg/NrdeYC454x" },
+      { icon: "mdi-twitter", target: "https://twitter.com/the_joint_nft" },
+      { icon: "mdi-linkedin", target: "https://www.linkedin.com/company/joint-nft/about/" },
+      { icon: "mdi-instagram", target: "https://www.instagram.com/joint_nft/" },
+    ],
     theme: "light",
     providerOptions: {},
     mounted: false,
