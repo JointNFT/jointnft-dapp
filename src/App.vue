@@ -22,15 +22,9 @@
         <Web3ModalVue ref="web3modal" :theme="theme" cache-provider />
       </div>
     </v-app-bar>
-    <!--
-    <v-main>
-      <div v-if="mounted">
-        <router-view></router-view>
-      </div>
-    </v-main>-->
 
     <v-main>
-      <div v-if="mounted">
+      <div v-if="isMountNeeded">
         <router-view></router-view>
       </div>
     </v-main>
@@ -41,7 +35,7 @@
           <strong class="subheading">Get connected with us on social networks!</strong>
 
           <v-spacer></v-spacer>
-          <v-btn v-for="icon in icons" :key="icon" class="mx-4" dark height="15px;" icon :href="icon.target" target="_blank" style="float:right;">
+          <v-btn v-for="(icon, idx) in icons" :key="idx" class="mx-4" dark height="15px;" icon :href="icon.target" target="_blank" style="float:right;">
             <v-icon size="24px">
               {{ icon.icon }}
             </v-icon>
@@ -73,6 +67,12 @@ export default {
     ConnectWallet,
     Web3ModalVue,
   },
+  computed: {
+    isMountNeeded() {
+      if(this.$route.fullPath == "/") return true;
+      return this.mounted;
+    }
+  },
   methods: {
     getCuratorStatus() {
       return this.$store.state.isCurator;
@@ -85,7 +85,6 @@ export default {
     connect() {
       this.$store.dispatch("connectToWallet").then(() => {
         this.mounted = true;
-        console.log("done");
       });
     },
   },

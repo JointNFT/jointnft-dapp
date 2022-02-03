@@ -54,49 +54,80 @@ app.get("/getCollections", async (req, res) => {
   for (var i = 0; i < pg_res.rows.length; i += 1) {
     var row = pg_res.rows[i];
     var collectionDetails = {
-      collection_id: row['collection_id'],
-      image_url:
-        row['image_url'],
-      name: row['collection_name'],
-      price: Web3.utils.fromWei(row['token_buy_price']),
-      members: row['members'],
+      collection_id: row["collection_id"],
+      image_url: row["image_url"],
+      name: row["collection_name"],
+      price: { amount: Web3.utils.fromWei(row["token_buy_price"]), type: row["price_type"] },
+      members: row["members"],
       verified: true,
       est_value: {
-        amount: row['est_value'],
-        currency: row['est_value_type'],
+        amount: row["est_value"],
+        currency: row["est_value_type"],
       },
-      symbol: row['token_symbol'],
-      chain: row['collection_chain'],
-      items: row['items'],
-      contract_id: row['contract_address'],
-    }
+      symbol: row["token_symbol"],
+      chain: row["collection_chain"],
+      items: row["items"],
+      contract_id: row["contract_address"],
+    };
     collectionList.push(collectionDetails);
   }
   res.send(collectionList);
 });
 
-app.get("/getNFTs", async (req, res) => {
-  
+app.get("/getCollectionDetails", async (req, res) => {
   var collection_id = req.query.collection_id;
-  if (collection_id == null || collection_id == '') {
+  if (collection_id == null || collection_id == "") {
     collection_id = 0;
   }
-  
-  const pg_res = await client.query("select * from collections.nfts n where n.collection_id = "+collection_id+";");
+  var query = "select * from collections.collection_master cm where cm.collection_id = "+collection_id.toString()+";"
+  // console.log(query);
+  const pg_res = await client.query(query);
+  if(pg_res.rows.length >= 1){
+    var row = pg_res.rows[0];
+    var collectionDetails = {
+      collection_id: row["collection_id"],
+      image_url: row["image_url"],
+      name: row["collection_name"],
+      price: { amount: Web3.utils.fromWei(row["token_buy_price"]), type: row["price_type"] },
+      members: row["members"],
+      verified: true,
+      est_value: {
+        amount: row["est_value"],
+        currency: row["est_value_type"],
+      },
+      symbol: row["token_symbol"],
+      chain: row["collection_chain"],
+      items: row["items"],
+      contract_id: row["contract_address"],
+    };
+    res.send(collectionDetails);
+  }
+  else {
+    res.send({});
+  }
+});
+
+app.get("/getNFTs", async (req, res) => {
+  var collection_id = req.query.collection_id;
+  if (collection_id == null || collection_id == "") {
+    collection_id = 0;
+  }
+
+  const pg_res = await client.query("select * from collections.nfts n where n.collection_id = " + collection_id + ";");
   const nftList = [];
   for (var i = 0; i < pg_res.rows.length; i += 1) {
     var row = pg_res.rows[i];
-    var nftDetails = {  
-      imageUrl: row['image_url'],
-      collection: row['nft_collection_name'],
-      name: row['nft_collection_details'],
-      in_collection: row['in_collection'],
-      purchase_price: { amount: row['purchase_price'], currency: row['purchase_price_type'] },
-      purchase_price_dollars: { amount: parseFloat(row['purchase_price'])*2500 },
-      floor_price: { amount: row['floor_price'], currency: row['floor_price_type'] },
-      floor_price_dollars: { amount: parseFloat(row['floor_price'])*2500 } ,
-   }
-   nftList.push(nftDetails);
+    var nftDetails = {
+      imageUrl: row["image_url"],
+      collection: row["nft_collection_name"],
+      name: row["nft_collection_details"],
+      in_collection: row["in_collection"],
+      purchase_price: { amount: row["purchase_price"], currency: row["purchase_price_type"] },
+      purchase_price_dollars: { amount: parseFloat(row["purchase_price"]) * 2500 },
+      floor_price: { amount: row["floor_price"], currency: row["floor_price_type"] },
+      floor_price_dollars: { amount: parseFloat(row["floor_price"]) * 2500 },
+    };
+    nftList.push(nftDetails);
   }
   res.send(nftList);
 });

@@ -88,7 +88,7 @@ export default {
   },
   mounted() {
     this.$store.dispatch("getMaticBalance");
-    this.$store.dispatch("getCollectionDetails", { collectionContractId: this.$route.query.contractId } );
+    this.$store.dispatch("getCollectionDetails", { collectionContractId: this.$route.query.contractId, collection_id: this.$route.query.collectionId } );
     this.$store.dispatch("getNFTsInAddress", { address: this.$route.query.contractId });
     this.$store.dispatch("loadNFTs", {address: this.$route.query.contractId, collection_id: this.$route.query.collectionId});
   },
