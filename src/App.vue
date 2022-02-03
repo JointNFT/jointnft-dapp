@@ -30,7 +30,7 @@
     </v-main>-->
 
     <v-main>
-      <div>
+      <div v-if="mounted">
         <router-view></router-view>
       </div>
     </v-main>
@@ -41,7 +41,7 @@
           <strong class="subheading">Get connected with us on social networks!</strong>
 
           <v-spacer></v-spacer>
-          <v-btn v-for="icon in icons" :key="icon" class="mx-4" dark  icon :href="icon.target" target="_blank" style="float:right;">
+          <v-btn v-for="icon in icons" :key="icon" class="mx-4" dark height="15px;" icon :href="icon.target" target="_blank" style="float:right;">
             <v-icon size="24px">
               {{ icon.icon }}
             </v-icon>

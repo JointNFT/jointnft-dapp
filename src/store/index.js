@@ -131,6 +131,7 @@ export default new Vuex.Store({
   },
   actions: {
     async connectToWallet({ commit }) {
+      console.log("here !");
       const provider = await web3Modal.connect();
       const web3 = new Web3(provider);
       commit("setWeb3", web3);
@@ -176,14 +177,14 @@ export default new Vuex.Store({
     },
 
     async loadCollections({ commit, state }) {
-      axios.get("/getCollections").then(function(response) {
+      axios.get("http://localhost:3000/getCollections").then(function(response) {
         console.log(response.data);
         commit("setCollectionList", response.data);
       });
     },
 
     async loadNFTs({ commit, state }, {address, collection_id}) {
-      axios.get("/getNFTs?collection_id="+collection_id).then(function(response) {
+      axios.get("http://localhost:3000/getNFTs?collection_id="+collection_id).then(function(response) {
         console.log(response.data);
         commit("setNFTList", response.data);
       });
