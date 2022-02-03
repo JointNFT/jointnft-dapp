@@ -146,10 +146,10 @@ export default new Vuex.Store({
 
       const networkId = await web3.eth.net.getId();
       console.log(networkId);
-      if (networkId != 4) {
-        alert("Switch to Rinkeby network");
-        console.log("not connected to Rinkeby Network");
-      }
+      // if (networkId != 4) {
+      //   alert("Switch to Rinkeby network");
+      //   console.log("not connected to Rinkeby Network");
+      // }
       commit("setNetworkId", networkId);
 
       commit("setActive", true);
