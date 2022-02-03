@@ -25,6 +25,15 @@ app.use(express.static(path.join(__dirname, "/dist")));
 const client = new Client();
 client.connect();
 
+function getOpenseaUrlFromNFT(nft) {
+  if (nft.collection_chain == "MATIC" || nft.collection_chain == "MUMBAI") {
+    return "https://opensea.io/assets/matic/"+nft.nft_address+"/"+nft.nft_token;
+  }
+  else {
+    return "https://opensea.io/assets/"+nft.nft_address+"/"+nft.nft_token;
+  }
+}
+
 // Add headers before the routes are defined
 app.use(function(req, res, next) {
   // Website you wish to allow to connect
@@ -113,12 +122,13 @@ app.get("/getNFTs", async (req, res) => {
     collection_id = 0;
   }
 
-  const pg_res = await client.query("select * from collections.nfts n where n.collection_id = " + collection_id + ";");
+  const pg_res = await client.query("select * from collections.nfts n inner join (select collection_chain, collection_id from collections.collection_master) cm on cm.collection_id = n.collection_id where n.collection_id =" + collection_id + ";");
   const nftList = [];
   for (var i = 0; i < pg_res.rows.length; i += 1) {
     var row = pg_res.rows[i];
     var nftDetails = {
       imageUrl: row["image_url"],
+      openseaUrl: getOpenseaUrlFromNFT(row),
       collection: row["nft_collection_name"],
       name: row["nft_collection_details"],
       in_collection: row["in_collection"],
