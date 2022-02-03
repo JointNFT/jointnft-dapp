@@ -35,7 +35,7 @@
           <strong class="subheading">Get connected with us on social networks!</strong>
 
           <v-spacer></v-spacer>
-          <v-btn v-for="(icon, idx) in icons" :key="idx" class="mx-4" dark height="15px;" icon :href="icon.target" target="_blank" style="float:right;">
+          <v-btn v-for="(icon, idx) in icons" :key="idx" class="mx-4" dark height="10px;" icon :href="icon.target" target="_blank" style="float:right;">
             <v-icon size="24px">
               {{ icon.icon }}
             </v-icon>
