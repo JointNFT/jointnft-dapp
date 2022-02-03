@@ -2,6 +2,8 @@
   <v-container>
     <v-row>
       <v-col> ETH in Wallet: {{ $store.state.maticBalance }} </v-col>
+    </v-row>
+    <v-row>
       <v-col> token Balance: {{ getCollectionDetails.userTokenBalance }} </v-col>
     </v-row>
     <v-row>
@@ -257,7 +259,7 @@ export default {
     getNFTsInContract() {
       this.$store.dispatch("getNFTsInContract", {address: this.$route.query.contractId, collection_id: this.$route.query.collectionId});
     },
-    
+
     transferFunds(){
       this.loadTransferFund=true;
       this.$store.dispatch("transferFunds",{

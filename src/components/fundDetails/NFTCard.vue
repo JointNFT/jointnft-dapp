@@ -14,7 +14,7 @@
           </v-row>
 
           <v-row class="justify-center">
-            <v-card-title>{{ nft.collection }}</v-card-title>
+            <v-card-title class="card-title">{{ nft.collection }}</v-card-title>
           </v-row>
           <v-row class="justify-center">
             <v-card-subtitle>{{nft.name}}</v-card-subtitle>
@@ -24,18 +24,18 @@
             <v-divider></v-divider>
           </v-row>
 
-          <v-row >
+          <v-row class="text-row">
             <v-col class="left-col"> In Collection :</v-col>
             <v-col class="right-col"> {{nft.in_collection}} </v-col>
           </v-row>
           
 
-          <v-row>
+          <v-row class="text-row">
             <v-col class="left-col"> Purchase Price : </v-col>
             <v-col class="right-col"> {{ nft.purchase_price.amount }} {{nft.purchase_price.currency}} (${{nft.floor_price_dollars.amount}}) </v-col>
           </v-row>
 
-          <v-row>
+          <v-row class="text-row">
             <v-col class="left-col"> Floor Price : </v-col>
             <v-col class="right-col"> {{ nft.floor_price.amount }} {{nft.floor_price.currency}} (${{nft.floor_price_dollars.amount}}) </v-col>
           </v-row>
@@ -62,6 +62,14 @@
 .row {
   margin-bottom: 10px;
 }
+.card-title {
+  padding: 0px !important;
+  font-size: 1rem;
+}
+.text-row {
+  margin-bottom: -15px !important;
+  margin-top: -15px !important;
+}
 .value {
   text-align: right;
   margin-right: 25px;
@@ -71,10 +79,10 @@
   margin-left: 25px;
 }
 .top-row {
-  margin-top: 10px;
+  margin-top: 5px;
 }
 .bottom-row {
-  margin-top: 10px;
+  margin-top: 5px;
 }
 .float {
   position: fixed;
