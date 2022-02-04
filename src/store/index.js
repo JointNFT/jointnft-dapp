@@ -182,14 +182,14 @@ export default new Vuex.Store({
     },
 
     async loadCollections({ commit, state }) {
-      axios.get("http://localhost:3000/getCollections").then(function(response) {
+      axios.get("/getCollections").then(function(response) {
         console.log(response.data);
         commit("setCollectionList", response.data);
       });
     },
 
     async loadNFTs({ commit, state }, {address, collection_id}) {
-      axios.get("http://localhost:3000/getNFTs?collection_id="+collection_id).then(function(response) {
+      axios.get("/getNFTs?collection_id="+collection_id).then(function(response) {
         console.log(response.data);
         commit("setNFTList", response.data);
       });
@@ -309,17 +309,9 @@ export default new Vuex.Store({
     async getCollectionDetails({ commit, state }, { collectionContractId, collection_id }) {
       var collectionDetails = {};
       console.log(collection_id)
-      var netId = this.state.networkId;
-      axios.get("http://localhost:3000/getCollectionDetails?collection_id="+collection_id).then(function(response) {
-        console.log(response.data.chain);
-        //console.log(constants[response.data.chain].chainId);
-        if(constants[response.data.chain].chainId != netId)
-        {
-          alert("switch to "+ response.data.chain + " Network");
-        }
-        commit("setChainInCollectionDetails", response.data);
-      });
 
+      
+      
       var fundContract = await this.dispatch("getFundContract", collectionContractId);
       collectionDetails.ownerAddress = await fundContract.methods.ownerAddress().call();
       var tokenBuyPrice = await fundContract.methods._tokenBuyPrice().call();
@@ -336,16 +328,23 @@ export default new Vuex.Store({
       collectionDetails.buyingEnabled = await fundContract.methods.buyingEnabled().call();
       collectionDetails.sellingEnabled = await fundContract.methods.sellingEnabled().call();  
 
+      axios.get("/getCollectionDetails?collection_id="+collection_id).then(function(response) {
+        
+        commit("setChainInCollectionDetails", response.data);
+
+      });
+
       commit("setCollectionDetails", collectionDetails);
     },
 
     async setTokenPrice({ commit }, { tokenPrice, isBuyBeingModified, contractId }) {
       try {
         var fundContract = await this.dispatch("getFundContract", contractId);
-        var res = await fundContract.methods.setTokenPrice(tokenPrice, isBuyBeingModified).send({
+        tokenAmount = Web3.utils.toWei(tokenPrice, 'ether');
+        var res = await fundContract.methods.setTokenPrice(tokenAmount, isBuyBeingModified).send({
           from: this.state.account,
         });
-
+        
         await this.dispatch("refreshBalance", contractId);
         commit("setIsError", 0);
       } catch (error) {
