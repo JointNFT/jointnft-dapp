@@ -5,6 +5,7 @@ import Web3 from "web3";
 import Web3Modal from "web3modal";
 import Moralis from "../plugins/moralis";
 import axios from "axios";
+import constants from "../const";
 
 const collectionABI = require("../contractDetails/collection.json")["abi"];
 const fundFactoryABI = require("../contractDetails/FundFactory.json")["abi"];
@@ -181,14 +182,14 @@ export default new Vuex.Store({
     },
 
     async loadCollections({ commit, state }) {
-      axios.get("/getCollections").then(function(response) {
+      axios.get("http://localhost:3000/getCollections").then(function(response) {
         console.log(response.data);
         commit("setCollectionList", response.data);
       });
     },
 
     async loadNFTs({ commit, state }, {address, collection_id}) {
-      axios.get("/getNFTs?collection_id="+collection_id).then(function(response) {
+      axios.get("http://localhost:3000/getNFTs?collection_id="+collection_id).then(function(response) {
         console.log(response.data);
         commit("setNFTList", response.data);
       });
@@ -308,7 +309,17 @@ export default new Vuex.Store({
     async getCollectionDetails({ commit, state }, { collectionContractId, collection_id }) {
       var collectionDetails = {};
       console.log(collection_id)
-      
+      var netId = this.state.networkId;
+      axios.get("http://localhost:3000/getCollectionDetails?collection_id="+collection_id).then(function(response) {
+        console.log(response.data.chain);
+        //console.log(constants[response.data.chain].chainId);
+        if(constants[response.data.chain].chainId != netId)
+        {
+          alert("switch to "+ response.data.chain + " Network");
+        }
+        commit("setChainInCollectionDetails", response.data);
+      });
+
       var fundContract = await this.dispatch("getFundContract", collectionContractId);
       collectionDetails.ownerAddress = await fundContract.methods.ownerAddress().call();
       var tokenBuyPrice = await fundContract.methods._tokenBuyPrice().call();
@@ -322,16 +333,8 @@ export default new Vuex.Store({
       collectionDetails.userTokenBalance = Number(Web3.utils.fromWei(userTokenBalance, "ether")).toFixed(3);
       var contractBalance = await state.web3.eth.getBalance(collectionContractId);
       collectionDetails.contractBalance = Number(Web3.utils.fromWei(contractBalance, "ether")).toFixed(3);
-      // collectionDetails.buyingEnabled=true;
-      // collectionDetails.sellingEnabled=true;
       collectionDetails.buyingEnabled = await fundContract.methods.buyingEnabled().call();
-      collectionDetails.sellingEnabled = await fundContract.methods.sellingEnabled().call();
-
-      axios.get("/getCollectionDetails?collection_id="+collection_id).then(function(response) {
-        
-        commit("setChainInCollectionDetails", response.data);
-      });
-      
+      collectionDetails.sellingEnabled = await fundContract.methods.sellingEnabled().call();  
 
       commit("setCollectionDetails", collectionDetails);
     },

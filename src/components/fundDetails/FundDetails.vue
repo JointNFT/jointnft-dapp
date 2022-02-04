@@ -1,7 +1,11 @@
 <template>
   <v-container>
     <v-row>
-      <v-col> ETH in Wallet: {{ $store.state.maticBalance }} </v-col>
+      <v-col v-if="getCollectionDetails.chain=='RINKEBY'"> ETH in Wallet: {{ $store.state.maticBalance }} </v-col>
+      <v-col v-else > Matic in Wallet: {{ $store.state.maticBalance }} </v-col>
+<!--
+     <v-col>{{getConstants[getCollectionDetails.chain].currency}} in wallet: {{ $store.state.maticBalance }}</v-col>-->
+
     </v-row>
     <v-row>
       <v-col> token Balance: {{ getCollectionDetails.userTokenBalance }} </v-col>
@@ -16,7 +20,10 @@
       <v-col>Token Sell Price: {{ getCollectionDetails.tokenSellPrice || 0 }} </v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col v-if="getCollectionDetails.chain=='RINKEBY'">
+        ETH in Fund: {{ getCollectionDetails.contractBalance || 0 }}
+      </v-col>
+      <v-col v-else>
         ETH in Fund: {{ getCollectionDetails.contractBalance || 0 }}
       </v-col>
       <!-- <v-col> owner: {{ getCollectionDetails.ownerAddress || 0 }} </v-col> -->
@@ -128,7 +135,7 @@
 
 <script>
 import EndZoraAuction from "./endZoraAuction.vue";
-
+import constants from "../../const";
 export default {
   components: {
     EndZoraAuction
@@ -136,11 +143,15 @@ export default {
   computed: {
     getCollectionDetails() {
       var details = this.$store.state.collectionDetails;
+      console.log(details.chain);
       if(details == null || details == {}) {
         return {};
       }
       return details;
     },
+    getConstants(){
+      return constants;
+    }
   },
   methods: {
     refreshBalances() {

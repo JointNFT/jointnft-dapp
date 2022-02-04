@@ -95,7 +95,8 @@ export default {
   },
   methods: {
     getImgUrl() {
-      return require("./assets/" + constants.ICONS[this.$props.collection.chain]);
+      //return require("./assets/" + constants.ICONS[this.$props.collection.chain]);
+      return require("./assets/" + constants[this.$props.collection.chain].ICONS);
     },
   },
 };
