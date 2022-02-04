@@ -53,7 +53,7 @@
   background-color: white;
 }
 /* #main-tag */
-#inspire {
+#main-tag {
   background: #c3bdcb;
 }
 

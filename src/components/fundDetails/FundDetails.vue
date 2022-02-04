@@ -19,7 +19,7 @@
       <v-col>
         ETH in Fund: {{ getCollectionDetails.contractBalance || 0 }}
       </v-col>
-      <v-col> owner: {{ getCollectionDetails.ownerAddress || 0 }} </v-col>
+      <!-- <v-col> owner: {{ getCollectionDetails.ownerAddress || 0 }} </v-col> -->
     </v-row>
     <v-row
       ><v-col> <v-divider /></v-col>

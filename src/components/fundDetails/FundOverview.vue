@@ -2,7 +2,7 @@
   <v-container>
     <v-main v-if="getConnectedAccount">
      <v-row v-if="getCollectionDetails != {}">
-      <v-col cols="12" sm="7" md="9">
+      <v-col cols="12" sm="7" md="9" >
         <v-row no-gutters style="margin-top: 25px;" align="center" justify="center">
           <h1>{{ getCollectionDetails.name }}</h1>
         </v-row>
@@ -26,7 +26,7 @@
         </v-row>
       </v-col>
 
-      <v-col cols="5" md="3">
+      <v-col cols="5" md="3" >
         <FundDetails :owner="getCollectionDetails.ownerAddress" :connectedAccount="getConnectedAccount"/>
       </v-col>
      </v-row>
@@ -44,6 +44,10 @@
 <style scoped>
 #divider {
   padding-bottom: 20px;
+}
+
+.entire-page {
+  background: #c3bdcb;
 }
 </style>
 
