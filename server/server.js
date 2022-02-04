@@ -28,30 +28,6 @@ const web3 = new Web3(
 	Web3.givenProvider ||
 		'wss://rinkeby.infura.io/ws/v3/f0851ca048234e2a8b9fce6423433441'
 );
-// var subscription = web3.eth
-// 	.subscribe(
-// 		'logs',
-// 		{
-// 			address: '0x598e209747Ee2Bc96f39AfdC206dad86aDD2282c',
-// 			// topics: ['0x12345...'],
-// 		},
-// 		(error, result) => {
-// 			if (!error) console.log(result);
-// 			// console.log(error);
-// 		}
-// 	)
-// 	.on('connected', (subscriptionId) => {
-// 		console.log(subscriptionId);
-// 	})
-// 	.on('data', (log) => {
-// 		console.log(log);
-// 	})
-// 	.on('changed', (log) => {});
-
-// // unsubscribes the subscription
-// subscription.unsubscribe(function(error, success) {
-// 	if (success) console.log('Successfully unsubscribed!');
-// });
 
 const contract = new web3.eth.Contract(
 	abi,
@@ -62,22 +38,6 @@ async function getEvents(events) {
 	let latest_block = await web3.eth.getBlockNumber();
 	let historical_block = latest_block - 10000; // you can also change the value to 'latest' if you have a upgraded rpc
 	console.log('latest: ', latest_block, 'historical block: ', historical_block);
-	// const aaa = await contract.getPastEvents(
-	// 	'allEvents', // change if your looking for a different event
-	// 	{ fromBlock: historical_block, toBlock: 'latest' }
-	// );
-	// console.log(aaa);
-
-	// const a = web3.eth.abi.decodeParameters(
-	// 	['bool', 'uint256'],
-	// 	'0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000064'
-	// );
-	// console.log(a);
-
-	// const a = web3.utils.hexToUtf8(
-	// 	'0x0000000000000000000000000000000000000000000000000000000000000005'
-	// );
-	// console.log(a);
 	contract.events
 		.allEvents({}, function(error, event) {
 			// console.log('event');
