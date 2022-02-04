@@ -24,7 +24,7 @@
       </div>
     </v-app-bar>
 
-     <v-main id = "main-tag"> <!--class="ma-0 pa-0" -->
+     <v-main class="main-tag"> <!--class="ma-0 pa-0" -->
       <div v-if="isMountNeeded">
         <router-view></router-view>
       </div>
@@ -32,7 +32,7 @@
 
     <v-footer color="#403561">
       <v-card flat tile color="#403561" class="lighten-1 white--text flex">
-        <v-card-title style="display: contents;">
+        <v-card-title >
           <strong class="subheading">Get connected with us on social networks!</strong>
 
           <v-spacer></v-spacer>
