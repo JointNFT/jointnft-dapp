@@ -7,7 +7,7 @@
 		"build": "vue-cli-service build",
 		"start": "node server.js",
 		"lint": "vue-cli-service lint",
-		"server": "node server/server.js"
+		"server": "nodemon server/server.js"
 	},
 	"dependencies": {
 		"@nomiclabs/hardhat-ethers": "^2.0.3",
@@ -26,6 +26,7 @@
 		"https": "^1.0.0",
 		"moralis": "0.0.154",
 		"node-fetch": "^3.1.0",
+		"pg": "^8.7.3",
 		"serve-static": "^1.14.1",
 		"stream": "0.0.2",
 		"url": "^0.11.0",
@@ -49,6 +50,7 @@
 		"@vue/cli-service": "~4.5.0",
 		"autoprefixer": "^9.8.8",
 		"dotenv": "^11.0.0",
+		"nodemon": "^2.0.15",
 		"postcss": "^7.0.39",
 		"sass": "~1.32.0",
 		"sass-loader": "^10.0.0",

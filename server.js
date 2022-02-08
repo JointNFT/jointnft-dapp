@@ -5,7 +5,6 @@ const path = require('path');
 const bodyParser = require('body-parser');
 // create application/json parser
 var jsonParser = bodyParser.json();
-var abi = require('./abi.json');
 
 // optional: allow environment to specify port
 const port = process.env.PORT || 8080;
