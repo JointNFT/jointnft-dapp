@@ -11,11 +11,11 @@
           width="50"
           height="50"
         />
-        <v-toolbar-title style="positon: relative; right=20px;">Collections</v-toolbar-title>
+        <v-toolbar-title style="positon: relative; right=20px;">NFT Cahoots</v-toolbar-title>
       </div>
 
       <v-spacer></v-spacer>
-      <v-btn href="/" text color="white"> Funds </v-btn>
+      <v-btn href="/" text color="white"> Collections </v-btn>
       <!-- <ConnectWallet/> -->
       <v-btn @click="connect" v-if="!$store.state.account" text id="connect-wallet-btn" color="white">Connect wallet</v-btn>
       <v-btn v-else id="connect-wallet-btn" color="#6733e2">{{ $store.state.account.substring(0, 5) + "..." }}</v-btn>

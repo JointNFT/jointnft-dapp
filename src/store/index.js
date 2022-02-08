@@ -325,9 +325,19 @@ export default new Vuex.Store({
       collectionDetails.userTokenBalance = Number(Web3.utils.fromWei(userTokenBalance, "ether")).toFixed(3);
       var contractBalance = await state.web3.eth.getBalance(collectionContractId);
       collectionDetails.contractBalance = Number(Web3.utils.fromWei(contractBalance, "ether")).toFixed(3);
+      try{
+        var fundingGoal = await fundContract.methods._fundingGoal().call();
+        collectionDetails.fundingGoal = Number(Web3.utils.fromWei(fundingGoal, "ether")).toFixed(3);
+      } catch(err) {
+        console.log(err);
+      }
+      
+      // collectionDetails.buyingEnabled=true;
+      // collectionDetails.sellingEnabled=true;
       collectionDetails.buyingEnabled = await fundContract.methods.buyingEnabled().call();
       collectionDetails.sellingEnabled = await fundContract.methods.sellingEnabled().call();  
 
+      
       axios.get("/getCollectionDetails?collection_id="+collection_id).then(function(response) {
         
         commit("setChainInCollectionDetails", response.data);

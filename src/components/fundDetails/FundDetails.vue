@@ -28,6 +28,9 @@
       </v-col>
       <!-- <v-col> owner: {{ getCollectionDetails.ownerAddress || 0 }} </v-col> -->
     </v-row>
+    <v-row :v-if="getCollectionDetails.fundingGoal">
+      <v-col>Funding Goal: {{ getCollectionDetails.fundingGoal || "N/A for this collection"}} </v-col>
+    </v-row>
     <v-row
       ><v-col> <v-divider /></v-col>
     </v-row>
