@@ -1,6 +1,6 @@
 branch-defaults:
   main:
-    environment: dapp-prod
+    environment: jointnft-prod
   development: 
     environment: dapp-dev
 environment-defaults:
