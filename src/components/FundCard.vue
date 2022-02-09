@@ -95,13 +95,8 @@ export default {
   },
   methods: {
     getImgUrl() {
-<<<<<<< HEAD
-      //return require("./assets/" + constants.ICONS[this.$props.collection.chain]);
+      // return require("./assets/" + constants.ICONS[this.$props.collection.chain]);
       return require("./assets/" + constants[this.$props.collection.chain].ICONS);
-=======
-     return require("./assets/" + constants.ICONS[this.$props.collection.chain]);
-    //  return require("./assets/" + constants[this.$props.collection.chain].ICONS);
->>>>>>> 555f2c7 (fixing footer)
     },
   },
 };

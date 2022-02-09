@@ -104,7 +104,7 @@ export default {
   components: {
     SellNFTCard,
   },
-  props: ["nft", "index", "owner", "connectedAccount", {nft : Object}],
+  props: ["nft", "index", "owner", "connectedAccount"],
   computed: {
     getImg(){
       return this.$props.nft.imageUrl;

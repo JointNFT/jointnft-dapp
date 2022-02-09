@@ -186,14 +186,14 @@ export default new Vuex.Store({
     },
 
     async loadCollections({ commit, state }) {
-      axios.get("http://localhost:3000/getCollections").then(function(response) {
+      axios.get("/getCollections").then(function(response) {
         console.log(response.data);
         commit("setCollectionList", response.data);
       });
     },
 
     async loadNFTs({ commit, state }, {address, collection_id}) {
-      axios.get("http://localhost:3000/getNFTs?collection_id="+collection_id).then(function(response) {
+      axios.get("/getNFTs?collection_id="+collection_id).then(function(response) {
         console.log(response.data);
         commit("setNFTList", response.data);
       });
@@ -368,7 +368,6 @@ export default new Vuex.Store({
       collectionDetails.userTokenBalance = Number(Web3.utils.fromWei(userTokenBalance, "ether")).toFixed(3);
       var contractBalance = await state.web3.eth.getBalance(collectionContractId);
       collectionDetails.contractBalance = Number(Web3.utils.fromWei(contractBalance, "ether")).toFixed(3);
-<<<<<<< HEAD
       try{
         var fundingGoal = await fundContract.methods._fundingGoal().call();
         collectionDetails.fundingGoal = Number(Web3.utils.fromWei(fundingGoal, "ether")).toFixed(3);
@@ -382,18 +381,10 @@ export default new Vuex.Store({
       collectionDetails.sellingEnabled = await fundContract.methods.sellingEnabled().call();  
 
       
-      axios.get("http://localhost:3000/getCollectionDetails?collection_id="+collection_id).then(function(response) {
-        
-        commit("setChainInCollectionDetails", response.data);
-
-      });
-=======
-      collectionDetails.buyingEnabled = await fundContract.methods.buyingEnabled().call();
-      collectionDetails.sellingEnabled = await fundContract.methods.sellingEnabled().call();  
->>>>>>> 555f2c7 (fixing footer)
-
+      const colDeatailsFromServer = await axios.get("/getCollectionDetails?collection_id="+collection_id);
+      // console.log("colDeatailsFromServer", colDeatailsFromServer);
       commit("setCollectionDetails", collectionDetails);
-      commit("setChainInCollectionDetails", this.state.chainDetails);
+      commit("setChainInCollectionDetails", colDeatailsFromServer.data);
     },
 
     async setTokenPrice({ commit }, { tokenPrice, isBuyBeingModified, contractId }) {
