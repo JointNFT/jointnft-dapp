@@ -162,13 +162,16 @@ export default {
     isBuyingEnabled() {
       var details = this.$props.collections;
       var buyingEnabled = true;
+      var diff = 1;
       if ("buyingEnabled" in details && details.buyingEnabled != null) {
-        console.log(details.buyingEnabled);
+        diff = parseFloat(details.fundingGoal) - parseFloat(details.totalDeposited); 
+        console.log(diff)
+        if (diff == 0) return true; // if more funds cant be put into the fnd , disable buy tokens
         buyingEnabled = !(!this.isSendingBuyTokens && details.buyingEnabled);
       } else {
         buyingEnabled = !this.isSendingBuyTokens;
       }
-      return (buyingEnabled && (this.getAmountLeftForGoal != 0));
+      return buyingEnabled;
     },
     isSellingEnabled() {
       var details = this.$props.collections;
