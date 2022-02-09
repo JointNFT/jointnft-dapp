@@ -27,7 +27,7 @@
       </v-col>
 
       <v-col cols="5" md="3" >
-        <FundDetails :owner="getCollectionDetails.ownerAddress" :connectedAccount="getConnectedAccount"/>
+        <FundDetails :owner="getCollectionDetails.ownerAddress" :connectedAccount="getConnectedAccount" :collections="getCollectionDetails"/>
       </v-col>
      </v-row>
      <v-row v-else style="text-align:center;">

@@ -18,8 +18,15 @@ export default {
    chainId:137,
    ICONS: "polygon.jpg",
    currency: "Matic"
+<<<<<<< HEAD
  }
  /*
   ICONS: { MUMBAI: "polygon.jpg", RINKEBY: "ethereum.png" },
   */
+=======
+ },
+
+  ICONS: { MUMBAI: "polygon.jpg", RINKEBY: "ethereum.png" },
+
+>>>>>>> 555f2c7 (fixing footer)
 };

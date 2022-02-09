@@ -70,6 +70,7 @@ export default new Vuex.Store({
     },
     nftDetails: {},
     isError: 0,
+    chainDetails:{},
   },
   getters: {
     getFunds(state) {
@@ -132,7 +133,10 @@ export default new Vuex.Store({
     },
     setChainInCollectionDetails(state, collectionDetails) {
       state.collectionDetails['chain'] =  collectionDetails['chain'];
-    }
+    },
+    setChainDetails(state,chainDetails){
+      state.chainDetails = chainDetails;
+    },
   },
   actions: {
     async connectToWallet({ commit }) {
@@ -182,14 +186,14 @@ export default new Vuex.Store({
     },
 
     async loadCollections({ commit, state }) {
-      axios.get("/getCollections").then(function(response) {
+      axios.get("http://localhost:3000/getCollections").then(function(response) {
         console.log(response.data);
         commit("setCollectionList", response.data);
       });
     },
 
     async loadNFTs({ commit, state }, {address, collection_id}) {
-      axios.get("/getNFTs?collection_id="+collection_id).then(function(response) {
+      axios.get("http://localhost:3000/getNFTs?collection_id="+collection_id).then(function(response) {
         console.log(response.data);
         commit("setNFTList", response.data);
       });
@@ -206,7 +210,7 @@ export default new Vuex.Store({
         return null;
       }
     },
-
+/*
     async buyFundTokens({ commit }, { maticAmount, contractId }) {
       try {
         var fundContract = await this.dispatch("getFundContract", contractId);
@@ -240,7 +244,7 @@ export default new Vuex.Store({
         console.log(error);
         commit("setIsError", 1);
       }
-    },
+    },*/
 
     async pauseBuyAndSell({ commit }, { contractId }) {
       var fundContract = await this.dispatch("getFundContract", contractId);
@@ -305,13 +309,52 @@ export default new Vuex.Store({
       var maticBalance = await state.web3.eth.getBalance(state.account);
       commit("setMaticBalance", Number(Web3.utils.fromWei(maticBalance, "ether")).toFixed(3));
     },
+    async buyFundTokens({ commit }, { maticAmount, contractId }) {
+      try {
+        var netId = this.state.networkId;
+       console.log(this.state.collectionDetails.chain);
+       if(constants[this.state.collectionDetails.chain].chainId != netId){
+         alert("switch to "+ response.data.chain + " Network");
+       }
+        var fundContract = await this.dispatch("getFundContract", contractId);
+        var weiAmount = Web3.utils.toWei(maticAmount, 'ether');
+        await fundContract.methods.buyTokens().send({
+          value: weiAmount,
+          from: this.state.account,
+        });
+        this.dispatch("refreshBalance", contractId);
+        commit("setIsError", 0);
+        //return false;
+      } catch (error) {
+        console.log(error);
+        commit("setIsError", 1);
+      }
+    },
+
+    async sellFundTokens({ commit }, { tokenAmount, contractId }) {
+      try {
+        var netId = this.state.networkId;
+        if(constants[this.state.collectionDetails.chain].chainId != netId){
+          alert("switch to "+ response.data.chain + " Network");
+        }
+        var fundContract = await this.dispatch("getFundContract", contractId);
+        console.log(tokenAmount);
+        tokenAmount = Web3.utils.toWei(tokenAmount, 'ether');
+        // todo: multiple tokenAmount by 10^18 before sending
+        await fundContract.methods.sellTokens(tokenAmount).send({
+          from: this.state.account,
+        });
+        console.log(contractId);
+        this.dispatch("refreshBalance", contractId);
+        commit("setIsError", 0);
+      } catch (error) {
+        console.log(error);
+        commit("setIsError", 1);
+      }
+    },
 
     async getCollectionDetails({ commit, state }, { collectionContractId, collection_id }) {
       var collectionDetails = {};
-      console.log(collection_id)
-
-      
-      
       var fundContract = await this.dispatch("getFundContract", collectionContractId);
       collectionDetails.ownerAddress = await fundContract.methods.ownerAddress().call();
       var tokenBuyPrice = await fundContract.methods._tokenBuyPrice().call();
@@ -325,6 +368,7 @@ export default new Vuex.Store({
       collectionDetails.userTokenBalance = Number(Web3.utils.fromWei(userTokenBalance, "ether")).toFixed(3);
       var contractBalance = await state.web3.eth.getBalance(collectionContractId);
       collectionDetails.contractBalance = Number(Web3.utils.fromWei(contractBalance, "ether")).toFixed(3);
+<<<<<<< HEAD
       try{
         var fundingGoal = await fundContract.methods._fundingGoal().call();
         collectionDetails.fundingGoal = Number(Web3.utils.fromWei(fundingGoal, "ether")).toFixed(3);
@@ -343,8 +387,13 @@ export default new Vuex.Store({
         commit("setChainInCollectionDetails", response.data);
 
       });
+=======
+      collectionDetails.buyingEnabled = await fundContract.methods.buyingEnabled().call();
+      collectionDetails.sellingEnabled = await fundContract.methods.sellingEnabled().call();  
+>>>>>>> 555f2c7 (fixing footer)
 
       commit("setCollectionDetails", collectionDetails);
+      commit("setChainInCollectionDetails", this.state.chainDetails);
     },
 
     async setTokenPrice({ commit }, { tokenPrice, isBuyBeingModified, contractId }) {

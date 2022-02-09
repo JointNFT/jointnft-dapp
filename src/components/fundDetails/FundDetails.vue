@@ -1,36 +1,48 @@
 <template>
   <v-container>
-    <v-row>
+    <v-card style="background-color: Lavender">
+      <v-card-title>
+          <h1 style ="font-size: 1.5rem; font-family: PT Sans Caption; font-weight:bold" >{{ getCollectionDetails.name }}</h1>
+      </v-card-title>
+          <v-card-text>
+            
+              <v-img :src="getImg" height="30" width="30" style="padding:1px"></v-img>
+              <br>
+            <v-container>
+       <v-row><!--
       <v-col v-if="getCollectionDetails.chain=='RINKEBY'"> ETH in Wallet: {{ $store.state.maticBalance }} </v-col>
-      <v-col v-else > Matic in Wallet: {{ $store.state.maticBalance }} </v-col>
+      <v-col v-else > Matic in Wallet: {{ $store.state.maticBalance }} </v-col>-->
 <!--
      <v-col>{{getConstants[getCollectionDetails.chain].currency}} in wallet: {{ $store.state.maticBalance }}</v-col>-->
 
-    </v-row>
-    <v-row>
-      <v-col> token Balance: {{ getCollectionDetails.userTokenBalance }} </v-col>
-    </v-row>
-    <v-row>
-      <v-col>Total supply: {{ getCollectionDetails.totalSupply || 0 }} </v-col>
-    </v-row>
-    <v-row>
-      <v-col> Token Buy Price: {{ getCollectionDetails.tokenBuyPrice || 0 }} </v-col>
-    </v-row>
-    <v-row>
-      <v-col>Token Sell Price: {{ getCollectionDetails.tokenSellPrice || 0 }} </v-col>
-    </v-row>
-    <v-row>
+        </v-row>
+        <v-row>
+          <v-col style="font-family: PT Sans Caption ; font-weight:bold; padding:1px">Total supply/Tokens in Circulation: {{ getCollectionDetails.totalSupply || 0 }} </v-col>
+        </v-row>
+        <v-row>
+          <v-col style="font-family: PT Sans Caption ; font-weight:bold; padding:1px"> Token Balance/Tokens Owned: {{ getCollectionDetails.userTokenBalance }} </v-col>
+        </v-row>
+    
+        <v-row>
+           <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px"> Token Buy Price: {{ getCollectionDetails.tokenBuyPrice || 0 }} </v-col>
+        </v-row>
+        <v-row>
+           <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px">Token Sell Price: {{ getCollectionDetails.tokenSellPrice || 0 }} </v-col>
+        </v-row>
+       </v-container>
+     </v-card-text>
+    </v-card>
+  <!--  <v-row>
       <v-col v-if="getCollectionDetails.chain=='RINKEBY'">
         ETH in Fund: {{ getCollectionDetails.contractBalance || 0 }}
-      </v-col>
+      </v-col> 
       <v-col v-else>
         ETH in Fund: {{ getCollectionDetails.contractBalance || 0 }}
       </v-col>
-      <!-- <v-col> owner: {{ getCollectionDetails.ownerAddress || 0 }} </v-col> -->
-    </v-row>
-    <v-row :v-if="getCollectionDetails.fundingGoal">
-      <v-col>Funding Goal: {{ getCollectionDetails.fundingGoal || "N/A for this collection"}} </v-col>
-    </v-row>
+      <v-col>{{getConstants[getCollectionDetails.chain].currency}} in fund: {{ getCollectionDetails.contractBalance || 0 }}</v-col>
+      <v-col> owner: {{ getCollectionDetails.ownerAddress || 0 }} </v-col> 
+      
+    </v-row>-->
     <v-row
       ><v-col> <v-divider /></v-col>
     </v-row>
@@ -147,6 +159,10 @@ export default {
     getCollectionDetails() {
       var details = this.$store.state.collectionDetails;
       console.log(details.chain);
+<<<<<<< HEAD
+=======
+      //console.log(details.name);
+>>>>>>> 555f2c7 (fixing footer)
       if(details == null || details == {}) {
         return {};
       }
@@ -154,9 +170,19 @@ export default {
     },
     getConstants(){
       return constants;
+<<<<<<< HEAD
     }
+=======
+    },
+    getImg(){
+      
+      return require("../assets/ethereum.png");
+      //return require("../assets/" + constants.ICONS[this.$props.collections.chain]);
+    },
+>>>>>>> 555f2c7 (fixing footer)
   },
   methods: {
+    
     refreshBalances() {
       this.$store.dispatch("refreshBalance", this.$route.query.contractId);
       
@@ -318,6 +344,6 @@ export default {
     loadingToggleBuy:false,
     loadingToggleSell:false,
   }),
-  props: ["owner", "connectedAccount"],
+  props: ["owner", "connectedAccount", { collections : Object }],
 };
 </script>
