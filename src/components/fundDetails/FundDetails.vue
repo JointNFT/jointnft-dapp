@@ -161,11 +161,14 @@ export default {
     },
     isBuyingEnabled() {
       var details = this.$props.collections;
+      var buyingEnabled = true;
       if ("buyingEnabled" in details && details.buyingEnabled != null) {
         console.log(details.buyingEnabled);
-        return !(!this.isSendingBuyTokens && details.buyingEnabled);
+        buyingEnabled = !(!this.isSendingBuyTokens && details.buyingEnabled);
+      } else {
+        buyingEnabled = !this.isSendingBuyTokens;
       }
-      return !this.isSendingBuyTokens;
+      return (buyingEnabled && (this.getAmountLeftForGoal != 0));
     },
     isSellingEnabled() {
       var details = this.$props.collections;
