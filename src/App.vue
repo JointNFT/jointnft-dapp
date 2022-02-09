@@ -11,7 +11,7 @@
           width="50"
           height="50"
         />
-        <v-toolbar-title style="positon: relative; right=20px;">NFT Cahoots</v-toolbar-title>
+        <v-toolbar-title style="positon: relative; right=20px;">Joint NFT</v-toolbar-title>
       </div>
 
       <v-spacer></v-spacer>
