@@ -27,6 +27,9 @@
         <v-row>
            <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px">Funding Goal: {{ getCollectionDetails.fundingGoal || 0 }} {{ getCurrency }}</v-col>
         </v-row>
+        <v-row>
+           <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px">To reach Goal: {{ getAmountLeftForGoal || 0 }} {{ getCurrency }}</v-col>
+        </v-row>
        </v-container>
      </v-card-text>
     </v-card>
@@ -39,7 +42,7 @@
         :rules="[numberRule]"
         label="Enter amount of eth"
       ></v-text-field>
-      <v-btn :disabled="isSendingBuyTokens" v-on:click="buyFundTokens"> Buy Tokens
+      <v-btn :disabled="isBuyingEnabled" v-on:click="buyFundTokens"> Buy Tokens
         <div v-if="loading_buy" v-cloak>
             <v-icon class="fa fa-spinner fa-spin"></v-icon>
         </div>
@@ -50,7 +53,7 @@
         :rules="[numberRule]"
         label="Enter amount of Tokens to sell"
       ></v-text-field>
-      <v-btn :disabled="isSendingSellTokens" v-on:click="sellFundTokens"> Sell Tokens
+      <v-btn :disabled="isSellingEnabled" v-on:click="sellFundTokens"> Sell Tokens
         <div v-if="loading_sell" v-cloak>
             <v-icon class="fa fa-spinner fa-spin"></v-icon>
         </div>
@@ -145,8 +148,6 @@ export default {
   computed: {
     getCollectionDetails() {
       var details = this.$store.state.collectionDetails;
-      console.log(details.chain);
-      //console.log(details.name);
       if(details == null || details == {}) {
         return {};
       }
@@ -158,16 +159,39 @@ export default {
         return constants[details["chain"]].currency;
       } 
     },
+    isBuyingEnabled() {
+      var details = this.$props.collections;
+      if ("buyingEnabled" in details && details.buyingEnabled != null) {
+        console.log(details.buyingEnabled);
+        return !(!this.isSendingBuyTokens && details.buyingEnabled);
+      }
+      return !this.isSendingBuyTokens;
+    },
+    isSellingEnabled() {
+      var details = this.$props.collections;
+      if ("sellingEnabled" in details && details.sellingEnabled != null) {
+        console.log(details.sellingEnabled);
+        return !(!this.isSendingSellTokens && details.sellingEnabled);
+      }
+      return !this.isSendingSellTokens;
+    },
     getConstants(){
       return constants;
     },
     getImg(){
       var details = this.$props.collections;
       if ("chain" in details && details.chain != null && details.chain != "") {
-        console.log(details["chain"]);
         return require("../assets/" + constants[details["chain"]].ICONS);
       } 
     },
+    getAmountLeftForGoal() {
+      var details = this.$props.collections;
+      var diff = 0;
+      if ("contractBalance" in details && details["contractBalance"] != null) {
+        diff = parseFloat(details.fundingGoal) - parseFloat(details.totalDeposited); 
+      }
+      return diff;
+    }
   },
   methods: {
     
@@ -190,7 +214,7 @@ export default {
           this.isSendingBuyTokens=false;
           if(this.$store.state.isError==0){
             this.$vToastify.success("Tokens bought!");
-            this.dispatch("refreshBalances");
+            this.$store.dispatch("refreshBalances");
           }
         });
     },
