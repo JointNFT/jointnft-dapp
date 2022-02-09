@@ -186,14 +186,14 @@ export default new Vuex.Store({
     },
 
     async loadCollections({ commit, state }) {
-      axios.get("/getCollections").then(function(response) {
+      axios.get("http://localhost:3000/getCollections").then(function(response) {
         console.log(response.data);
         commit("setCollectionList", response.data);
       });
     },
 
     async loadNFTs({ commit, state }, {address, collection_id}) {
-      axios.get("/getNFTs?collection_id="+collection_id).then(function(response) {
+      axios.get("http://localhost:3000/getNFTs?collection_id="+collection_id).then(function(response) {
         console.log(response.data);
         commit("setNFTList", response.data);
       });
@@ -379,7 +379,7 @@ export default new Vuex.Store({
       collectionDetails.sellingEnabled = await fundContract.methods.sellingEnabled().call();  
 
       
-      const colDeatailsFromServer = await axios.get("/getCollectionDetails?collection_id="+collection_id);
+      const colDeatailsFromServer = await axios.get("http://localhost:3000/getCollectionDetails?collection_id="+collection_id);
       
       commit("setCollectionDetails", collectionDetails);
       commit("setChainInCollectionDetails", colDeatailsFromServer.data);

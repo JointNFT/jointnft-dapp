@@ -67,7 +67,8 @@ app.get("/api/isTwitterHandler", jsonParser, async (req, res) => {
 });
 
 app.get("/getCollections", async (req, res) => {
-  const pg_res = await client.query("select * from collections.collection_master;");
+  const chain_clause = "('"+ENV[process.env.ENV]["chains"].join('\',\'') + "')";
+  const pg_res = await client.query("select * from collections.collection_master cm where cm.collection_master in "+chain_clause+";");
   const collectionList = [];
   for (var i = 0; i < pg_res.rows.length; i += 1) {
     var row = pg_res.rows[i];
@@ -92,11 +93,16 @@ app.get("/getCollections", async (req, res) => {
   res.send(collectionList);
 });
 
+app.get("/getsomething", async (req,res) => {
+  res.send(process.env.PGUSER);
+})
+
 app.get("/getCollectionDetails", async (req, res) => {
   var collection_id = req.query.collection_id;
   if (collection_id == null || collection_id == "") {
     collection_id = 0;
   }
+
   var query = "select * from collections.collection_master cm where cm.collection_id = "+collection_id.toString()+";"
   // console.log(query);
   const pg_res = await client.query(query);
