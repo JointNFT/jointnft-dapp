@@ -382,7 +382,7 @@ export default new Vuex.Store({
       collectionDetails.sellingEnabled = await fundContract.methods.sellingEnabled().call();  
 
       
-      axios.get("/getCollectionDetails?collection_id="+collection_id).then(function(response) {
+      axios.get("http://localhost:3000/getCollectionDetails?collection_id="+collection_id).then(function(response) {
         
         commit("setChainInCollectionDetails", response.data);
 
