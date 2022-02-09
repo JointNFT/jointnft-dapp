@@ -16,6 +16,15 @@ var jsonParser = bodyParser.json();
 const port = process.env.PORT || 3000;
 var bearerToken = "AAAAAAAAAAAAAAAAAAAAAATcWwEAAAAA9tgsDCzhJRO%2Bi8dpvqy8SJRX1tc%3D94RiMCLHGtujKzjQJpzGOGfoDwWEss39mSvtBZcCAZm4g5mcfo";
 
+const ENV = {
+  DEV: {
+    chains: ["RINKEBY","MUMBAI"]
+  },
+  PROD: {
+    chains: ["MAINNET", "POLYGON"]
+  }
+}
+
 // create server instance
 const app = express();
 app.use(express.static(path.join(__dirname, "/dist")));
