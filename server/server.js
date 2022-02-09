@@ -34,15 +34,14 @@ app.use(function(req, res, next) {
 
 // console.log(process.env.MUMBAI_WS);
 
-const web3 = new Web3(Web3.givenProvider || process.env.ETH_WS);
+const MUMBAI_CONTRACT_ADDRESS = ['0xBC02e2fbd1BFd63D2aA2bCc19321b705459126d0'];
+const ETH_CONTRACT_ADDRESS = ['0x2c4C64fF4cFc16901EFB5aF6c4F2E2b9709651A8'];
 
-const CONTRACT_ADDRESS = '0x9c780C7a5b5a817431D3DCD71BE6F6198E4aA2b2';
-const CONTRACT_ADDRESS2 = '0x2c4C64fF4cFc16901EFB5aF6c4F2E2b9709651A8';
-
-const getEvents = () => {
+const getEvents = (provider, contracts) => {
+	const web3 = new Web3(provider);
 	let options = {
 		fromBlock: null,
-		address: [CONTRACT_ADDRESS, CONTRACT_ADDRESS2], //Only get events from specific addresses,
+		address: contracts, //Only get events from specific addresses,
 		topics: [],
 	};
 
@@ -126,11 +125,17 @@ const getEvents = () => {
 	});
 	subscription.on('connected', (nr) => {
 		console.log('connected');
+		console.log(web3.currentProvider.url);
 		console.log(nr);
 	});
 };
 
-getEvents();
+const Loop = () => {
+	getEvents(process.env.ETH_WS, ETH_CONTRACT_ADDRESS);
+	getEvents(process.env.MUMBAI_WS, MUMBAI_CONTRACT_ADDRESS);
+};
+
+Loop();
 
 // Trial Route
 app.get('/a', async (req, res) => {
