@@ -19,10 +19,10 @@
         </v-row>
     
         <v-row>
-           <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px"> Token Buy Price: {{ getCollectionDetails.tokenBuyPrice || 0 }} {{ getCollectionDetails.symbol }}</v-col>
+           <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px"> Token Buy Price: {{ getCollectionDetails.tokenBuyPrice || 0 }} {{ getCurrency }}</v-col>
         </v-row>
         <v-row>
-           <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px">Token Sell Price: {{ getCollectionDetails.tokenSellPrice || 0 }} {{ getCollectionDetails.symbol }}</v-col>
+           <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px">Token Sell Price: {{ getCollectionDetails.tokenSellPrice || 0 }} {{ getCurrency }}</v-col>
         </v-row>
         <v-row>
            <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px">Funding Goal: {{ getCollectionDetails.fundingGoal || 0 }} {{ getCurrency }}</v-col>
