@@ -375,14 +375,12 @@ export default new Vuex.Store({
         console.log(err);
       }
       
-      // collectionDetails.buyingEnabled=true;
-      // collectionDetails.sellingEnabled=true;
       collectionDetails.buyingEnabled = await fundContract.methods.buyingEnabled().call();
       collectionDetails.sellingEnabled = await fundContract.methods.sellingEnabled().call();  
 
       
       const colDeatailsFromServer = await axios.get("/getCollectionDetails?collection_id="+collection_id);
-      // console.log("colDeatailsFromServer", colDeatailsFromServer);
+      
       commit("setCollectionDetails", collectionDetails);
       commit("setChainInCollectionDetails", colDeatailsFromServer.data);
     },
