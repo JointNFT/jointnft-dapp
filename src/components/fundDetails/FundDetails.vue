@@ -7,7 +7,7 @@
             <v-icon class="fa fa-spinner fa-spin" color="#403561"></v-icon>
           </div>
           <div v-else>
-            <h1 style="font-family: PT Sans Caption ; font-weight:bold;"> &nbsp; (${{ getCollectionDetails.symbol }})</h1>
+            <h1 style="font-size: 1.5rem;font-family: PT Sans Caption ; font-weight:bold;"> &nbsp; (${{ getCollectionDetails.symbol }})</h1>
           </div>
       </v-card-title>
           <v-card-text>
@@ -145,6 +145,9 @@
 <script>
 import EndZoraAuction from "./endZoraAuction.vue";
 import constants from "../../const";
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
 export default {
   components: {
     EndZoraAuction
@@ -169,7 +172,6 @@ export default {
       var diff = 1;
       if ("buyingEnabled" in details && details.buyingEnabled != null) {
         diff = parseFloat(details.fundingGoal) - parseFloat(details.totalDeposited); 
-        console.log(diff)
         if (diff == 0) return true; // if more funds cant be put into the fnd , disable buy tokens
         buyingEnabled = !(!this.isSendingBuyTokens && details.buyingEnabled);
       } else {
@@ -180,7 +182,6 @@ export default {
     isSellingEnabled() {
       var details = this.$props.collections;
       if ("sellingEnabled" in details && details.sellingEnabled != null) {
-        console.log(details.sellingEnabled);
         return !(!this.isSendingSellTokens && details.sellingEnabled);
       }
       return !this.isSendingSellTokens;
@@ -200,16 +201,11 @@ export default {
       if ("contractBalance" in details && details["contractBalance"] != null) {
         diff = parseFloat(details.fundingGoal) - parseFloat(details.totalDeposited); 
       }
-      return diff;
+      return diff.toFixed(2);
     }
   },
   methods: {
     
-    // refreshBalances() {
-    //   // console.log("hello")
-    //   this.$store.dispatch("refreshBalance", this.$route.query.contractId);
-      
-    // },
     buyFundTokens() {
 
       this.loading_buy=true;
@@ -225,7 +221,6 @@ export default {
           this.isSendingBuyTokens=false;
           if(this.$store.state.isError==0){
             this.$vToastify.success("Tokens bought!");
-            // this.$store.dispatch("refreshBalances");
             this.$store.dispatch("refreshBalance", {fundAddress: this.$route.query.contractId, fundId: this.$route.query.collectionId});   
           }
         });
@@ -243,7 +238,6 @@ export default {
           this.isSendingSellTokens=false;
           if(this.$store.state.isError==0){
             this.$vToastify.success("Tokens sold!"); 
-            // this.dispatch("refreshBalances");
             this.$store.dispatch("refreshBalance", {fundAddress: this.$route.query.contractId, fundId: this.$route.query.collectionId});   
           }     
         });
@@ -371,5 +365,13 @@ export default {
    
   }),
   props: ["owner", "connectedAccount", "collections"],
+  async mounted() {
+    while(true) {
+      await sleep(1000);
+      await this.$store.dispatch("refreshBalance", {fundAddress: this.$route.query.contractId, fundId: this.$route.query.collectionId}); 
+    }
+  },
 };
+
+
 </script>

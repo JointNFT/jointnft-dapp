@@ -26,14 +26,14 @@
         <v-row>
           <v-col class="next-r"> Price </v-col>
           <v-col class="next-r"> Member </v-col>
-          <v-col class="next-r"> Items </v-col>
+          <!--<v-col class="next-r"> Items </v-col>-->
           <v-col class="next-r"> Est. Value </v-col>
         </v-row>
 
         <v-row>
           <v-col class="next-r"> {{ collection.price.amount }} {{ collection.price.type }} </v-col>
           <v-col class="next-r"> {{ collection.members }} </v-col>
-          <v-col class="next-r"> {{ collection.items }} </v-col>
+         <!-- <v-col class="next-r"> {{ collection.items }} </v-col>-->
           <v-col class="next-r"> {{ collection.est_value.currency + collection.est_value.amount }} </v-col>
         </v-row>
       </v-container>
