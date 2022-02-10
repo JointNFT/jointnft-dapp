@@ -130,7 +130,7 @@ export default new Vuex.Store({
   },
   actions: {
     async connectToWallet({ commit }) {
-      console.log("here !");
+      // console.log("here !");
       const provider = await web3Modal.connect();
       const web3 = new Web3(provider);
       commit("setWeb3", web3);
@@ -216,7 +216,7 @@ export default new Vuex.Store({
     async sellFundTokens({ commit }, { tokenAmount, contractId }) {
       try {
         var fundContract = await this.dispatch("getFundContract", contractId);
-        console.log(tokenAmount);
+        // console.log(tokenAmount);
         tokenAmount = Web3.utils.toWei(tokenAmount, 'ether');
         // todo: multiple tokenAmount by 10^18 before sending
         await fundContract.methods.sellTokens(tokenAmount).send({
