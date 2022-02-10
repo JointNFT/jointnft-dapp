@@ -32,7 +32,7 @@
 
     <v-footer color="#403561">
       <v-card flat tile color="#403561" class="lighten-1 white--text flex">
-        <v-card-title style="display: contents;">
+        <v-card-title style="display: flex;">
           <strong class="subheading">Get connected with us on social networks!</strong>
 
           <v-spacer></v-spacer>
