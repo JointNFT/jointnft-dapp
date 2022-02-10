@@ -70,7 +70,6 @@ export default new Vuex.Store({
     },
     nftDetails: {},
     isError: 0,
-    chainDetails:{},
   },
   getters: {
     getFunds(state) {
@@ -134,9 +133,7 @@ export default new Vuex.Store({
     setChainInCollectionDetails(state, collectionDetails) {
       state.collectionDetails['chain'] =  collectionDetails['chain'];
     },
-    setChainDetails(state,chainDetails){
-      state.chainDetails = chainDetails;
-    },
+
   },
   actions: {
     async connectToWallet({ commit }) {
@@ -186,14 +183,14 @@ export default new Vuex.Store({
     },
 
     async loadCollections({ commit, state }) {
-      axios.get("/getCollections").then(function(response) {
+      axios.get("http://localhost:3000/getCollections").then(function(response) {
         console.log(response.data);
         commit("setCollectionList", response.data);
       });
     },
 
     async loadNFTs({ commit, state }, {address, collection_id}) {
-      axios.get("/getNFTs?collection_id="+collection_id).then(function(response) {
+      axios.get("http://localhost:3000/getNFTs?collection_id="+collection_id).then(function(response) {
         console.log(response.data);
         commit("setNFTList", response.data);
       });
@@ -210,7 +207,7 @@ export default new Vuex.Store({
         return null;
       }
     },
-/*
+
     async buyFundTokens({ commit }, { maticAmount, contractId }) {
       try {
         var fundContract = await this.dispatch("getFundContract", contractId);
@@ -244,7 +241,7 @@ export default new Vuex.Store({
         console.log(error);
         commit("setIsError", 1);
       }
-    },*/
+    },
 
     async pauseBuyAndSell({ commit }, { contractId }) {
       var fundContract = await this.dispatch("getFundContract", contractId);
@@ -299,16 +296,18 @@ export default new Vuex.Store({
         commit("setIsError", 1);
       }
     },
-
-    async refreshBalance({}, fundAddress) {
+    
+    async refreshBalance({}, {fundAddress, fundId}) {
       await this.dispatch("getMaticBalance");
-      await this.dispatch("getCollectionDetails", { collectionContractId: fundAddress });
+      await this.dispatch("getCollectionDetails", { collectionContractId: fundAddress, collection_id: fundId });
+      // console.log('hello');
     },
 
     async getMaticBalance({ commit, state }) {
       var maticBalance = await state.web3.eth.getBalance(state.account);
       commit("setMaticBalance", Number(Web3.utils.fromWei(maticBalance, "ether")).toFixed(3));
     },
+    /*
     async buyFundTokens({ commit }, { maticAmount, contractId }) {
       try {
         var netId = this.state.networkId;
@@ -322,7 +321,7 @@ export default new Vuex.Store({
           value: weiAmount,
           from: this.state.account,
         });
-        this.dispatch("refreshBalance", contractId);
+        //this.dispatch("refreshBalance", contractId);
         commit("setIsError", 0);
         //return false;
       } catch (error) {
@@ -351,10 +350,17 @@ export default new Vuex.Store({
         console.log(error);
         commit("setIsError", 1);
       }
-    },
+    },*/
 
     async getCollectionDetails({ commit, state }, { collectionContractId, collection_id }) {
       var collectionDetails = {};
+      const colDeatailsFromServer = await axios.get("http://localhost:3000/getCollectionDetails?collection_id="+collection_id);
+      console.log(colDeatailsFromServer.data.chain);
+      var netId = this.state.networkId;
+      if(constants[colDeatailsFromServer.data.chain].chainId!=netId)
+      {
+        alert("switch to " + colDeatailsFromServer.data.chain + " network!");
+      }
       var fundContract = await this.dispatch("getFundContract", collectionContractId);
       collectionDetails.ownerAddress = await fundContract.methods.ownerAddress().call();
       var tokenBuyPrice = await fundContract.methods._tokenBuyPrice().call();
@@ -379,12 +385,13 @@ export default new Vuex.Store({
       
       collectionDetails.buyingEnabled = await fundContract.methods.buyingEnabled().call();
       collectionDetails.sellingEnabled = await fundContract.methods.sellingEnabled().call();  
-
-      
-      const colDeatailsFromServer = await axios.get("/getCollectionDetails?collection_id="+collection_id);
+ 
+     // const colDeatailsFromServer = await axios.get("http://localhost:3000/getCollectionDetails?collection_id="+collection_id);
       
       commit("setCollectionDetails", collectionDetails);
       commit("setChainInCollectionDetails", colDeatailsFromServer.data);
+    
+
     },
 
     async setTokenPrice({ commit }, { tokenPrice, isBuyBeingModified, contractId }) {
