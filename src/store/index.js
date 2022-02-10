@@ -116,13 +116,6 @@ export default new Vuex.Store({
     },
     setCollectionDetails(state, collectionDetails) {
       state.collectionDetails = collectionDetails;
-      // Vue.set(state.collectionDetails, ownerAddress, collectionDetails.ownerAddress);
-      // Vue.set(state.collectionDetails, tokenStartPrice, collectionDetails.tokenStartPrice);
-      // Vue.set(state.collectionDetails, tokenPrice, collectionDetails.tokenPrice);
-      // Vue.set(state.collectionDetails, name, collectionDetails.name);
-      // Vue.set(state.collectionDetails, symbol, collectionDetails.symbol);
-      // Vue.set(state.collectionDetails, userTokenBalance, collectionDetails.userTokenBalance);
-      // Vue.set(state.collectionDetails, contractBalance, collectionDetails.contractBalance);
     },
     setNFTList(state, nftList) {
       state.nftDetails = nftList;
@@ -152,10 +145,6 @@ export default new Vuex.Store({
 
       const networkId = await web3.eth.net.getId();
       console.log(networkId);
-      // if (networkId != 4) {
-      //   alert("Switch to Rinkeby network");
-      //   console.log("not connected to Rinkeby Network");
-      // }
       commit("setNetworkId", networkId);
 
       commit("setActive", true);
@@ -307,50 +296,6 @@ export default new Vuex.Store({
       var maticBalance = await state.web3.eth.getBalance(state.account);
       commit("setMaticBalance", Number(Web3.utils.fromWei(maticBalance, "ether")).toFixed(3));
     },
-    /*
-    async buyFundTokens({ commit }, { maticAmount, contractId }) {
-      try {
-        var netId = this.state.networkId;
-       console.log(this.state.collectionDetails.chain);
-       if(constants[this.state.collectionDetails.chain].chainId != netId){
-         alert("switch to "+ response.data.chain + " Network");
-       }
-        var fundContract = await this.dispatch("getFundContract", contractId);
-        var weiAmount = Web3.utils.toWei(maticAmount, 'ether');
-        await fundContract.methods.buyTokens().send({
-          value: weiAmount,
-          from: this.state.account,
-        });
-        //this.dispatch("refreshBalance", contractId);
-        commit("setIsError", 0);
-        //return false;
-      } catch (error) {
-        console.log(error);
-        commit("setIsError", 1);
-      }
-    },
-
-    async sellFundTokens({ commit }, { tokenAmount, contractId }) {
-      try {
-        var netId = this.state.networkId;
-        if(constants[this.state.collectionDetails.chain].chainId != netId){
-          alert("switch to "+ response.data.chain + " Network");
-        }
-        var fundContract = await this.dispatch("getFundContract", contractId);
-        console.log(tokenAmount);
-        tokenAmount = Web3.utils.toWei(tokenAmount, 'ether');
-        // todo: multiple tokenAmount by 10^18 before sending
-        await fundContract.methods.sellTokens(tokenAmount).send({
-          from: this.state.account,
-        });
-        console.log(contractId);
-        this.dispatch("refreshBalance", contractId);
-        commit("setIsError", 0);
-      } catch (error) {
-        console.log(error);
-        commit("setIsError", 1);
-      }
-    },*/
 
     async getCollectionDetails({ commit, state }, { collectionContractId, collection_id }) {
       var collectionDetails = {};

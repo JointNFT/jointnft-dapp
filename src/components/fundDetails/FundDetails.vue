@@ -200,7 +200,7 @@ export default {
       if ("contractBalance" in details && details["contractBalance"] != null) {
         diff = parseFloat(details.fundingGoal) - parseFloat(details.totalDeposited); 
       }
-      return diff;
+      return diff.toFixed(2);
     }
   },
   methods: {
