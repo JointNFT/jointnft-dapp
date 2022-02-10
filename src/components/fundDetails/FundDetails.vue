@@ -7,7 +7,7 @@
             <v-icon class="fa fa-spinner fa-spin" color="#403561"></v-icon>
           </div>
           <div v-else>
-            <h1 style="font-family: PT Sans Caption ; font-weight:bold;"> &nbsp; (${{ getCollectionDetails.symbol }})</h1>
+            <h1 style="font-size: 1.5rem;font-family: PT Sans Caption ; font-weight:bold;"> &nbsp; (${{ getCollectionDetails.symbol }})</h1>
           </div>
       </v-card-title>
           <v-card-text>
