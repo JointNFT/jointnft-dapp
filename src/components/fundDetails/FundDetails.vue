@@ -204,10 +204,11 @@ export default {
   },
   methods: {
     
-    refreshBalances() {
-      this.$store.dispatch("refreshBalance", this.$route.query.contractId);
+    // refreshBalances() {
+    //   // console.log("hello")
+    //   this.$store.dispatch("refreshBalance", this.$route.query.contractId);
       
-    },
+    // },
     buyFundTokens() {
 
       this.loading_buy=true;
@@ -223,7 +224,8 @@ export default {
           this.isSendingBuyTokens=false;
           if(this.$store.state.isError==0){
             this.$vToastify.success("Tokens bought!");
-            this.$store.dispatch("refreshBalances");
+            // this.$store.dispatch("refreshBalances");
+            this.$store.dispatch("refreshBalance", {fundAddress: this.$route.query.contractId, fundId: this.$route.query.collectionId});   
           }
         });
     },
@@ -240,7 +242,8 @@ export default {
           this.isSendingSellTokens=false;
           if(this.$store.state.isError==0){
             this.$vToastify.success("Tokens sold!"); 
-            this.dispatch("refreshBalances");   
+            // this.dispatch("refreshBalances");
+            this.$store.dispatch("refreshBalance", {fundAddress: this.$route.query.contractId, fundId: this.$route.query.collectionId});   
           }     
         });
     },

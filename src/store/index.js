@@ -299,10 +299,11 @@ export default new Vuex.Store({
         commit("setIsError", 1);
       }
     },
-
-    async refreshBalance({}, fundAddress) {
+    
+    async refreshBalance({}, {fundAddress, fundId}) {
       await this.dispatch("getMaticBalance");
-      await this.dispatch("getCollectionDetails", { collectionContractId: fundAddress });
+      await this.dispatch("getCollectionDetails", { collectionContractId: fundAddress, collection_id: fundId });
+      // console.log('hello');
     },
 
     async getMaticBalance({ commit, state }) {
@@ -323,7 +324,7 @@ export default new Vuex.Store({
           value: weiAmount,
           from: this.state.account,
         });
-        this.dispatch("refreshBalance", contractId);
+        //this.dispatch("refreshBalance", contractId);
         commit("setIsError", 0);
         //return false;
       } catch (error) {
