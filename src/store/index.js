@@ -70,7 +70,6 @@ export default new Vuex.Store({
     },
     nftDetails: {},
     isError: 0,
-    chainDetails:{},
   },
   getters: {
     getFunds(state) {
@@ -134,9 +133,7 @@ export default new Vuex.Store({
     setChainInCollectionDetails(state, collectionDetails) {
       state.collectionDetails['chain'] =  collectionDetails['chain'];
     },
-    setChainDetails(state,chainDetails){
-      state.chainDetails = chainDetails;
-    },
+
   },
   actions: {
     async connectToWallet({ commit }) {

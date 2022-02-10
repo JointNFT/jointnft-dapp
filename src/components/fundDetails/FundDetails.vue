@@ -2,42 +2,43 @@
   <v-container>
     <v-card style="background-color: Lavender">
       <v-card-title>
-          <h1 style ="font-size: 1.5rem; font-family: PT Sans Caption; font-weight:bold" >{{ getCollectionDetails.name }}</h1>
+          <h1 style ="font-size: 1.5rem; font-family: PT Sans Caption; font-weight:bold" >{{ getCollectionDetails.name }} </h1>
           <div v-if="getCollectionDetails.name==undefined" v-cloak>
             <v-icon class="fa fa-spinner fa-spin" color="#403561"></v-icon>
           </div>
+          <div v-else>
+            <h1 style="font-family: PT Sans Caption ; font-weight:bold;"> &nbsp; (${{ getCollectionDetails.symbol }})</h1>
+          </div>
       </v-card-title>
           <v-card-text>
-              
-              <v-img :src="getImg" height="30" width="30" style="padding:1px"></v-img><h1>{{ getCollectionDetails.symbol }}</h1>
-              <br>
+                  <v-img :src="getImg" height="30" width="30" style="padding:1px;"></v-img>
+                  <br>
             <v-container>
-       <v-row>
-        </v-row>
-        <v-row>
-          <v-col style="font-family: PT Sans Caption ; font-weight:bold; padding:1px">Tokens in Circulation: {{ getCollectionDetails.totalSupply || 0 }} {{ getCollectionDetails.symbol }}</v-col>
-        </v-row>
-        <v-row>
-          <v-col style="font-family: PT Sans Caption ; font-weight:bold; padding:1px"> Tokens Owned: {{ getCollectionDetails.userTokenBalance }} {{ getCollectionDetails.symbol }}</v-col>
-        </v-row>
+       
+              <v-row>
+                <v-col style="font-family: PT Sans Caption ; font-weight:bold; padding:1px">Tokens in Circulation: {{ getCollectionDetails.totalSupply || 0 }} {{ getCollectionDetails.symbol }}</v-col>
+              </v-row>
+              <v-row>
+                <v-col style="font-family: PT Sans Caption ; font-weight:bold; padding:1px"> Tokens Owned: {{ getCollectionDetails.userTokenBalance }} {{ getCollectionDetails.symbol }}</v-col>
+              </v-row>
     
-        <v-row>
-           <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px"> Token Buy Price: {{ getCollectionDetails.tokenBuyPrice || 0 }} {{ getCurrency }}</v-col>
-        </v-row>
-        <v-row>
-           <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px">Token Sell Price: {{ getCollectionDetails.tokenSellPrice || 0 }} {{ getCurrency }}</v-col>
-        </v-row>
-        <v-row>
-           <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px">Funding Goal: {{ getCollectionDetails.fundingGoal || 0 }} {{ getCurrency }}</v-col>
-        </v-row>
-        <v-row>
-           <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px">To reach Goal: {{ getAmountLeftForGoal || 0 }} {{ getCurrency }}</v-col>
-        </v-row>
-       </v-container>
-     </v-card-text>
+              <v-row>
+                <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px"> Token Buy Price: {{ getCollectionDetails.tokenBuyPrice || 0 }} {{ getCurrency }}</v-col>
+              </v-row>
+              <v-row>
+                <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px">Token Sell Price: {{ getCollectionDetails.tokenSellPrice || 0 }} {{ getCurrency }}</v-col>
+              </v-row>
+              <v-row>
+                <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px">Funding Goal: {{ getCollectionDetails.fundingGoal || 0 }} {{ getCurrency }}</v-col>
+              </v-row>
+              <v-row>
+                <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px">To reach Goal: {{ getAmountLeftForGoal || 0 }} {{ getCurrency }}</v-col>
+              </v-row>
+           </v-container>
+         </v-card-text>
     </v-card>
-    <v-row
-      ><v-col> <v-divider /></v-col>
+    <v-row>
+      <v-col> <v-divider /></v-col>
     </v-row>
     <v-row>
       <v-text-field
