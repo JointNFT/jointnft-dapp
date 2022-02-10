@@ -12,7 +12,7 @@
        <v-row>
         </v-row>
         <v-row>
-          <v-col style="font-family: PT Sans Caption ; font-weight:bold; padding:1px">Tokens in Circulation: {{ getCollectionDetails.totalSupply || 0 }} {{ getCurrency }}</v-col>
+          <v-col style="font-family: PT Sans Caption ; font-weight:bold; padding:1px">Tokens in Circulation: {{ getCollectionDetails.totalSupply || 0 }} {{ getCollectionDetails.symbol }}</v-col>
         </v-row>
         <v-row>
           <v-col style="font-family: PT Sans Caption ; font-weight:bold; padding:1px"> Tokens Owned: {{ getCollectionDetails.userTokenBalance }} {{ getCollectionDetails.symbol }}</v-col>
@@ -40,7 +40,7 @@
       <v-text-field
         v-model="maticAmount"
         :rules="[numberRule]"
-        label="Enter amount of eth"
+        :label="'Enter amount of '+getCurrency"
       ></v-text-field>
       <v-btn :disabled="isBuyingEnabled" v-on:click="buyFundTokens"> Buy Tokens
         <div v-if="loading_buy" v-cloak>
