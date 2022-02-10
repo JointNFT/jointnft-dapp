@@ -3,7 +3,7 @@
     <v-app-bar app color="#403561" dark>
       <div class="d-flex align-center">
         <v-img
-          alt="Vuetify Logo"
+          alt="Joint NFT Logo"
           class="shrink mr-2"
           contain
           src="./assets/icon.png"
@@ -36,15 +36,19 @@
           <strong class="subheading">Get connected with us on social networks!</strong>
 
           <v-spacer></v-spacer>
+          <span class="iconify" data-icon="mdi:discord"></span>
           <v-btn v-for="(icon, idx) in icons" :key="idx" class="mx-4" dark icon :href="icon.target" target="_blank" style="float:right;">
             <v-icon size="24px">
               {{ icon.icon }}
             </v-icon>
+
           </v-btn>
+          <script src="https://code.iconify.design/2/2.1.2/iconify.min.js"></script>
         </v-card-title>
       </v-card>
     </v-footer>
   </v-app>
+  
 </template>
 
 <style scoped>

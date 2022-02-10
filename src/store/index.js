@@ -295,6 +295,10 @@ export default new Vuex.Store({
     async getCollectionDetails({ commit, state }, { collectionContractId, collection_id }) {
       var collectionDetails = {};
       const colDeatailsFromServer = await axios.get("/getCollectionDetails?collection_id="+collection_id);
+<<<<<<< HEAD
+=======
+      
+>>>>>>> 210ee3e (removing logs and hiding opensea logo)
       var netId = this.state.networkId;
       if(constants[colDeatailsFromServer.data.chain].chainId!=netId)
       {

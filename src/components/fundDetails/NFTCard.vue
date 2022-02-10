@@ -7,9 +7,9 @@
         <v-container>
           <v-row align="center">
             <v-img :src="getImg" >
-              <v-btn small :href="nft.openseaUrl" target="_blank" class= "chain" elevation="2" fab>
+              <!-- <v-btn small :href="nft.openseaUrl" target="_blank" class= "chain" elevation="2" fab>
                 <img width = "28" style="border-radius: 29;" src="../../assets/Logomark-Blue.svg"/>
-              </v-btn>
+              </v-btn> -->
             </v-img>
           </v-row>
 
