@@ -3,6 +3,9 @@
     <v-card style="background-color: Lavender">
       <v-card-title>
           <h1 style ="font-size: 1.5rem; font-family: PT Sans Caption; font-weight:bold" >{{ getCollectionDetails.name }}</h1>
+          <div v-if="getCollectionDetails.name==undefined" v-cloak>
+            <v-icon class="fa fa-spinner fa-spin" color="#403561"></v-icon>
+          </div>
       </v-card-title>
           <v-card-text>
               
@@ -146,7 +149,7 @@ export default {
     EndZoraAuction
   },
   computed: {
-    getCollectionDetails() {
+  getCollectionDetails() {
       var details = this.$store.state.collectionDetails;
       if(details == null || details == {}) {
         return {};
@@ -361,6 +364,7 @@ export default {
     isSendingModify:false,
     loadingToggleBuy:false,
     loadingToggleSell:false,
+   
   }),
   props: ["owner", "connectedAccount", "collections"],
 };
