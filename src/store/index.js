@@ -390,7 +390,7 @@ export default new Vuex.Store({
     async setTokenPrice({ commit }, { tokenPrice, isBuyBeingModified, contractId }) {
       try {
         var fundContract = await this.dispatch("getFundContract", contractId);
-        tokenAmount = Web3.utils.toWei(tokenPrice, 'ether');
+        var tokenAmount = Web3.utils.toWei(tokenPrice, 'ether');
         var res = await fundContract.methods.setTokenPrice(tokenAmount, isBuyBeingModified).send({
           from: this.state.account,
         });
