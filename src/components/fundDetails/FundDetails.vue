@@ -14,13 +14,14 @@
                   <v-img :src="getImg" height="30" width="30" style="padding:1px;"></v-img>
                   <br>
             <v-container>
-       
-              <v-row>
-                <v-col style="font-family: PT Sans Caption ; font-weight:bold; padding:1px">Tokens in Circulation: {{ getCollectionDetails.totalSupply || 0 }} {{ getCollectionDetails.symbol }}</v-col>
-              </v-row>
-              <v-row>
-                <v-col style="font-family: PT Sans Caption ; font-weight:bold; padding:1px"> Tokens Owned: {{ getCollectionDetails.userTokenBalance }} {{ getCollectionDetails.symbol }}</v-col>
-              </v-row>
+       <v-row>
+        </v-row>
+        <v-row>
+          <v-col style="font-family: PT Sans Caption ; font-weight:bold; padding:1px">Tokens in Circulation: {{ getCollectionDetails.totalSupply || 0 }} {{ getCollectionDetails.symbol }}</v-col>
+        </v-row>
+        <v-row>
+          <v-col style="font-family: PT Sans Caption ; font-weight:bold; padding:1px"> Tokens Owned: {{ getCollectionDetails.userTokenBalance }} {{ getCollectionDetails.symbol }}</v-col>
+        </v-row>
     
               <v-row>
                 <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px"> Token Buy Price: {{ getCollectionDetails.tokenBuyPrice || 0 }} {{ getCurrency }}</v-col>

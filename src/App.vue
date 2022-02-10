@@ -3,7 +3,7 @@
     <v-app-bar app color="#403561" dark>
       <div class="d-flex align-center">
         <v-img
-          alt="Vuetify Logo"
+          alt="Joint NFT Logo"
           class="shrink mr-2"
           contain
           src="./assets/icon.png"
@@ -32,19 +32,20 @@
 
     <v-footer color="#403561">
       <v-card flat tile color="#403561" class="lighten-1 white--text flex">
-        <v-card-title >
+        <v-card-title style="display: flex;">
           <strong class="subheading">Get connected with us on social networks!</strong>
 
           <v-spacer></v-spacer>
           <v-btn v-for="(icon, idx) in icons" :key="idx" class="mx-4" dark icon :href="icon.target" target="_blank" style="float:right;">
-            <v-icon size="24px">
-              {{ icon.icon }}
-            </v-icon>
+            <Icon align="right" height="24" :icon="icon.icon" />
+
           </v-btn>
+          
         </v-card-title>
       </v-card>
     </v-footer>
   </v-app>
+  
 </template>
 
 <style scoped>
@@ -57,6 +58,7 @@
   background: #c3bdcb;
 }
 
+
 </style>
 
 <script>
@@ -64,6 +66,7 @@ import ExploreFunds from "./components/ExploreFunds.vue";
 import ConnectWallet from "./components/ConnectWallet.vue";
 import Web3ModalVue from "web3modal-vue";
 import { web3Modal } from "./config/mixins";
+import { Icon } from '@iconify/vue2';
 
 export default {
   name: "App",
@@ -72,6 +75,7 @@ export default {
     ExploreFunds,
     ConnectWallet,
     Web3ModalVue,
+    Icon,
   },
   computed: {
     isMountNeeded() {
@@ -96,10 +100,10 @@ export default {
   },
   data: () => ({
     icons: [
-      { icon: "fab fa-discord", target: "https://discord.gg/NrdeYC454x" },
-      { icon: "mdi-twitter", target: "https://twitter.com/the_joint_nft" },
-      { icon: "mdi-linkedin", target: "https://www.linkedin.com/company/joint-nft/about/" },
-      { icon: "mdi-instagram", target: "https://www.instagram.com/joint_nft/" },
+      { icon: "mdi:discord", target: "https://discord.gg/NrdeYC454x" },
+      { icon: "mdi:twitter", target: "https://twitter.com/the_joint_nft" },
+      { icon: "mdi:linkedin", target: "https://www.linkedin.com/company/joint-nft/about/" },
+      { icon: "mdi:instagram", target: "https://www.instagram.com/joint_nft/" },
     ],
     theme: "light",
     providerOptions: {},

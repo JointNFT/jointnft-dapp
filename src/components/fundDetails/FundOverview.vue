@@ -69,7 +69,6 @@ export default {
 
     getCollectionDetails() {
       var details = this.$store.state.collectionDetails;
-      console.log(details.chain);
       if (details == null || details == {}) {
         return {};
       } 

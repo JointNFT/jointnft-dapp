@@ -130,7 +130,7 @@ export default new Vuex.Store({
   },
   actions: {
     async connectToWallet({ commit }) {
-      console.log("here !");
+      // console.log("here !");
       const provider = await web3Modal.connect();
       const web3 = new Web3(provider);
       commit("setWeb3", web3);
@@ -205,7 +205,6 @@ export default new Vuex.Store({
           value: weiAmount,
           from: this.state.account,
         });
-        this.dispatch("refreshBalance", contractId);
         commit("setIsError", 0);
         //return false;
       } catch (error) {
@@ -217,14 +216,13 @@ export default new Vuex.Store({
     async sellFundTokens({ commit }, { tokenAmount, contractId }) {
       try {
         var fundContract = await this.dispatch("getFundContract", contractId);
-        console.log(tokenAmount);
+        // console.log(tokenAmount);
         tokenAmount = Web3.utils.toWei(tokenAmount, 'ether');
         // todo: multiple tokenAmount by 10^18 before sending
         await fundContract.methods.sellTokens(tokenAmount).send({
           from: this.state.account,
         });
         console.log(contractId);
-        this.dispatch("refreshBalance", contractId);
         commit("setIsError", 0);
       } catch (error) {
         console.log(error);
@@ -238,7 +236,6 @@ export default new Vuex.Store({
       await fundContract.methods.toggleTokenConversion().send({
         from: this.state.account,
       });
-      this.dispatch("refreshBalance", contractId);
     },
 
     async toggleBuy({ commit }, { contractId }) {
@@ -248,7 +245,6 @@ export default new Vuex.Store({
         await fundContract.methods.toggleBuying().send({
           from: this.state.account,
         });
-        this.dispatch("refreshBalance", contractId);
         commit("setIsError", 0);
       } catch (error) {
         console.log(error);
@@ -263,7 +259,6 @@ export default new Vuex.Store({
         await fundContract.methods.toggleSelling().send({
           from: this.state.account,
         });
-        this.dispatch("refreshBalance", contractId);
         commit("setIsError", 0);
       } catch (error) {
         console.log(error);
@@ -347,7 +342,6 @@ export default new Vuex.Store({
           from: this.state.account,
         });
         
-        await this.dispatch("refreshBalance", contractId);
         commit("setIsError", 0);
       } catch (error) {
         console.log(error);
