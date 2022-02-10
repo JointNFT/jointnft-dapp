@@ -69,10 +69,6 @@ export default {
 
     getCollectionDetails() {
       var details = this.$store.state.collectionDetails;
-<<<<<<< HEAD
-      // console.log(details.chain);
-=======
->>>>>>> 210ee3e (removing logs and hiding opensea logo)
       if (details == null || details == {}) {
         return {};
       } 
