@@ -205,7 +205,6 @@ export default new Vuex.Store({
           value: weiAmount,
           from: this.state.account,
         });
-        this.dispatch("refreshBalance", contractId);
         commit("setIsError", 0);
         //return false;
       } catch (error) {
@@ -224,7 +223,6 @@ export default new Vuex.Store({
           from: this.state.account,
         });
         console.log(contractId);
-        this.dispatch("refreshBalance", contractId);
         commit("setIsError", 0);
       } catch (error) {
         console.log(error);
@@ -238,7 +236,6 @@ export default new Vuex.Store({
       await fundContract.methods.toggleTokenConversion().send({
         from: this.state.account,
       });
-      this.dispatch("refreshBalance", contractId);
     },
 
     async toggleBuy({ commit }, { contractId }) {
@@ -248,7 +245,6 @@ export default new Vuex.Store({
         await fundContract.methods.toggleBuying().send({
           from: this.state.account,
         });
-        this.dispatch("refreshBalance", contractId);
         commit("setIsError", 0);
       } catch (error) {
         console.log(error);
@@ -263,7 +259,6 @@ export default new Vuex.Store({
         await fundContract.methods.toggleSelling().send({
           from: this.state.account,
         });
-        this.dispatch("refreshBalance", contractId);
         commit("setIsError", 0);
       } catch (error) {
         console.log(error);
@@ -346,7 +341,6 @@ export default new Vuex.Store({
           from: this.state.account,
         });
         
-        await this.dispatch("refreshBalance", contractId);
         commit("setIsError", 0);
       } catch (error) {
         console.log(error);
