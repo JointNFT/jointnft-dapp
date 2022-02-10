@@ -6,10 +6,8 @@ import vuetify from './plugins/vuetify'
 import Router from 'vue-router'
 import Routes from './routes'
 import VueToastify from "vue-toastify";
-import { faCoffee } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faCoffee)
 
 Vue.config.productionTip = false
 Vue.use(Router);
