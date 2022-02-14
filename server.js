@@ -87,6 +87,7 @@ app.get("/getCollections", async (req, res) => {
       chain: row["collection_chain"],
       items: row["items"],
       contract_id: row["contract_address"],
+      status: row['status']
     };
     collectionList.push(collectionDetails);
   }
