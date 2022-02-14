@@ -6,6 +6,9 @@ import Web3Modal from "web3modal";
 import Moralis from "../plugins/moralis";
 import axios from "axios";
 import constants from "../const";
+import cheerio from "cheerio"
+
+// const url = "https://opensea.io/assets/matic/0x2953399124f0cbb46d2cbacd8a89cf0599974963/88494403370670657430031568309293593183862987452243251709449600388950430580751";
 
 const collectionABI = require("../contractDetails/collection.json")["abi"];
 const fundFactoryABI = require("../contractDetails/FundFactory.json")["abi"];
@@ -14,6 +17,19 @@ const iAuctionHouseAbi = require("../contractDetails/IAuctionHouse.json")["abi"]
 const ethAddress = "0x0000000000000000000000000000000000000000";
 
 Vue.use(Vuex);
+
+async function scrapeData(url) {
+  try {
+    const { data } = await axios.get(url);
+    const $ = cheerio.load(data);
+    console.log(data)
+    const price = $('.TradeStation--price-container');
+    const output = price.text()
+    console.log(output);
+} catch (err) {
+    console.error(err);
+  }
+}
 
 const providerOptions = {
   /* See Provider Options Section */
@@ -144,7 +160,7 @@ export default new Vuex.Store({
       }
 
       const networkId = await web3.eth.net.getId();
-      console.log(networkId);
+      // console.log(networkId);
       commit("setNetworkId", networkId);
 
       commit("setActive", true);
@@ -171,15 +187,30 @@ export default new Vuex.Store({
       });
     },
 
+    async scrapeData({commit}, url) {
+      try {
+        const { data } = await axios.get(url);
+        const $ = cheerio.load(data);
+        console.log(data)
+        const price = $('.TradeStation--price-container');
+        const output = price.text()
+        console.log(output);
+        return 
+    } catch (err) {
+        console.error(err);
+      }
+    },
+
     async loadCollections({ commit, state }) {
-      axios.get("/getCollections").then(function(response) {
+      scrapeData("https://opensea.io/assets/matic/0x2953399124f0cbb46d2cbacd8a89cf0599974963/88494403370670657430031568309293593183862987452243251709449600388950430580751");
+      axios.get("http://localhost:3000/getCollections").then(function(response) {
         console.log(response.data);
         commit("setCollectionList", response.data);
       });
     },
 
     async loadNFTs({ commit, state }, {address, collection_id}) {
-      axios.get("/getNFTs?collection_id="+collection_id).then(function(response) {
+      axios.get("http://localhost:3000/getNFTs?collection_id="+collection_id).then(function(response) {
         console.log(response.data);
         commit("setNFTList", response.data);
       });
@@ -294,7 +325,7 @@ export default new Vuex.Store({
 
     async getCollectionDetails({ commit, state }, { collectionContractId, collection_id }) {
       var collectionDetails = {};
-      const colDeatailsFromServer = await axios.get("/getCollectionDetails?collection_id="+collection_id);
+      const colDeatailsFromServer = await axios.get("http://localhost:3000/getCollectionDetails?collection_id="+collection_id);
       var netId = this.state.networkId;
       if(constants[colDeatailsFromServer.data.chain].chainId!=netId)
       {
