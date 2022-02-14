@@ -33,7 +33,7 @@
                 <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px">Funding Goal: {{ getCollectionDetails.fundingGoal || 0 }} {{ getCurrency }}</v-col>
               </v-row>
               <v-row>
-                <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px">To reach Goal: {{ getAmountLeftForGoal || 0 }} {{ getCurrency }}</v-col>
+                <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px">To reach Goal: {{ getCollectionDetails.contractBalance || 0 }} {{ getCurrency }}</v-col>
               </v-row>
            </v-container>
          </v-card-text>

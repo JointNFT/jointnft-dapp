@@ -316,8 +316,6 @@ export default new Vuex.Store({
       try{
         var fundingGoal = await fundContract.methods._fundingGoal().call();
         collectionDetails.fundingGoal = Number(Web3.utils.fromWei(fundingGoal, "ether")).toFixed(3);
-        var totalDeposited = await fundContract.methods._totalDeposited().call();
-        collectionDetails.totalDeposited = Number(Web3.utils.fromWei(totalDeposited, "ether")).toFixed(3);
       } catch(err) {
         console.log(err);
       }
