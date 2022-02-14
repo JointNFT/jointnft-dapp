@@ -19,6 +19,25 @@
           </v-btn>
         </v-row>
 
+        <v-row class="justify-center">
+          <v-chip
+            v-if="collection.status == 'LIVE'"
+            class="status-chip"
+            color="green"
+            outlined
+          >
+            Active
+          </v-chip>
+          <v-chip
+            v-else
+            class="status-chip"
+            color="red"
+            text-color="white"
+          >
+            Inactive
+          </v-chip>
+        </v-row>
+
         <v-row>
           <v-divider></v-divider>
         </v-row>
@@ -53,9 +72,9 @@
   text-align: center;
 }
 
-.npdg {
+.status-chip {
   position: relative;
-  top: -37px;
+  top: -10px;
 }
 .logo {
   position: relative;
