@@ -31,10 +31,10 @@
           <v-chip
             v-else
             class="status-chip"
-            color="red"
+            color="secondary"
             text-color="white"
           >
-            Inactive
+            Completed
           </v-chip>
         </v-row>
 
