@@ -49,7 +49,7 @@
             <v-row v-if="!isFundingGoalContract">
               <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px">
                <!-- TODO: calculate total deposited from tokenAmount -->
-                TVL: {{ getCollectionDetails.contractBalance || 0 }} {{ getCurrency }}</v-col
+                TVL: {{ getTVL || 0 }} {{ getCurrency }}</v-col
               >
             </v-row>
         </v-container>
@@ -223,6 +223,11 @@ export default {
       }
       return false;
     },
+    getTVL() {
+      var details = this.$props.collections;
+      var tvl = parseFloat(details.tokenBuyPrice) * parseFloat(details.totalSupply);
+      return tvl;
+    }
   },
   methods: {
     buyFundTokens() {
