@@ -47,8 +47,9 @@
               >
             </v-row>
             <v-row v-if="!isFundingGoalContract">
-              <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px"
-                >Total deposited: {{ getCollectionDetails.contractBalance || 0 }} {{ getCurrency }}</v-col
+              <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px">
+               <!-- TODO: calculate total deposited from tokenAmount -->
+                TVL: {{ getCollectionDetails.contractBalance || 0 }} {{ getCurrency }}</v-col
               >
             </v-row>
         </v-container>
