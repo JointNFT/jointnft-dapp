@@ -67,6 +67,7 @@ app.get("/api/isTwitterHandler", jsonParser, async (req, res) => {
 });
 
 app.get("/getCollections", async (req, res) => {
+  //const chain_clause = "('"+ENV[process.env.ENV]["chains"].join('\',\'') + "')";
   const chain_clause = "('"+ENV[process.env.ENV]["chains"].join('\',\'') + "')";
   const pg_res = await client.query("select * from collections.collection_master cm where cm.collection_chain in "+chain_clause+";");
   const collectionList = [];

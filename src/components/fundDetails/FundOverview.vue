@@ -28,7 +28,9 @@
 
       <v-col cols="5" md="3" >
         <FundDetails :owner="getCollectionDetails.ownerAddress" :connectedAccount="getConnectedAccount" :collections="getCollectionDetails"/>
-      </v-col>
+        <MemberDetails />
+       </v-col>
+
      </v-row>
      <v-row v-else style="text-align:center;">
       Loading NFT's present in the fund. Please wait!
@@ -56,6 +58,7 @@ import NFTCard from "./NFTCard.vue";
 import AddNFTCard from "./AddNFTCard.vue";
 import FundDetails from "./FundDetails.vue";
 import BidOnAuction from "./BidOnAuction.vue";
+import MemberDetails from "./MemberDetails.vue";
 
 
 export default {
@@ -63,7 +66,8 @@ export default {
     FundDetails,
     NFTCard,
     AddNFTCard,
-    BidOnAuction
+    BidOnAuction,
+    MemberDetails
   },
   computed: {
 
@@ -87,7 +91,7 @@ export default {
     },
     getCollectionDetais() {
       return this.$store.state.collectionDetails;
-    }
+    },
     
   },
   mounted() {
