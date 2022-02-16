@@ -31,8 +31,7 @@
           <v-chip
             v-else
             class="status-chip"
-            color="secondary"
-            text-color="white"
+            text-color="black"
           >
             Completed
           </v-chip>
