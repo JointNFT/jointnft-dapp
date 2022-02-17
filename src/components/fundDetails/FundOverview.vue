@@ -1,6 +1,7 @@
 <template>
   <v-container>
-    <v-main v-if="getConnectedAccount">
+    <!--<v-main v-if="getConnectedAccount">-->
+    <v-main>
      <v-row v-if="getCollectionDetails != {}">
       <v-col cols="12" sm="7" md="9" >
         <v-row no-gutters style="margin-top: 25px;" align="center" justify="center">
@@ -36,9 +37,10 @@
       Loading NFT's present in the fund. Please wait!
      </v-row>
     </v-main>
+    <!--
     <v-main v-else style="text-align:center;">
       Connect to metamask wallet to see NFTs. The button is in the top right of the page !
-    </v-main>
+    </v-main>-->
  
   </v-container>
 </template>

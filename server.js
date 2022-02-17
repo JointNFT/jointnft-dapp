@@ -122,6 +122,10 @@ app.get("/getCollectionDetails", async (req, res) => {
       chain: row["collection_chain"],
       items: row["items"],
       contract_id: row["contract_address"],
+      //totalSupply :row["tokens_in_circulation"],
+      tokenBuyPrice : row["token_buy_price"],
+      tokenSellPrice : row["token_sell_price"],
+      //fundingGoal : row["funding_goal"],
     };
     res.send(collectionDetails);
   }
