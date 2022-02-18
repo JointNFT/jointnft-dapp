@@ -32,12 +32,12 @@
 
           <v-row class="text-row">
             <v-col class="left-col"> Purchase Price</v-col>
-            <v-col class="right-col"> {{ nft.purchase_price.amount }} {{nft.purchase_price.currency}} (${{nft.purchase_price_dollars.amount}}) </v-col>
+            <v-col class="right-col"> ${{nft.purchase_price_dollars.amount}} </v-col>
           </v-row>
 
           <v-row class="text-row">
             <v-col class="left-col"> Floor Price : </v-col>
-            <v-col class="right-col"> {{ nft.floor_price.amount }} {{nft.floor_price.currency}} (${{nft.floor_price_dollars.amount}}) </v-col>
+            <v-col class="right-col"> ${{nft.floor_price_dollars.amount}} </v-col>
           </v-row>
         </v-container>
       </v-card>
