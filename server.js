@@ -146,9 +146,9 @@ app.get("/getNFTs", async (req, res) => {
       name: row["nft_collection_details"],
       in_collection: row["in_collection"],
       purchase_price: { amount: row["purchase_price"], currency: row["purchase_price_type"] },
-      purchase_price_dollars: { amount: parseFloat(row["purchase_price"]) * 2500 },
+      purchase_price_dollars: { amount: parseFloat(row["purchase_price"]) * 3500 },
       floor_price: { amount: row["floor_price"], currency: row["floor_price_type"] },
-      floor_price_dollars: { amount: parseFloat(row["floor_price"]) * 2500 },
+      floor_price_dollars: { amount: parseFloat(row["floor_price"]) * 3500 },
     };
     nftList.push(nftDetails);
   }
