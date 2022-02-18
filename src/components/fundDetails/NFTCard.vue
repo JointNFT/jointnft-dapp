@@ -23,17 +23,17 @@
           <v-row>
             <v-divider></v-divider>
           </v-row>
-    <!--
+    
           <v-row class="text-row">
             <v-col class="left-col"> In Collection :</v-col>
-            <v-col class="right-col"> {{nft.in_collection}} </v-col>
+            <v-col class="right-col"> {{nft.in_collection}} Days </v-col>
           </v-row>
           
 
           <v-row class="text-row">
-            <v-col class="left-col"> Purchase Price : </v-col>
+            <v-col class="left-col"> Purchase Price</v-col>
             <v-col class="right-col"> {{ nft.purchase_price.amount }} {{nft.purchase_price.currency}} (${{nft.purchase_price_dollars.amount}}) </v-col>
-          </v-row>-->
+          </v-row>
 
           <v-row class="text-row">
             <v-col class="left-col"> Floor Price : </v-col>
