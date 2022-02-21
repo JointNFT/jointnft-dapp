@@ -15,6 +15,7 @@
       </div>
 
       <v-spacer></v-spacer>
+      <v-btn href="/CreateFund" text color="white"> Create Fund </v-btn>
       <v-btn href="/" text color="white"> Collections </v-btn>
       <!-- <ConnectWallet/> -->
       <v-btn @click="connect" v-if="!$store.state.account" text id="connect-wallet-btn" color="white">Connect wallet</v-btn>

@@ -22,10 +22,13 @@ async function scrapeData(url) {
   try {
     const { data } = await axios.get(url);
     const $ = cheerio.load(data);
-    console.log(data)
+    // console.log(data);
     const price = $('.TradeStation--price-container');
-    const output = price.text()
-    console.log(output);
+    const output = price.text();
+    // console.log(output);
+    const myArray = output.split(" ", 1);
+    const NFTprice = myArray[0];
+    return NFTprice;
 } catch (err) {
     console.error(err);
   }
@@ -187,22 +190,22 @@ export default new Vuex.Store({
       });
     },
 
-    async scrapeData({commit}, url) {
-      try {
-        const { data } = await axios.get(url);
-        const $ = cheerio.load(data);
-        console.log(data)
-        const price = $('.TradeStation--price-container');
-        const output = price.text()
-        console.log(output);
-        return 
-    } catch (err) {
-        console.error(err);
-      }
-    },
+    // async scrapeData({commit}, url) {
+    //   try {
+    //     const { data } = await axios.get(url);
+    //     const $ = cheerio.load(data);
+    //     console.log(data)
+    //     const price = $('.TradeStation--price-container');
+    //     const output = price.text()
+    //     console.log(output);
+    //     return 
+    // } catch (err) {
+    //     console.error(err);
+    //   }
+    // },
 
     async loadCollections({ commit, state }) {
-      scrapeData("https://opensea.io/assets/matic/0x2953399124f0cbb46d2cbacd8a89cf0599974963/88494403370670657430031568309293593183862987452243251709449600388950430580751");
+      // scrapeData("https://opensea.io/assets/matic/0x2953399124f0cbb46d2cbacd8a89cf0599974963/88494403370670657430031568309293593183862987452243251709449600388950430580751");
       axios.get("http://localhost:3000/getCollections").then(function(response) {
         console.log(response.data);
         commit("setCollectionList", response.data);
@@ -379,15 +382,17 @@ export default new Vuex.Store({
       }
     },
 
-    async createFund({ commit, state }, { fundName, fundSymbl, tokenPrice, depositAmt, imgUrl }) {
-      var depositAmtInWei = Web3.utils.toWei(depositAmt, 'ether');
-      var fundFactoryContract = await this.dispatch("getFundFactoryContract");
-      var res = await fundFactoryContract.methods.createFund(fundName, fundSymbl, tokenPrice, imgUrl).send({
-        from: this.state.account,
-        value: depositAmtInWei,
-      });
+    async createFund({ commit, state }, { fundName, fundSymbl, tokenPrice, openseaUrl }) {
+      const NFTprice = await scrapeData(openseaUrl);
+      console.log([fundName, fundSymbl, tokenPrice, openseaUrl, NFTprice]);
+      // var depositAmtInWei = Web3.utils.toWei(depositAmt, 'ether');
+      // var fundFactoryContract = await this.dispatch("getFundFactoryContract");
+      // var res = await fundFactoryContract.methods.createFund(fundName, fundSymbl, tokenPrice, imgUrl).send({
+      //   from: this.state.account,
+      //   value: depositAmtInWei,
+      // });
 
-      await this.dispatch("loadFundData");
+      // await this.dispatch("loadFundData");
     },
 
     async getNFTsInAddress({ commit, state }, { address }) {

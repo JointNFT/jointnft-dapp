@@ -1,3 +1,4 @@
+
 <template>
   <v-container width="500">
     <v-form @submit.prevent="submit">
@@ -20,8 +21,8 @@
       </v-row>
       <v-row align="center">
         <v-text-field
-          v-model="imgUrl"
-          label="Image Url ( URL should point to an image )"
+          v-model="openseaUrl"
+          label="Opensea Url"
           required
         ></v-text-field>
       </v-row>
@@ -33,14 +34,14 @@
           required
         ></v-text-field>
       </v-row>
-      <v-row align="center">
+      <!-- <v-row align="center">
         <v-text-field
           v-model="depositAmt"
           :rules="[numberRule]"
           label="Deposit Amount (MATIC)"
           required
         ></v-text-field>
-      </v-row>
+      </v-row> -->
       <v-row>
         <v-btn class="mr-4" type="submit"> submit </v-btn>
       </v-row>
@@ -50,10 +51,9 @@
 
 <script>
 
-function checkURL(url) {
-    return(url.match(/\.(jpeg|jpg|gif|png)$/) != null);
-}
-
+// function checkURL(url) {
+//     return(url.match(/\.(jpeg|jpg|gif|png)$/) != null);
+// }
 
 export default {
   methods: {
@@ -61,7 +61,6 @@ export default {
       if (
         !(
           this.numberRule(this.tokenPrice) == true &&
-          this.numberRule(this.depositAmt) == true &&
           this.fundSymbl != null &&
           this.fundSymbl.length > 0 &&
           this.fundName != null &&
@@ -72,23 +71,25 @@ export default {
         return;
       }
 
-      if (parseFloat(this.depositAmt) * 10 ** 18 < this.tokenPrice) {
-        this.$vToastify.error(
-          "Deposit matic should be a multiple of tokenPrice !",
-          "Error! "
-        );
-        return;
-      }
+      // if (parseFloat(this.depositAmt) * 10 ** 18 < this.tokenPrice) {
+      //   this.$vToastify.error(
+      //     "Deposit matic should be a multiple of tokenPrice !",
+      //     "Error! "
+      //   );
+      //   return;
+      // }
 
-      
-
+//       collectionName
+// collectionSymbol
+// tokenPrice
+// openseaUrl -> Price of the nft
       this.$store
         .dispatch("createFund", {
           fundName: this.fundName,
           fundSymbl: this.fundSymbl,
           tokenPrice: this.tokenPrice,
-          depositAmt: this.depositAmt,
-          imgUrl: this.imgUrl,
+          // depositAmt: this.depositAmt,
+          openseaUrl: this.openseaUrl,
         })
         .then(() => {
           this.$vToastify.success("Fund Created!");
@@ -100,8 +101,8 @@ export default {
     fundName: "",
     fundSymbl: "",
     tokenPrice: "",
-    depositAmt: "",
-    imgUrl: "",
+    // depositAmt: "",
+    openseaUrl: "",
     numberRule: (v) => {
       if (v != null && v != "" && !v.trim()) return true;
       if (!isNaN(parseFloat(v)) && parseFloat(v) > 0) return true;
