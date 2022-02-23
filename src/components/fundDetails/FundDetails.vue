@@ -33,12 +33,125 @@
                 <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px">Funding Goal: {{ getCollectionDetails.fundingGoal || 0 }} {{ getCurrency }}</v-col>
               </v-row>
               <v-row>
-                <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px">To reach Goal: {{ getCollectionDetails.contractBalance || 0 }} {{ getCurrency }}</v-col>
+                <v-col style="font-family: PT Sans Caption; font-weight:bold; padding:1px">To reach Goal: {{ getAmountLeftForGoal || 0 }} {{ getCurrency }}</v-col>
               </v-row>
+              <!-- <v-row>
+                <v-text-field
+                  v-model="maticAmount"
+                  :rules="[numberRule]"
+                  :label="getCurrency"
+                ></v-text-field>
+                <v-btn class="justify-center" :disabled="isBuyingEnabled" v-on:click="buyFundTokens"> ⇅
+                  <div v-if="loading_buy" v-cloak>
+                    <v-icon class="fa fa-spinner fa-spin"></v-icon>
+                  </div>
+                </v-btn>
+                <v-text-field
+                  v-model="tokenAmount"
+                  :rules="[numberRule]"
+                  :label="getCollectionDetails.symbol"
+                ></v-text-field>
+                <v-btn :disabled="isBuyingEnabled" v-on:click="buyFundTokens"> Swap
+                  <div v-if="loading_buy" v-cloak>
+                    <v-icon class="fa fa-spinner fa-spin" align = "justify-center"></v-icon>
+                  </div>
+                </v-btn>         
+              </v-row> -->
            </v-container>
          </v-card-text>
     </v-card>
-    <v-row>
+
+
+    <br>
+    
+    <v-card style="background-color: Lavender; border-radius: 20px;" v-if ="buyStatus">
+      <v-container>
+              <v-row justify="center" style="padding: 2px;">
+                Swap
+              </v-row>
+              <v-row  style="padding: 2px;">
+                <v-text-field
+                  hide-details
+                  v-model="maticAmount"
+                  :rules="[numberRule]"
+                  :suffix="getCurrency"
+                  filled
+                  rounded
+                  dense
+                ></v-text-field>
+                </v-row>
+                <v-row style="justify-content: right; padding: 5px; margin-right: -1px;">
+                <v-btn style ="border-radius: 20px" v-on:click="changeStatus"> ⇅
+                </v-btn>
+                </v-row>
+                <v-row style="padding: 2px;">
+                <v-text-field
+                  hide-details
+                  :value="getComputedprice"
+                  :rules="[numberRule]"
+                  :suffix="getCollectionDetails.symbol"
+                  readonly
+                  filled
+                  rounded
+                  dense
+                ></v-text-field>
+                </v-row>
+                <v-row style="justify-content: center; padding: 5px;">
+                <v-btn style="width: 260px; border-radius: 200px;" :disabled="isBuyingEnabled" v-on:click="buyFundTokens"> Swap
+                  <div v-if="loading_buy" v-cloak>
+                    <v-icon class="fa fa-spinner fa-spin" align = "justify-center"></v-icon>
+                  </div>
+                </v-btn>         
+              </v-row>
+           </v-container>
+    </v-card>
+
+    <v-card style="background-color: Lavender; border-radius: 20px;" v-else>
+      <v-container>
+              <v-row justify="center" style="padding: 2px;">
+                Swap
+              </v-row>
+              <v-row style="padding: 2px;">
+                <v-text-field
+                  hide-details
+                  v-model="tokenAmount"
+                  :rules="[numberRule]"
+                  :suffix="getCollectionDetails.symbol"
+                  filled
+                  rounded
+                  dense
+                ></v-text-field>
+              </v-row>
+
+              <v-row style="justify-content: right; padding: 5px; margin-right: -1px;">
+                <v-btn style ="border-radius: 20px" v-on:click="changeStatus"> ⇅
+                </v-btn>
+              </v-row>
+
+              <v-row style="padding: 2px;">
+                <v-text-field
+                  hide-details
+                  :value="getComputedprice"
+                  :rules="[numberRule]"
+                  :suffix="getCurrency"
+                  readonly
+                  filled
+                  rounded
+                  dense
+                ></v-text-field>
+                </v-row>
+                
+                <v-row style="justify-content: center; padding: 5px;">
+                  <v-btn style="width: 260px; border-radius: 200px;" :disabled="isSellingEnabled" v-on:click="sellFundTokens"> Swap
+                    <div v-if="loading_sell" v-cloak>
+                      <v-icon class="fa fa-spinner fa-spin"></v-icon>
+                    </div>
+                  </v-btn>       
+                </v-row>
+           </v-container>
+    </v-card>
+
+    <!-- <v-row>
       <v-col> <v-divider /></v-col>
     </v-row>
     <v-row>
@@ -64,7 +177,7 @@
         </div>
       </v-btn>
       
-    </v-row>
+    </v-row> -->
     <v-row v-if="owner == connectedAccount">
       <v-text-field
         v-model="tokenBuyPrice"
@@ -154,7 +267,15 @@ export default {
     EndZoraAuction
   },
   computed: {
-  getCollectionDetails() {
+    getComputedprice() {
+      var details = this.$store.state.collectionDetails;
+      if(this.buyStatus && "tokenBuyPrice" in details)
+        return this.maticAmount/details.tokenBuyPrice;
+      if(!this.buyStatus && "tokenSellPrice" in details)
+        return this.tokenAmount*details.tokenSellPrice;
+      return 0;
+    },
+    getCollectionDetails() {
       var details = this.$store.state.collectionDetails;
       if(details == null || details == {}) {
         return {};
@@ -206,7 +327,11 @@ export default {
     }
   },
   methods: {
-    
+    changeStatus()
+    {
+      this.buyStatus = !this.buyStatus;
+      // console.log(this.buyStatus);
+    },
     buyFundTokens() {
 
       this.loading_buy=true;
@@ -344,6 +469,7 @@ export default {
       if (!isNaN(parseFloat(v))) return true;
       return "Enter a number";
     },
+    buyStatus: true,
     dialog: false,
     maticAmount: 0,
     tokenAmount: 0,
