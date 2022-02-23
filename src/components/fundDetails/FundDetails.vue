@@ -154,7 +154,6 @@ export default {
     EndZoraAuction
   },
   computed: {
-   
   getCollectionDetails() {
       var details = this.$store.state.collectionDetails;
       if(details == null || details == {}) {
@@ -368,12 +367,9 @@ export default {
   }),
   props: ["owner", "connectedAccount", "collections"],
   async mounted() {
-    this.$store.dispatch("loadCollectionDetails", {collectionContractId: this.$route.query.contractId, collection_id: this.$route.query.collectionId});
-    console.log(this.$store.state.collectionDetails);
     while(true) {
       await sleep(1000);
       await this.$store.dispatch("refreshBalance", {fundAddress: this.$route.query.contractId, fundId: this.$route.query.collectionId}); 
-     
     }
   },
 };
